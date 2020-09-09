@@ -1,0 +1,3 @@
+include ':arm'
+include ':app'
+rootProject.name = "ArmMvvm"

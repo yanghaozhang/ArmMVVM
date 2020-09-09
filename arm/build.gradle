@@ -1,0 +1,126 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode rootProject.ext.android["versionCode"]
+        versionName rootProject.ext.android["versionName"]
+
+        testInstrumentationRunner rootProject.ext.defs["androidJUnitRunner"]
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    // kotlin
+    api rootProject.ext.defs["kotlin-stdlib"]
+    api rootProject.ext.defs["core-ktx"]
+
+    //androidx
+    api(rootProject.ext.defs["legacy-support-v4"]) {
+        exclude module: 'annotation'
+        exclude module: 'coordinatorlayout'
+    }
+    api(rootProject.ext.defs["appcompat"]) {
+        exclude module: 'annotation'
+    }
+    compileOnly rootProject.ext.defs["design"]
+    api(rootProject.ext.defs["recyclerview"]) {
+        exclude module: 'annotation'
+    }
+    api rootProject.ext.defs["annotations"]
+
+    //view
+    compileOnly rootProject.ext.defs["autolayout"]
+    api(rootProject.ext.defs["butterknife"]) {
+        exclude module: 'annotation'
+        exclude module: 'core'
+    }
+
+    //rx
+    api rootProject.ext.defs["rxjava2"]
+    api(rootProject.ext.defs["rxandroid2"]) {
+        exclude module: 'rxjava'
+    }
+    api(rootProject.ext.defs["rxcache2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'dagger'
+        exclude module: 'api'
+    }
+    implementation(rootProject.ext.defs["rxcache-jolyglot-gson"]) {
+        exclude module: 'gson'
+    }
+    api(rootProject.ext.defs["rxlifecycle2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'jsr305'
+    }
+    api(rootProject.ext.defs["rxlifecycle2-android"]) {
+        exclude module: 'annotation'
+        exclude module: 'rxjava'
+        exclude module: 'rxandroid'
+        exclude module: 'rxlifecycle'
+    }
+    api(rootProject.ext.defs["rxpermissions2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'annotation'
+    }
+    api rootProject.ext.defs['rxerrorhandler2']
+
+    //network
+    api(rootProject.ext.defs["retrofit"]) {
+        exclude module: 'okhttp'
+        exclude module: 'okio'
+    }
+    implementation(rootProject.ext.defs["retrofit-converter-gson"]) {
+        exclude module: 'gson'
+        exclude module: 'okhttp'
+        exclude module: 'okio'
+        exclude module: 'retrofit'
+    }
+    implementation(rootProject.ext.defs["retrofit-adapter-rxjava2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'okhttp'
+        exclude module: 'retrofit'
+        exclude module: 'okio'
+    }
+    api rootProject.ext.defs["okhttp3"]
+    compileOnly rootProject.ext.defs["glide"]
+    kapt(rootProject.ext.defs["glide-compiler"]) {
+        exclude module: 'jsr305'
+    }
+
+    //tools
+    compileOnly rootProject.ext.defs["javax.annotation"]
+    api rootProject.ext.defs["dagger2"]
+    kapt rootProject.ext.defs["dagger2-compiler"]
+    compileOnly rootProject.ext.defs["androideventbus"]
+    compileOnly rootProject.ext.defs["eventbus"]
+    api rootProject.ext.defs["gson"]
+
+    //test
+    api rootProject.ext.defs["timber"]
+    testImplementation rootProject.ext.defs["junit"]
+    androidTestImplementation rootProject.ext.defs["androidx-unit"]
+    androidTestImplementation rootProject.ext.defs["espresso-core"]
+}
