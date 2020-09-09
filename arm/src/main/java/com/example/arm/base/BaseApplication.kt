@@ -1,17 +1,25 @@
-package com.example.arm.base;
+package com.example.arm.base
 
-import android.app.Application;
-import android.content.Context;
+import android.app.Application
+import android.content.Context
 
-public class BaseApplication extends Application {
+/**
+ *  author : yanghaozhang
+ *  date : 2020/9/9 11:13
+ *  description :
+ */
+class BaseApplication : Application() {
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
+    private lateinit var applicationModel: ApplicationDelegate
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        applicationModel = ApplicationDelegate(base)
+        applicationModel.attachBaseContext(base)
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    override fun onCreate() {
+        super.onCreate()
+        applicationModel.onCreate(this)
     }
 }
