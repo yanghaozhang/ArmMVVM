@@ -12,6 +12,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     defaultConfig {
         minSdkVersion rootProject.ext.android["minSdkVersion"]
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
@@ -36,6 +40,10 @@ dependencies {
     // kotlin
     api rootProject.ext.defs["kotlin-stdlib"]
     api rootProject.ext.defs["core-ktx"]
+    api rootProject.ext.defs["kodein-core"]
+    api rootProject.ext.defs["kodein-x"]
+    api rootProject.ext.defs["activity-ktx"]
+    api rootProject.ext.defs["fragment-ktx"]
 
     //androidx
     api(rootProject.ext.defs["legacy-support-v4"]) {

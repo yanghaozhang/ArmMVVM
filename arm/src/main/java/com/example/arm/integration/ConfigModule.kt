@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.fragment.app.FragmentManager
 import com.example.arm.base.AppLifecycle
+import com.example.arm.di.GlobalConfigModule
 
 /**
  *  author : yanghaozhang
@@ -11,7 +12,7 @@ import com.example.arm.base.AppLifecycle
  *  description :
  */
 interface ConfigModule {
-//    fun applyOption(Context context, GlobalConfigModule.Builder configModule)
+    fun applyOption(context: Context, configModule: GlobalConfigModule)
 
     fun injectAppLifecycle(context: Context, appLifecycleList: MutableList<AppLifecycle>)
 

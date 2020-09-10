@@ -2,9 +2,12 @@ package com.example.armmvvm.base
 
 import android.app.Application
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.example.arm.base.AppLifecycle
+import com.example.arm.di.GlobalConfigModule
 import com.example.arm.integration.ConfigModule
+import okhttp3.HttpUrl
 import timber.log.Timber
 
 /**
@@ -13,6 +16,18 @@ import timber.log.Timber
  *  description :
  */
 class MyConfigModule : ConfigModule {
+    override fun applyOption(context: Context, configModule: GlobalConfigModule) {
+        configModule.run {
+            configActivityDelegate {
+                if (it is AppCompatActivity) {
+                    MyActivityDelegateImp(it)
+                }
+            }
+            mHttpUrl1 = HttpUrl.parse("http://www.baidu.com")
+            mErrorListener = MyErrorListener()
+        }
+    }
+
     override fun injectAppLifecycle(context: Context, appLifecycleList: MutableList<AppLifecycle>) {
         appLifecycleList.add(MyAppLifecycle())
         Timber.tag("MyConfigModule").d(
