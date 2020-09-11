@@ -3,8 +3,7 @@ package com.example.arm.base
 import android.app.Application
 import android.content.Context
 import com.example.arm.di.APP_MODEL
-import com.example.arm.http.ErrorListener
-import com.example.arm.integration.IRepositoryManager
+import com.example.arm.di.GlobalConfigModule
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
@@ -36,9 +35,7 @@ class BaseApplication : Application(), DIAware {
         import(applicationDelegate.globalConfigModule.globalConfigModule)
         import(APP_MODEL)
         bind<Context>() with singleton { this@BaseApplication }
-        // TODO: 2020/9/11  需要处理为空的情况
-        bind<IRepositoryManager.ObtainServiceDelegate>() with singleton { applicationDelegate.globalConfigModule.mObtainServiceDelegate!! }
-        bind<ErrorListener>() with singleton { applicationDelegate.globalConfigModule.mErrorListener!! }
-
+        bind<ApplicationDelegate>() with singleton { applicationDelegate }
+        bind<GlobalConfigModule>() with singleton { applicationDelegate.globalConfigModule }
     }
 }

@@ -44,12 +44,12 @@ class GlobalConfigModule {
     var mObtainServiceDelegate: IRepositoryManager.ObtainServiceDelegate? = null
 
     // 不暴露
-    private val mInterceptors: List<Interceptor> = mutableListOf()
-    private val mNetWorkInterceptor: List<Interceptor> = mutableListOf()
-    private var mOkHttpConfiguration: ((Application, OkHttpClient.Builder?) -> Unit)? = null
-    private var mRetrofitConfiguration: ((Application, Retrofit.Builder?) -> Unit)? = null
-    private var mGsonConfiguration: ((Application, GsonBuilder?) -> Unit)? = null
-    private var mActivityDelegate: ((Activity) -> Unit)? = null
+    private val mInterceptors: MutableList<Interceptor> = mutableListOf()
+    private val mNetWorkInterceptor: MutableList<Interceptor> = mutableListOf()
+    private var mOkHttpConfiguration: MutableList<(Application, OkHttpClient.Builder) -> Unit> = mutableListOf()
+    private var mRetrofitConfiguration: MutableList<(Application, Retrofit.Builder) -> Unit> = mutableListOf()
+    private var mGsonConfiguration: MutableList<(Application, GsonBuilder) -> Unit> = mutableListOf()
+    private var mActivityDelegate: MutableList<(Activity) -> Unit> = mutableListOf()
 
     // 不能为空
     lateinit var mImageLoaderStrategy: BaseImageLoaderStrategy<*>
@@ -57,51 +57,19 @@ class GlobalConfigModule {
 
 
     fun configOkHttp(okHttpConfig: (Application, OkHttpClient.Builder?) -> Unit) {
-        if (mOkHttpConfiguration == null) {
-            mOkHttpConfiguration = okHttpConfig
-        } else {
-            val temp = mOkHttpConfiguration
-            mOkHttpConfiguration = { application: Application, builder: OkHttpClient.Builder? ->
-                temp?.invoke(application, builder)
-                okHttpConfig(application, builder)
-            }
-        }
+        mOkHttpConfiguration.add(okHttpConfig)
     }
 
     fun configRetrofit(okHttpConfig: (Application, Retrofit.Builder?) -> Unit) {
-        if (mRetrofitConfiguration == null) {
-            mRetrofitConfiguration = okHttpConfig
-        } else {
-            val temp = mRetrofitConfiguration
-            mRetrofitConfiguration = { application: Application, builder: Retrofit.Builder? ->
-                temp?.invoke(application, builder)
-                okHttpConfig(application, builder)
-            }
-        }
+        mRetrofitConfiguration.add(okHttpConfig)
     }
 
     fun configGsonBuilder(okHttpConfig: (Application, GsonBuilder?) -> Unit) {
-        if (mGsonConfiguration == null) {
-            mGsonConfiguration = okHttpConfig
-        } else {
-            val temp = mGsonConfiguration
-            mGsonConfiguration = { application: Application, builder: GsonBuilder? ->
-                temp?.invoke(application, builder)
-                okHttpConfig(application, builder)
-            }
-        }
+        mGsonConfiguration.add(okHttpConfig)
     }
 
     fun configActivityDelegate(okHttpConfig: (Activity) -> Unit) {
-        if (mActivityDelegate == null) {
-            mActivityDelegate = okHttpConfig
-        } else {
-            val temp = mActivityDelegate
-            mActivityDelegate = { activity: Activity ->
-                temp?.invoke(activity)
-                okHttpConfig(activity)
-            }
-        }
+        mActivityDelegate.add(okHttpConfig)
     }
 
     val globalConfigModule = DI.Module(this.javaClass.simpleName) {
@@ -156,20 +124,36 @@ class GlobalConfigModule {
             mNetWorkInterceptor
         }
 
-        bind<(Application, OkHttpClient.Builder?) -> Unit>() with singleton {
-            mOkHttpConfiguration ?: { application: Application, builder: OkHttpClient.Builder? -> }
+        bind<(Application, OkHttpClient.Builder) -> Unit>() with singleton {
+            { application: Application, builder: OkHttpClient.Builder ->
+                mOkHttpConfiguration.forEach {
+                    it(application, builder)
+                }
+            }
         }
 
-        bind<(Application, Retrofit.Builder?) -> Unit>() with singleton {
-            mRetrofitConfiguration ?: { application: Application, builder: Retrofit.Builder? -> }
+        bind<(Application, Retrofit.Builder) -> Unit>() with singleton {
+            { application: Application, builder: Retrofit.Builder ->
+                mRetrofitConfiguration.forEach {
+                    it(application, builder)
+                }
+            }
         }
 
-        bind<(Application, GsonBuilder?) -> Unit>() with singleton {
-            mGsonConfiguration ?: { application: Application, builder: GsonBuilder? -> }
+        bind<(Application, GsonBuilder) -> Unit>() with singleton {
+            { application: Application, builder: GsonBuilder ->
+                mGsonConfiguration.forEach {
+                    it(application, builder)
+                }
+            }
         }
 
         bind<(Activity) -> Unit>() with singleton {
-            mActivityDelegate ?: { activity: Activity -> }
+            { activity: Activity ->
+                mActivityDelegate.forEach {
+                    it(activity)
+                }
+            }
         }
     }
 }

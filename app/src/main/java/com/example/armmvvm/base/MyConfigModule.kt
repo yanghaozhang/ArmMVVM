@@ -24,7 +24,7 @@ class MyConfigModule : ConfigModule {
                 }
             }
             mHttpUrl1 = HttpUrl.parse("http://www.baidu.com")
-            mErrorListener = MyErrorListener()
+//            mErrorListener = MyErrorListener()
         }
     }
 

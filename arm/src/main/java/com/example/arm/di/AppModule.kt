@@ -8,10 +8,7 @@ import com.example.arm.integration.cache.CacheType
 import com.example.arm.util.AppManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import org.kodein.di.*
 
 /**
  *  author : yanghaozhang
@@ -39,7 +36,7 @@ val APP_MODEL = DI.Module("APP_MODULE") {
     }
 
     bind<IRepositoryManager>() with singleton {
-        RepositoryManager(instance())
+        RepositoryManager(instance(),instance<GlobalConfigModule>().mObtainServiceDelegate)
     }
 
 

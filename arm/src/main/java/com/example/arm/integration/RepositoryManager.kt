@@ -1,10 +1,13 @@
 package com.example.arm.integration
 
+import android.app.Application
 import android.content.Context
-import com.example.arm.ext.di
 import com.example.arm.integration.cache.Cache
 import com.example.arm.integration.cache.CacheType
-import org.kodein.di.*
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.di
+import org.kodein.di.instance
 import retrofit2.Retrofit
 import java.lang.reflect.Proxy
 
@@ -14,13 +17,13 @@ import java.lang.reflect.Proxy
  *  description :
  */
 class RepositoryManager(
+    val application: Application,
     var mObtainServiceDelegate: IRepositoryManager.ObtainServiceDelegate? = null
 ) : IRepositoryManager, DIAware {
 
     override val context: Context by instance()
     val mRetrofit: Retrofit by instance()
     val mCacheFactory: Cache.Factory by instance()
-
 
     private var mRetrofitServiceCache: Cache<String, Any>? = mCacheFactory?.build(CacheType.RETROFIT_SERVICE_CACHE)
 
@@ -41,5 +44,5 @@ class RepositoryManager(
         mRetrofitServiceCache?.clear()
     }
 
-    override val di: DI = context.di
+    override val di :DI by di(application)
 }

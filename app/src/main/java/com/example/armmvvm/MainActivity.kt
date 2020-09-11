@@ -3,14 +3,13 @@ package com.example.armmvvm
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.example.arm.base.BaseActivity
+import com.example.arm.di.GlobalConfigModule
 import com.example.arm.ext.DIViewModelFactory
 import com.example.arm.http.ErrorListener
 import okhttp3.HttpUrl
+import org.kodein.di.*
 import org.kodein.di.android.di
 import org.kodein.di.android.retainedSubDI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
 import timber.log.Timber
 
 
@@ -21,14 +20,13 @@ import timber.log.Timber
  */
 class MainActivity() : BaseActivity() {
 
-    override val di by retainedSubDI(di()) {
-        bind<MainActivity>() with singleton { this@MainActivity }
+    override val di: DI by retainedSubDI(di()) {
         bind<MainViewModel>() with singleton { MainViewModel(instance()) }
     }
 
     val mHttpUrl: HttpUrl by instance()
 
-    val mErrorListener: ErrorListener? by instance()
+    val mErrorListener: ErrorListener? by newInstance { instance<GlobalConfigModule>().mErrorListener }
 
     val mainViewModel: MainViewModel by viewModels() {
         DIViewModelFactory(di)
