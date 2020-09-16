@@ -8,7 +8,17 @@ import com.example.arm.integration.cache.CacheType
 import com.example.arm.util.AppManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import org.kodein.di.*
+import okhttp3.Dispatcher
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import org.kodein.di.DI
+import org.kodein.di.bind
+import org.kodein.di.instance
+import org.kodein.di.singleton
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  *  author : yanghaozhang
@@ -21,10 +31,9 @@ val APP_MODEL = DI.Module("APP_MODULE") {
     }
 
     bind<GsonBuilder>() with singleton {
-        val gsonBuilder = GsonBuilder()
-        val gsonConfig = instance<((Application, GsonBuilder?) -> Unit)>()
-        gsonConfig(instance(), gsonBuilder)
-        gsonBuilder
+        GsonBuilder().also {
+            instance<((Application, GsonBuilder?) -> Unit)>().invoke(instance(), it)
+        }
     }
 
     bind<AppManager>() with singleton {
@@ -36,8 +45,33 @@ val APP_MODEL = DI.Module("APP_MODULE") {
     }
 
     bind<IRepositoryManager>() with singleton {
-        RepositoryManager(instance(),instance<GlobalConfigModule>().mObtainServiceDelegate)
+        RepositoryManager(instance(), instance<GlobalConfigModule>().mObtainServiceDelegate)
     }
 
+    bind<OkHttpClient>() with singleton {
+        val builder = OkHttpClient.Builder().apply {
+            //使用项目统一的线程池
+            dispatcher(Dispatcher(instance()))
+            for (interceptor in instance<MutableList<Interceptor>>(tag = "Interceptors")) {
+                addInterceptor(interceptor)
+            }
+            for (interceptor in instance<MutableList<Interceptor>>(tag = "NetWorkInterceptor")) {
+                addNetworkInterceptor(interceptor)
+            }
+            instance<(Application, OkHttpClient.Builder) -> Unit>().invoke(instance(), this)
+        }
+        builder.build()
+    }
 
+    bind<Retrofit>() with singleton {
+        val builder = Retrofit.Builder().apply {
+            baseUrl(instance<HttpUrl>())
+            client(instance())
+            addCallAdapterFactory(RxJava2CallAdapterFactory.create())//使用 RxJava
+            addConverterFactory(GsonConverterFactory.create(instance()))//使用 Gson;
+            //addConverterFactory(ScalarsConverterFactory.create(gson));// 该库增加返回值为String的支持;
+            instance<(Application, Retrofit.Builder) -> Unit>().invoke(instance(), this)
+        }
+        builder.build()
+    }
 }

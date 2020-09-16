@@ -55,6 +55,13 @@ class GlobalConfigModule {
     lateinit var mImageLoaderStrategy: BaseImageLoaderStrategy<*>
     lateinit var mGlobalHttpHandler: GlobalHttpHandler
 
+    fun addInterceptors(interceptor:Interceptor) {
+        mInterceptors.add(interceptor)
+    }
+
+    fun addNetWorkInterceptor(interceptor:Interceptor) {
+        mNetWorkInterceptor.add(interceptor)
+    }
 
     fun configOkHttp(okHttpConfig: (Application, OkHttpClient.Builder?) -> Unit) {
         mOkHttpConfiguration.add(okHttpConfig)
@@ -108,21 +115,13 @@ class GlobalConfigModule {
             })
         }
 
-        bind<BaseImageLoaderStrategy<*>>() with singleton {
-            mImageLoaderStrategy
-        }
+        bind() from singleton { mImageLoaderStrategy }
 
-        bind<GlobalHttpHandler>() with singleton {
-            mGlobalHttpHandler
-        }
+        bind() from singleton { mGlobalHttpHandler }
 
-        bind<List<Interceptor>>(tag = "Interceptors") with singleton {
-            mInterceptors
-        }
+        bind(tag = "Interceptors") from singleton { mInterceptors }
 
-        bind<List<Interceptor>>(tag = "NetWorkInterceptor") with singleton {
-            mNetWorkInterceptor
-        }
+        bind(tag = "NetWorkInterceptor") from singleton { mNetWorkInterceptor }
 
         bind<(Application, OkHttpClient.Builder) -> Unit>() with singleton {
             { application: Application, builder: OkHttpClient.Builder ->

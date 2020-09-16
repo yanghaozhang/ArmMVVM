@@ -9,6 +9,7 @@ import org.kodein.di.DIAware
 import org.kodein.di.android.di
 import org.kodein.di.instance
 import retrofit2.Retrofit
+import timber.log.Timber
 import java.lang.reflect.Proxy
 
 /**
@@ -21,11 +22,17 @@ class RepositoryManager(
     var mObtainServiceDelegate: IRepositoryManager.ObtainServiceDelegate? = null
 ) : IRepositoryManager, DIAware {
 
+    // 必须写在顶部先赋值,不然如果属性用到kodein依赖,会报错
+    override val di: DI by di(application)
     override val context: Context by instance()
     val mRetrofit: Retrofit by instance()
     val mCacheFactory: Cache.Factory by instance()
 
-    private var mRetrofitServiceCache: Cache<String, Any>? = mCacheFactory?.build(CacheType.RETROFIT_SERVICE_CACHE)
+    private var mRetrofitServiceCache: Cache<String, Any>? = mCacheFactory.build(CacheType.RETROFIT_SERVICE_CACHE)
+
+    init {
+        Timber.tag("RepositoryManager").d("null() called   %s ", "$context + $mRetrofit + $mCacheFactory")
+    }
 
     override fun <T> obtainRetrofitService(serviceClass: Class<T>): T {
         requireNotNull(mRetrofitServiceCache) { "Cannot return null from a Cache.Factory#build(int) method" }
@@ -43,6 +50,4 @@ class RepositoryManager(
     override fun clearAllCache() {
         mRetrofitServiceCache?.clear()
     }
-
-    override val di :DI by di(application)
 }
