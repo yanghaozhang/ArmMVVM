@@ -24,16 +24,11 @@ import timber.log.Timber
  *  date : 2020/9/9 11:13
  *  description :
  */
-class MainActivity() : BaseActivity() {
+class MainActivity : BaseActivity() {
 
     override val di: DI by retainedSubDI(di()) {
         bind<MainViewModel>() with singleton { MainViewModel(instance()) }
     }
-
-    override val diContext: DIContext<*>
-        get() = diContext(this)
-
-    val mContextApp: Context by instance()
 
     val mHttpUrl: HttpUrl by instance()
 
@@ -56,8 +51,6 @@ class MainActivity() : BaseActivity() {
         Timber.tag("MainActivity").d(mErrorListener?.javaClass?.simpleName ?: "not exist")
         Timber.tag("MainActivity")
             .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mRepositoryManager")
-        Timber.tag("MainActivity")
-            .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mContextApp")
     }
 
     fun onclick(view: View) {

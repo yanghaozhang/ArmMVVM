@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.InflateException
 import androidx.appcompat.app.AppCompatActivity
 import org.kodein.di.DIAware
+import org.kodein.di.DIContext
+import org.kodein.di.diContext
 import org.kodein.di.instance
 import timber.log.Timber
 
@@ -15,6 +17,9 @@ import timber.log.Timber
  */
 abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware {
     private val mActivityDelegate: ((Activity) -> Unit)? by instance()
+
+    override val diContext: DIContext<*>
+        get() = diContext(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("BaseActivity").d("onCreate() called with: savedInstanceState = $savedInstanceState   %s ", "before")

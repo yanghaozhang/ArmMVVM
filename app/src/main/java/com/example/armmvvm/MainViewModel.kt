@@ -1,10 +1,7 @@
 package com.example.armmvvm
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.di
+import com.example.arm.mvvm.BaseViewModel
 import timber.log.Timber
 
 /**
@@ -12,12 +9,10 @@ import timber.log.Timber
  *  date : 2020/9/11 1:20
  *  description :
  */
-class MainViewModel(application: Application) : AndroidViewModel(application), DIAware {
+class MainViewModel(application: Application) : BaseViewModel(application) {
 
     fun printMainActivity() {
         Timber.tag("MainViewModel").d("")
     }
-
-    override val di: DI by di()
 
 }
