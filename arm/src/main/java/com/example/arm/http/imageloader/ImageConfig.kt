@@ -13,38 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.arm.http.imageloader;
+package com.example.arm.http.imageloader
 
-import android.widget.ImageView;
+import android.widget.ImageView
 
 /**
  * ================================================
  * 这里是图片加载配置信息的基类,定义一些所有图片加载框架都可以用的通用参数
- * <p>
+ *
+ *
  * Created by JessYan on 8/5/16 15:19
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * [Contact me](mailto:jess.yan.effort@gmail.com)
+ * [Follow me](https://github.com/JessYanCoding)
  * ================================================
  */
-public class ImageConfig {
-    protected String url;
-    protected ImageView imageView;
-    protected int placeholder;//占位符
-    protected int errorPic;//错误占位符
+open class ImageConfig {
 
-    public String getUrl() {
-        return url;
-    }
+    var url: String? = null
+        protected set
 
-    public ImageView getImageView() {
-        return imageView;
-    }
+    var imageView: ImageView? = null
+        protected set
 
-    public int getPlaceholder() {
-        return placeholder;
-    }
+    //占位符
+    var placeholder = 0
+        protected set
 
-    public int getErrorPic() {
-        return errorPic;
-    }
+    //错误占位符
+    var errorPic = 0
+        protected set
 }

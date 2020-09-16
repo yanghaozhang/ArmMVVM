@@ -20,7 +20,7 @@ abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware {
         Timber.tag("BaseActivity").d("onCreate() called with: savedInstanceState = $savedInstanceState   %s ", "before")
         super.onCreate(savedInstanceState)
         Timber.tag("BaseActivity").d("onCreate() called with: savedInstanceState = $savedInstanceState   %s ", "after")
-
+        // 添加AppCompatActivity生命周期监听
         mActivityDelegate?.invoke(this)
         try {
             val layoutResID = initView(savedInstanceState)

@@ -43,12 +43,14 @@ class ApplicationDelegate(context: Context) :AppLifecycle{
         }
 
         globalConfigModule = GlobalConfigModule().apply {
+            // 添加默认的ActivityDelegate监听AppCompatActivity的生命周期
             configActivityDelegate {
                 if (it is AppCompatActivity) {
                     ActivityDelegateImp(it)
                 }
             }
         }
+        // 每个模块都可以对GlobalConfigModule进行配置,比如添加AppCompatActivity监听,OkHttpClient监听
         for (configModule in configModuleList) {
             configModule.applyOption(application, globalConfigModule)
         }

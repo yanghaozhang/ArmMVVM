@@ -13,66 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.arm.http;
+package com.example.arm.http
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
 
 /**
  * ================================================
  * 处理 Http 请求和响应结果的处理类
  *
- * @see <a href="https://github.com/JessYanCoding/MVPArms/wiki#3.2">GlobalHttpHandler Wiki 官方文档</a>
+ * @see [GlobalHttpHandler Wiki 官方文档](https://github.com/JessYanCoding/MVPArms/wiki.3.2)
  * Created by JessYan on 8/30/16 17:47
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * [Contact me](mailto:jess.yan.effort@gmail.com)
+ * [Follow me](https://github.com/JessYanCoding)
  * ================================================
  */
-public interface GlobalHttpHandler {
-
-    /**
-     * 空实现
-     */
-    GlobalHttpHandler EMPTY = new GlobalHttpHandler() {
-
-        @NonNull
-        @Override
-        public Response onHttpResultResponse(@Nullable String httpResult, @NonNull Interceptor.Chain chain, @NonNull Response response) {
-            //不管是否处理, 都必须将 response 返回出去
-            return response;
-        }
-
-        @NonNull
-        @Override
-        public Request onHttpRequestBefore(@NonNull Interceptor.Chain chain, @NonNull Request request) {
-            //不管是否处理, 都必须将 request 返回出去
-            return request;
-        }
-    };
-
+interface GlobalHttpHandler {
     /**
      * 这里可以先客户端一步拿到每一次 Http 请求的结果, 可以先解析成 Json, 再做一些操作, 如检测到 token 过期后
      * 重新请求 token, 并重新执行请求
      *
      * @param httpResult 服务器返回的结果 (已被框架自动转换为字符串)
-     * @param chain      {@link Interceptor.Chain}
-     * @param response   {@link Response}
-     * @return {@link Response}
+     * @param chain      [Interceptor.Chain]
+     * @param response   [Response]
+     * @return [Response]
      */
-    @NonNull
-    Response onHttpResultResponse(@Nullable String httpResult, @NonNull Interceptor.Chain chain, @NonNull Response response);
+    fun onHttpResultResponse(httpResult: String?, chain: Interceptor.Chain, response: Response): Response
 
     /**
-     * 这里可以在请求服务器之前拿到 {@link Request}, 做一些操作比如给 {@link Request} 统一添加 token 或者 header 以及参数加密等操作
+     * 这里可以在请求服务器之前拿到 [Request], 做一些操作比如给 [Request] 统一添加 token 或者 header 以及参数加密等操作
      *
-     * @param chain   {@link Interceptor.Chain}
-     * @param request {@link Request}
-     * @return {@link Request}
+     * @param chain   [Interceptor.Chain]
+     * @param request [Request]
+     * @return [Request]
      */
-    @NonNull
-    Request onHttpRequestBefore(@NonNull Interceptor.Chain chain, @NonNull Request request);
+    fun onHttpRequestBefore(chain: Interceptor.Chain, request: Request): Request
+
+    companion object {
+        /**
+         * 空实现
+         */
+        val EMPTY: GlobalHttpHandler = object : GlobalHttpHandler {
+            override fun onHttpResultResponse(httpResult: String?, chain: Interceptor.Chain, response: Response): Response {
+                //不管是否处理, 都必须将 response 返回出去
+                return response
+            }
+
+            override fun onHttpRequestBefore(chain: Interceptor.Chain, request: Request): Request {
+                //不管是否处理, 都必须将 request 返回出去
+                return request
+            }
+        }
+    }
 }

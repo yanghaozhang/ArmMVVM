@@ -1,7 +1,6 @@
-package com.example.arm.http;
+package com.example.arm.http
 
-public interface ErrorListener {
-    void handleResponseError(Throwable t);
-
-    void handleNormalError(Throwable t);
+interface ErrorListener {
+    fun handleResponseError(t: Throwable?)
+    fun handleNormalError(t: Throwable?)
 }
