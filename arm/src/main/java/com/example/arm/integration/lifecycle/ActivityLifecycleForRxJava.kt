@@ -2,7 +2,6 @@ package com.example.arm.integration.lifecycle
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
-import com.example.arm.base.ActivityDelegate
 import com.trello.rxlifecycle2.android.ActivityEvent
 import timber.log.Timber
 

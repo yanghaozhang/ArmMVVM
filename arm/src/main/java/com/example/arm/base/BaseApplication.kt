@@ -32,7 +32,6 @@ class BaseApplication : Application(), DIAware {
     private lateinit var applicationDelegate: ApplicationDelegate
 
     companion object {
-        // 尽量通过Kodein来获取,后续可能删除
         lateinit var INSTANCE: BaseApplication
     }
 

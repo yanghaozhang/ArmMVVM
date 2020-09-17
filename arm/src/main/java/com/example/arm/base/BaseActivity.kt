@@ -5,15 +5,14 @@ import android.os.Bundle
 import android.view.InflateException
 import androidx.appcompat.app.AppCompatActivity
 import com.example.arm.ext.toast
+import com.example.arm.integration.cache.Cache
+import com.example.arm.integration.cache.CacheType
 import com.example.arm.integration.lifecycle.ActivityLifecycleable
 import com.example.arm.mvvm.IView
 import com.trello.rxlifecycle2.android.ActivityEvent
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
-import org.kodein.di.DIAware
-import org.kodein.di.DIContext
-import org.kodein.di.diContext
-import org.kodein.di.instance
+import org.kodein.di.*
 import timber.log.Timber
 
 /**
@@ -22,19 +21,21 @@ import timber.log.Timber
  *  description :
  */
 abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityLifecycleable, IView {
-    private val mActivityDelegate: ((Activity) -> Unit)? by instance()
+    private val mActivityDelegate: ((Activity) -> Unit) by instance()
 
     private val mSubject: BehaviorSubject<ActivityEvent> = BehaviorSubject.create();
 
     override val diContext: DIContext<*>
         get() = diContext(this)
 
+    override val mCache: Cache<String, Any> by newInstance { instance<Cache.Factory>().build(CacheType.ACTIVITY_CACHE) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("BaseActivity").d("onCreate() called with: savedInstanceState = $savedInstanceState   %s ", "before")
         super.onCreate(savedInstanceState)
         Timber.tag("BaseActivity").d("onCreate() called with: savedInstanceState = $savedInstanceState   %s ", "after")
         // 添加AppCompatActivity生命周期监听
-        mActivityDelegate?.invoke(this)
+        mActivityDelegate.invoke(this)
         try {
             val layoutResID = initView(savedInstanceState)
             if (layoutResID != 0) {

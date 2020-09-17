@@ -2,7 +2,7 @@ package com.example.armmvvm.base
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
-import com.example.arm.base.ActivityDelegate
+import com.example.arm.integration.lifecycle.ActivityDelegate
 import timber.log.Timber
 
 /**

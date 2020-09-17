@@ -3,6 +3,7 @@ package com.example.arm.util
 import android.app.Application
 import android.util.Log
 import com.example.arm.base.BaseApplication
+import com.example.arm.ext.AppDIAware
 import com.example.arm.integration.cache.Cache
 import com.example.arm.integration.cache.CacheType
 import okhttp3.HttpUrl
@@ -16,9 +17,9 @@ import org.kodein.di.instance
  *  date : 2020/9/15 18:00
  *  description :
  */
-class TestUtil :DIAware{
+class TestUtil :AppDIAware{
 
-    val application:Application by instance()
+    val application: Application by instance()
 
     val mHttpUrl: HttpUrl by instance()
 
@@ -26,16 +27,11 @@ class TestUtil :DIAware{
 
     private var mRetrofitServiceCache: Cache<String, Any>? = mCacheFactory.build(CacheType.RETROFIT_SERVICE_CACHE)
 
-
     init {
         Log.i("Kodein111111111111111", di.container.tree.bindings.description())
         println(application)
         println(mHttpUrl)
         println(mCacheFactory)
         println(mRetrofitServiceCache)
-
     }
-
-    override val di: DI
-        get() = BaseApplication.INSTANCE.di
 }

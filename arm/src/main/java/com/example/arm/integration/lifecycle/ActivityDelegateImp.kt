@@ -1,4 +1,4 @@
-package com.example.arm.base
+package com.example.arm.integration.lifecycle
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner

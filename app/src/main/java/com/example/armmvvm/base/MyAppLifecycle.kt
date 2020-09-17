@@ -2,7 +2,7 @@ package com.example.armmvvm.base
 
 import android.app.Application
 import android.content.Context
-import com.example.arm.base.AppLifecycle
+import com.example.arm.integration.lifecycle.AppLifecycle
 import timber.log.Timber
 
 /**
@@ -11,8 +11,12 @@ import timber.log.Timber
  * description :
  */
 class MyAppLifecycle : AppLifecycle {
-    override fun attachBaseContext(base: Context) {
+
+    init {
         Timber.plant(MyTimberTree())
+    }
+
+    override fun attachBaseContext(base: Context) {
         Timber.tag("MyAppLifecycle").d("attachBaseContext() called with: base = $base%s ", "")
     }
 

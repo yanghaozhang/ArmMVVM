@@ -1,6 +1,7 @@
 package com.example.arm.base
 
 import android.os.Bundle
+import com.example.arm.integration.cache.Cache
 
 /**
  *  author : yanghaozhang
@@ -16,7 +17,7 @@ interface IActivity {
      *
      * @return like LruCache
      */
-//    fun provideCache(): Cache<String?, Any?>
+    val mCache: Cache<String, Any>
 
     /**
      * 是否使用 EventBus

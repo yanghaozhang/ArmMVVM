@@ -1,6 +1,5 @@
-package com.example.armmvvm
+package com.example.armmvvm.ui.main
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,10 +9,11 @@ import com.example.arm.di.GlobalConfigModule
 import com.example.arm.ext.DIViewModelFactory
 import com.example.arm.http.ErrorListener
 import com.example.arm.integration.IRepositoryManager
-import com.google.gson.GsonBuilder
+import com.example.arm.util.TestUtil
+import com.example.armmvvm.MainActivity2
+import com.example.armmvvm.R
 import okhttp3.HttpUrl
 import org.kodein.di.*
-import org.kodein.di.DI.Companion.defaultFullDescriptionOnError
 import org.kodein.di.android.di
 import org.kodein.di.android.retainedSubDI
 import timber.log.Timber
@@ -28,12 +28,12 @@ class MainActivity : BaseActivity() {
 
     override val di: DI by retainedSubDI(di()) {
         bind<MainViewModel>() with singleton {
-            Timber.tag("MainActivity").d("null() called   %s ", "-------$context-------")
-            MainViewModel(instance())
+            MainViewModel(MainModel())
         }
     }
 
     val mHttpUrl: HttpUrl by instance()
+    val mTestUtil: TestUtil by instance()
 
     val mRepositoryManager: IRepositoryManager by instance()
 
@@ -52,6 +52,8 @@ class MainActivity : BaseActivity() {
         mainViewModel.printMainActivity()
         Timber.tag("MainActivity").d(mHttpUrl.url().toString())
         Timber.tag("MainActivity").d(mErrorListener?.javaClass?.simpleName ?: "not exist")
+        Timber.tag("MainActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mCache")
+        Timber.tag("MainActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mTestUtil")
         Timber.tag("MainActivity")
             .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mRepositoryManager")
     }

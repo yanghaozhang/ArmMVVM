@@ -6,14 +6,16 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.arm.di.GlobalConfigModule
 import com.example.arm.integration.ConfigModule
 import com.example.arm.integration.ManifestParser
+import com.example.arm.integration.lifecycle.ActivityDelegateImp
 import com.example.arm.integration.lifecycle.ActivityLifecycleForRxJava
+import com.example.arm.integration.lifecycle.AppLifecycle
 
 /**
  *  author : yanghaozhang
  *  date : 2020/9/9 11:13
  *  description :
  */
-class ApplicationDelegate(context: Context) :AppLifecycle{
+class ApplicationDelegate(context: Context) : AppLifecycle {
 
     lateinit var globalConfigModule: GlobalConfigModule
     private lateinit var application: Application
@@ -30,9 +32,9 @@ class ApplicationDelegate(context: Context) :AppLifecycle{
     }
 
 
-    override fun attachBaseContext(context: Context) {
+    override fun attachBaseContext(base: Context) {
         for (appLifecycle in appLifecycleList) {
-            appLifecycle.attachBaseContext(context)
+            appLifecycle.attachBaseContext(base)
         }
     }
 
