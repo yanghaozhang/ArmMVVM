@@ -1,4 +1,3 @@
-package com.example.arm.ext
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -16,11 +15,7 @@ open class ProtectedUnPeekLiveData<T> : LiveData<T?>() {
     var isAllowNullValue = false
     private var status = Status.IDLE
     private val mTimer = Timer()
-    private var mTask = object : TimerTask() {
-        override fun run() {
-            clear()
-        }
-    }
+    private var mTask: TimerTask? = null
 
     override fun observe(owner: LifecycleOwner, observer: Observer<in T?>) {
         super.observe(owner, { t: T? ->
@@ -38,15 +33,22 @@ open class ProtectedUnPeekLiveData<T> : LiveData<T?>() {
     }
 
     override fun setValue(value: T?) {
-        if (status.compareTo(Status.IDLE) != 0 && !isAllowNullValue && value == null) {
+        if (status < Status.IDLE && !isAllowNullValue && value == null) {
             return
         }
+
+        mTask?.cancel()
+        mTimer.purge()
 
         status = Status.START
         super.setValue(value)
         status = Status.DELAYING
-        mTask.cancel()
-        mTimer.purge()
+
+        mTask = object : TimerTask() {
+            override fun run() {
+                clear()
+            }
+        }
         if (value != null) {
             mTimer.schedule(mTask, DELAY_TO_CLEAR_EVENT.toLong())
         }

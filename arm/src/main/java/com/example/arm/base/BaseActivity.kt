@@ -4,6 +4,12 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.InflateException
 import androidx.appcompat.app.AppCompatActivity
+import com.example.arm.ext.toast
+import com.example.arm.integration.lifecycle.ActivityLifecycleable
+import com.example.arm.mvvm.IView
+import com.trello.rxlifecycle2.android.ActivityEvent
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
 import org.kodein.di.DIAware
 import org.kodein.di.DIContext
 import org.kodein.di.diContext
@@ -15,8 +21,10 @@ import timber.log.Timber
  *  date : 2020/9/10 13:48
  *  description :
  */
-abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware {
+abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityLifecycleable, IView {
     private val mActivityDelegate: ((Activity) -> Unit)? by instance()
+
+    private val mSubject: BehaviorSubject<ActivityEvent> = BehaviorSubject.create();
 
     override val diContext: DIContext<*>
         get() = diContext(this)
@@ -29,7 +37,6 @@ abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware {
         mActivityDelegate?.invoke(this)
         try {
             val layoutResID = initView(savedInstanceState)
-            //如果initView返回0,框架则不会调用setContentView(),当然也不会 Bind ButterKnife
             if (layoutResID != 0) {
                 setContentView(layoutResID)
             }
@@ -40,6 +47,26 @@ abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware {
             e.printStackTrace()
         }
         initData(savedInstanceState)
+    }
+
+    override fun provideLifecycleSubject(): Subject<ActivityEvent?>? {
+        return mSubject
+    }
+
+    override fun showLoading() {
+
+    }
+
+    override fun hideLoading() {
+
+    }
+
+    override fun showMessage(message: String) {
+        toast(message)
+    }
+
+    override fun killMyself() {
+        finish()
     }
 
     override fun useEventBus(): Boolean = true

@@ -32,6 +32,7 @@ class ActivityDelegateImp(mActivity: AppCompatActivity) : ActivityDelegate(mActi
     }
 
     override fun onDestroyed(owner: LifecycleOwner) {
+        super.onDestroyed(owner)
         Timber.tag("ActivityDelegateImp").d("onDestroyed()  %s", mActivity?.javaClass?.simpleName)
     }
 }

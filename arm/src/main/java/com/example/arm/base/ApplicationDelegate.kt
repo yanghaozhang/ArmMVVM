@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.arm.di.GlobalConfigModule
 import com.example.arm.integration.ConfigModule
 import com.example.arm.integration.ManifestParser
+import com.example.arm.integration.lifecycle.ActivityLifecycleForRxJava
 
 /**
  *  author : yanghaozhang
@@ -47,6 +48,7 @@ class ApplicationDelegate(context: Context) :AppLifecycle{
             configActivityDelegate {
                 if (it is AppCompatActivity) {
                     ActivityDelegateImp(it)
+                    ActivityLifecycleForRxJava(it)
                 }
             }
         }

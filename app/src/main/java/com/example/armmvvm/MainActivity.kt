@@ -27,7 +27,10 @@ import timber.log.Timber
 class MainActivity : BaseActivity() {
 
     override val di: DI by retainedSubDI(di()) {
-        bind<MainViewModel>() with singleton { MainViewModel(instance()) }
+        bind<MainViewModel>() with singleton {
+            Timber.tag("MainActivity").d("null() called   %s ", "-------$context-------")
+            MainViewModel(instance())
+        }
     }
 
     val mHttpUrl: HttpUrl by instance()

@@ -33,14 +33,15 @@ ext {
             "kotlin-android"           : "org.jetbrains.kotlin:kotlin-android-extensions:${versions["kotlin_version"]}",
             "kotlin-stdlib"            : "org.jetbrains.kotlin:kotlin-stdlib:${versions["kotlin_version"]}",
             "core-ktx"                 : "androidx.core:core-ktx:${versions["coroutines_version"]}",
+            "fragment-ktx"             : "androidx.fragment:fragment-ktx:1.2.5",
+            "activity-ktx"             : "androidx.activity:activity-ktx:1.1.0",
+            //协程
             "coroutines-core"          : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions["coroutines_version"]}",
             "coroutines-android"       : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions["coroutines_version"]}",
-            "kodein-generic"           : "org.kodein.di:kodein-di-generic-jvm:${versions["kodein_version"]}",
+            //kodein
             "kodein-core"              : "org.kodein.di:kodein-di-framework-android-core:${versions["kodein_version"]}",
             "kodein-support"           : "org.kodein.di:kodein-di-framework-android-support:${versions["kodein_version"]}",
             "kodein-x"                 : "org.kodein.di:kodein-di-framework-android-x:${versions["kodein_version"]}",
-            "fragment-ktx"             : "androidx.fragment:fragment-ktx:1.2.5",
-            "activity-ktx"             : "androidx.activity:activity-ktx:1.1.0",
 
             //support
             "appcompat-v7"             : "com.android.support:appcompat-v7:${versions["androidSupportSdkVersion"]}",

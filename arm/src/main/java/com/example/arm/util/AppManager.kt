@@ -85,7 +85,7 @@ class AppManager private constructor() {
             //Arms 则会使用 Toast 替代 Snackbar 显示信息, 如果框架使用者依赖了 arms-autolayout 库就不用依赖 com.google.android.material:material 了
             //因为在 arms-autolayout 库中已经依赖有 com.google.android.material:material
             if (DEPENDENCY_SUPPORT_DESIGN) {
-                val activity = if (currentActivity == null) topActivity else currentActivity
+                val activity = currentActivity ?: topActivity
                 val view = activity!!.window.decorView.findViewById<View>(R.id.content)
                 Snackbar.make(
                     view,

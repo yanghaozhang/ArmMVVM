@@ -50,7 +50,7 @@ class BaseApplication : Application(), DIAware {
         applicationDelegate.onCreate(this)
 
         Timber.tag("Kodein").d("=====================-BINDINGS-=====================")
-        Timber.tag("Kodein").d("${di.container.tree.bindings.description()}")
+        Timber.tag("Kodein").d("/n${di.container.tree.bindings.description()}")
         Timber.tag("Kodein").d("=======================-END-=======================")
     }
 
