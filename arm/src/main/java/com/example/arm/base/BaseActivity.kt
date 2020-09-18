@@ -13,6 +13,7 @@ import com.trello.rxlifecycle2.android.ActivityEvent
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import org.kodein.di.*
+import org.kodein.di.android.di
 import timber.log.Timber
 
 /**
@@ -21,12 +22,15 @@ import timber.log.Timber
  *  description :
  */
 abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityLifecycleable, IView {
-    private val mActivityDelegate: ((Activity) -> Unit) by instance()
 
-    private val mSubject: BehaviorSubject<ActivityEvent> = BehaviorSubject.create()
+    override val di: DI by di()
 
     override val diContext: DIContext<*>
         get() = diContext(this)
+
+    private val mActivityDelegate: ((Activity) -> Unit) by instance()
+
+    private val mSubject: BehaviorSubject<ActivityEvent> = BehaviorSubject.create()
 
     override val mCache: Cache<String, Any> by instance(arg = CacheType.ACTIVITY_CACHE)
 
