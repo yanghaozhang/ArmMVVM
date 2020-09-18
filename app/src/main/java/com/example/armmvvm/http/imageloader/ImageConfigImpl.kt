@@ -49,7 +49,6 @@ class ImageConfigImpl : ImageConfig() {
     var loadType: Int = 0
 
     override var url: String? = null
-        get() = super.url
         set(value) {
             loadType = LOAD_TYPE_URL
             field = value
@@ -105,4 +104,10 @@ class ImageConfigImpl : ImageConfig() {
         const val LOAD_TYPE_BITMAP = 2
         const val LOAD_TYPE_DRAWABLE = 3
     }
+}
+
+fun ImageConfigImplBuilder(init:ImageConfigImpl.()->Unit):ImageConfigImpl {
+    val imageConfigImpl = ImageConfigImpl()
+    init(imageConfigImpl)
+    return imageConfigImpl
 }

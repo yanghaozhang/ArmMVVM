@@ -98,7 +98,6 @@ class GlideImageLoaderStrategy : BaseImageLoaderStrategy<ImageConfigImpl>, Glide
     }
 
     override fun clear(ctx: Context, config: ImageConfigImpl) {
-        requireNotNull(config.imageView) { "ImageView is required" }
         if (config.imageView != null) {
             ArmsForkGlide.get(ctx).requestManagerRetriever[ctx].clear(config.imageView!!)
         }
@@ -158,7 +157,7 @@ class GlideImageLoaderStrategy : BaseImageLoaderStrategy<ImageConfigImpl>, Glide
     }
 
     companion object {
-        private const val TAG = "GlideImageLoaderStrateg"
+        private const val TAG = "GlideImageLoaderStrategy"
         private val mCacheStrategy =
             arrayOf(DiskCacheStrategy.ALL, DiskCacheStrategy.NONE, DiskCacheStrategy.RESOURCE, DiskCacheStrategy.DATA)
         const val IMAGE_DISK_CACHE_MAX_SIZE = 250 * 1024 * 1024 //图片缓存文件最大值为250Mb

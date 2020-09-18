@@ -30,10 +30,8 @@ import android.widget.ImageView
 open class ImageConfig {
 
     open var url: String? = null
-        protected set
 
     var imageView: ImageView? = null
-        protected set
 
     //占位符
     var placeholder = 0
