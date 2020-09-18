@@ -33,6 +33,7 @@ class MainActivity : BaseActivity() {
     }
 
     val mHttpUrl: HttpUrl by instance()
+
     val mTestUtil: TestUtil by instance()
 
     val mRepositoryManager: IRepositoryManager by instance()

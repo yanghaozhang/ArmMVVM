@@ -8,11 +8,9 @@ import timber.log.Timber
 /**
  *  author : yanghaozhang
  *  date : 2020/9/11 1:20
- *  description :
+ *  description : ViewModel 所需的Model通过构造提供
  */
 class MainViewModel(val mainModel: MainModel) : BaseViewModel() {
-
-    override val useEventBus: Boolean = false
 
     val mAppManager: AppManager by instance {
         // 调用时执行
@@ -21,5 +19,11 @@ class MainViewModel(val mainModel: MainModel) : BaseViewModel() {
 
     fun printMainActivity() {
         Timber.tag("MainViewModel").d("$mAppManager")
+        mainModel.register()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mainModel.onDestroy()
     }
 }

@@ -2,12 +2,12 @@ package com.example.arm.mvvm
 
 import androidx.lifecycle.AndroidViewModel
 import com.example.arm.base.BaseApplication
+import com.example.arm.integration.EventBusManager
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.DIContext
 import org.kodein.di.android.x.di
 import org.kodein.di.diContext
-import org.simple.eventbus.EventBus
 
 /**
  *  author : yanghaozhang
@@ -25,13 +25,13 @@ abstract class BaseViewModel : AndroidViewModel(BaseApplication.INSTANCE), DIAwa
 
     init {
         if (useEventBus) {
-            EventBus.getDefault().register(this)
+            EventBusManager.instance.register(this)
         }
     }
 
     override fun onCleared() {
         if (useEventBus) {
-            EventBus.getDefault().unregister(this)
+            EventBusManager.instance.unregister(this)
         }
     }
 }

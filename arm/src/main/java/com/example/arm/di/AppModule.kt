@@ -12,10 +12,7 @@ import okhttp3.Dispatcher
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import org.kodein.di.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -40,8 +37,8 @@ val APP_MODEL = DI.Module("APP_MODULE") {
         AppManager.instance.init(instance())
     }
 
-    bind<Cache<String, Any>>() with singleton {
-        instance<Cache.Factory>().build(CacheType.EXTRAS)
+    bind<Cache<String, Any>>() with factory { cacheType: CacheType ->
+        instance<Cache.Factory>().build(cacheType)
     }
 
     bind<IRepositoryManager>() with singleton {

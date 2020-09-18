@@ -23,12 +23,12 @@ import timber.log.Timber
 abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityLifecycleable, IView {
     private val mActivityDelegate: ((Activity) -> Unit) by instance()
 
-    private val mSubject: BehaviorSubject<ActivityEvent> = BehaviorSubject.create();
+    private val mSubject: BehaviorSubject<ActivityEvent> = BehaviorSubject.create()
 
     override val diContext: DIContext<*>
         get() = diContext(this)
 
-    override val mCache: Cache<String, Any> by newInstance { instance<Cache.Factory>().build(CacheType.ACTIVITY_CACHE) }
+    override val mCache: Cache<String, Any> by instance(arg = CacheType.ACTIVITY_CACHE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("BaseActivity").d("onCreate() called with: savedInstanceState = $savedInstanceState   %s ", "before")

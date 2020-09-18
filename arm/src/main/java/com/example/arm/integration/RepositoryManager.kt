@@ -26,12 +26,11 @@ class RepositoryManager(
     override val di: DI by di(application)
     override val context: Context by instance()
     val mRetrofit: Retrofit by instance()
-    val mCacheFactory: Cache.Factory by instance()
 
-    private var mRetrofitServiceCache: Cache<String, Any>? = mCacheFactory.build(CacheType.RETROFIT_SERVICE_CACHE)
+    val mRetrofitServiceCache: Cache<String, Any> by instance(arg = CacheType.RETROFIT_SERVICE_CACHE)
 
     init {
-        Timber.tag("RepositoryManager").d("null() called   %s ", "$context + $mRetrofit + $mCacheFactory")
+        Timber.tag("RepositoryManager").d("null() called   %s ", "$context + $mRetrofit + $mRetrofitServiceCache")
     }
 
     override fun <T> obtainRetrofitService(serviceClass: Class<T>): T {

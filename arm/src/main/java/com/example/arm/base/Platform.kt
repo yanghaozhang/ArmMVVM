@@ -23,20 +23,15 @@ package com.example.arm.base
  * ================================================
  */
 object Platform {
-    @JvmStatic
-    val DEPENDENCY_AUTO_LAYOUT: Boolean
+    val DEPENDENCY_AUTO_LAYOUT = findClassByClassName("com.zhy.autolayout.AutoLayoutInfo")
 
-    @JvmStatic
-    val DEPENDENCY_SUPPORT_DESIGN: Boolean
+    val DEPENDENCY_SUPPORT_DESIGN =findClassByClassName("com.google.android.material.snackbar.Snackbar")
 
-    @JvmStatic
-    val DEPENDENCY_GLIDE: Boolean
+    val DEPENDENCY_GLIDE = findClassByClassName("com.bumptech.glide.Glide")
 
-    @JvmStatic
-    val DEPENDENCY_ANDROID_EVENT_BUS: Boolean
+    val DEPENDENCY_ANDROID_EVENT_BUS = findClassByClassName("org.simple.eventbus.EventBus")
 
-    @JvmStatic
-    val DEPENDENCY_EVENT_BUS: Boolean
+    val DEPENDENCY_EVENT_BUS = findClassByClassName("org.greenrobot.eventbus.EventBus")
 
     private fun findClassByClassName(className: String): Boolean {
         return try {
@@ -45,14 +40,5 @@ object Platform {
         } catch (e: ClassNotFoundException) {
             false
         }
-    }
-
-    init {
-        DEPENDENCY_AUTO_LAYOUT = findClassByClassName("com.zhy.autolayout.AutoLayoutInfo")
-        DEPENDENCY_SUPPORT_DESIGN =
-            findClassByClassName("com.google.android.material.snackbar.Snackbar")
-        DEPENDENCY_GLIDE = findClassByClassName("com.bumptech.glide.Glide")
-        DEPENDENCY_ANDROID_EVENT_BUS = findClassByClassName("org.simple.eventbus.EventBus")
-        DEPENDENCY_EVENT_BUS = findClassByClassName("org.greenrobot.eventbus.EventBus")
     }
 }
