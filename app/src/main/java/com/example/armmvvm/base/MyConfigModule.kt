@@ -2,9 +2,12 @@ package com.example.armmvvm.base
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import com.example.arm.integration.lifecycle.AppLifecycle
 import com.example.arm.di.GlobalConfigModule
+import com.example.arm.http.log.RequestInterceptor
 import com.example.arm.integration.ConfigModule
+import com.example.arm.integration.lifecycle.AppLifecycle
+import com.example.armmvvm.BuildConfig
+import com.example.armmvvm.http.imageloader.GlideImageLoaderStrategy
 import okhttp3.HttpUrl
 import timber.log.Timber
 
@@ -23,6 +26,8 @@ class MyConfigModule : ConfigModule {
             }
             mHttpUrl1 = HttpUrl.parse("http://www.baidu.com")
 //            mErrorListener = MyErrorListener()
+            mLevel = if (BuildConfig.DEBUG) RequestInterceptor.Level.ALL else RequestInterceptor.Level.NONE
+            mImageLoaderStrategy = GlideImageLoaderStrategy()
         }
     }
 

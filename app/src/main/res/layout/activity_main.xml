@@ -7,6 +7,7 @@
     tools:context=".ui.main.MainActivity">
 
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
@@ -14,6 +15,26 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:onClick="onclick"
         app:layout_constraintRight_toRightOf="parent"
+        android:paddingTop="20dp"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:src="@mipmap/ic_launcher" />
+
+    <FrameLayout
+        android:id="@+id/frame_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_img" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

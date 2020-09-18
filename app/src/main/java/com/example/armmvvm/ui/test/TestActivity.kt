@@ -6,9 +6,11 @@ import com.example.arm.base.BaseActivity
 import com.example.arm.di.GlobalConfigModule
 import com.example.arm.ext.DIViewModelFactory
 import com.example.arm.http.ErrorListener
+import com.example.arm.http.imageloader.ImageLoader
 import com.example.arm.integration.IRepositoryManager
 import com.example.arm.util.TestUtil
 import com.example.armmvvm.R
+import com.example.armmvvm.http.imageloader.ImageConfigImpl
 import okhttp3.HttpUrl
 import org.kodein.di.*
 import org.kodein.di.android.di
@@ -27,6 +29,8 @@ class TestActivity : BaseActivity() {
 
     val mTestUtil: TestUtil by instance()
 
+    val mImageLoader by instance<ImageLoader<*>>()
+
     val mRepositoryManager: IRepositoryManager by instance()
 
     // 直接使用newInstance而不是di.newInstance,因为后者将立即实现,而此时Activity未能完全初始化,applicationContext为null,报NPE
@@ -43,6 +47,9 @@ class TestActivity : BaseActivity() {
         Timber.tag("TestActivity").d(mErrorListener?.javaClass?.simpleName ?: "not exist")
         Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mCache")
         Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mTestUtil")
+        Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mImageLoader")
+        val mImageLoader1: ImageLoader<ImageConfigImpl> = mImageLoader as ImageLoader<ImageConfigImpl>
+        Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mImageLoader1")
         Timber.tag("TestActivity")
             .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mRepositoryManager")
     }

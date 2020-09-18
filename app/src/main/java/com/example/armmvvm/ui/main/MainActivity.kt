@@ -32,15 +32,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    val mHttpUrl: HttpUrl by instance()
-
-    val mTestUtil: TestUtil by instance()
-
-    val mRepositoryManager: IRepositoryManager by instance()
-
-    // 直接使用newInstance而不是di.newInstance,因为后者将立即实现,而此时Activity未能完全初始化,applicationContext为null,报NPE
-    val mErrorListener: ErrorListener? by newInstance { instance<GlobalConfigModule>().mErrorListener }
-
     val mainViewModel: MainViewModel by viewModels() {
         DIViewModelFactory(di)
     }
@@ -51,12 +42,6 @@ class MainActivity : BaseActivity() {
 
     override fun initData(savedInstanceState: Bundle?) {
         mainViewModel.printMainActivity()
-        Timber.tag("MainActivity").d(mHttpUrl.url().toString())
-        Timber.tag("MainActivity").d(mErrorListener?.javaClass?.simpleName ?: "not exist")
-        Timber.tag("MainActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mCache")
-        Timber.tag("MainActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mTestUtil")
-        Timber.tag("MainActivity")
-            .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mRepositoryManager")
     }
 
     fun onclick(view: View) {

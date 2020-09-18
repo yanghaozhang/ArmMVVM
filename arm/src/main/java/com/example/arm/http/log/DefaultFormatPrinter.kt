@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.arm.http.log;
+package com.example.arm.http.log
 
-import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.example.arm.util.CharacterHandler;
-
-import java.util.List;
-
-import okhttp3.MediaType;
-import okhttp3.Request;
-import timber.log.Timber;
+import android.text.TextUtils
+import com.example.arm.http.log.RequestInterceptor.Companion.isJson
+import com.example.arm.http.log.RequestInterceptor.Companion.isXml
+import com.example.arm.util.CharacterHandler
+import com.example.arm.util.ThreadUtils
+import com.example.arm.util.ThreadUtils.SimpleTask
+import okhttp3.MediaType
+import okhttp3.Request
+import timber.log.Timber
 
 /**
  * ================================================
@@ -34,190 +31,65 @@ import timber.log.Timber;
  * 并不能满足自己的需求, 可自行扩展自己理想的打印格式
  *
  * Created by JessYan on 25/01/2018 14:51
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * [Contact me](mailto:jess.yan.effort@gmail.com)
+ * [Follow me](https://github.com/JessYanCoding)
  * ================================================
  */
-public class DefaultFormatPrinter implements FormatPrinter {
-    private static final String TAG = "ArmsHttpLog";
-    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    private static final String DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR;
-
-    private static final String[] OMITTED_RESPONSE = {LINE_SEPARATOR, "Omitted response body"};
-    private static final String[] OMITTED_REQUEST = {LINE_SEPARATOR, "Omitted request body"};
-
-    private static final String N = "\n";
-    private static final String T = "\t";
-    private static final String REQUEST_UP_LINE = "   ┌────── Request ────────────────────────────────────────────────────────────────────────";
-    private static final String END_LINE = "   └───────────────────────────────────────────────────────────────────────────────────────";
-    private static final String RESPONSE_UP_LINE = "   ┌────── Response ───────────────────────────────────────────────────────────────────────";
-    private static final String BODY_TAG = "Body:";
-    private static final String URL_TAG = "URL: ";
-    private static final String METHOD_TAG = "Method: @";
-    private static final String HEADERS_TAG = "Headers:";
-    private static final String STATUS_CODE_TAG = "Status Code: ";
-    private static final String RECEIVED_TAG = "Received in: ";
-    private static final String CORNER_UP = "┌ ";
-    private static final String CORNER_BOTTOM = "└ ";
-    private static final String CENTER_LINE = "├ ";
-    private static final String DEFAULT_LINE = "│ ";
-    private static final String[] ARMS = new String[]{"-A-", "-R-", "-M-", "-S-"};
-    private static ThreadLocal<Integer> last = new ThreadLocal<Integer>() {
-        @Override
-        protected Integer initialValue() {
-            return 0;
-        }
-    };
-
-    private static boolean isEmpty(String line) {
-        return TextUtils.isEmpty(line) || N.equals(line) || T.equals(line) || TextUtils.isEmpty(line.trim());
-    }
-
+class DefaultFormatPrinter : FormatPrinter {
     /**
-     * 对 {@code lines} 中的信息进行逐行打印
-     *
-     * @param tag
-     * @param lines
-     * @param withLineSize 为 {@code true} 时, 每行的信息长度不会超过110, 超过则自动换行
-     */
-    private static void logLines(String tag, String[] lines, boolean withLineSize) {
-        for (String line : lines) {
-            int lineLength = line.length();
-            int maxLongSize = withLineSize ? 110 : lineLength;
-            for (int i = 0; i <= lineLength / maxLongSize; i++) {
-                int start = i * maxLongSize;
-                int end = (i + 1) * maxLongSize;
-                end = end > line.length() ? line.length() : end;
-                Timber.tag(resolveTag(tag)).d("%s%s", DEFAULT_LINE, line.substring(start, end));
-            }
-        }
-    }
-
-    private static String computeKey() {
-        if (last.get() >= 4) {
-            last.set(0);
-        }
-        String s = ARMS[last.get()];
-        last.set(last.get() + 1);
-        return s;
-    }
-
-    /**
-     * 此方法是为了解决在 AndroidStudio v3.1 以上 Logcat 输出的日志无法对齐的问题
-     * <p>
-     * 此问题引起的原因, 据 JessYan 猜测, 可能是因为 AndroidStudio v3.1 以上将极短时间内以相同 tag 输出多次的 log 自动合并为一次输出
-     * 导致本来对称的输出日志, 出现不对称的问题
-     * AndroidStudio v3.1 此次对输出日志的优化, 不小心使市面上所有具有日志格式化输出功能的日志框架无法正常工作
-     * 现在暂时能想到的解决方案有两个: 1. 改变每行的 tag (每行 tag 都加一个可变化的 token) 2. 延迟每行日志打印的间隔时间
-     * <p>
-     * {@link #resolveTag(String)} 使用第一种解决方案
-     *
-     * @param tag
-     */
-    private static String resolveTag(String tag) {
-        return computeKey() + tag;
-    }
-
-    private static String[] getRequest(Request request) {
-        String log;
-        String header = request.headers().toString();
-        log = METHOD_TAG + request.method() + DOUBLE_SEPARATOR +
-                (isEmpty(header) ? "" : HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header));
-        return log.split(LINE_SEPARATOR);
-    }
-
-    private static String[] getResponse(String header, long tookMs, int code, boolean isSuccessful,
-                                        List<String> segments, String message) {
-        String log;
-        String segmentString = slashSegments(segments);
-        log = ((!TextUtils.isEmpty(segmentString) ? segmentString + " - " : "") + "is success : "
-                + isSuccessful + " - " + RECEIVED_TAG + tookMs + "ms" + DOUBLE_SEPARATOR + STATUS_CODE_TAG +
-                code + " / " + message + DOUBLE_SEPARATOR + (isEmpty(header) ? "" : HEADERS_TAG + LINE_SEPARATOR +
-                dotHeaders(header)));
-        return log.split(LINE_SEPARATOR);
-    }
-
-    private static String slashSegments(List<String> segments) {
-        StringBuilder segmentString = new StringBuilder();
-        for (String segment : segments) {
-            segmentString.append("/").append(segment);
-        }
-        return segmentString.toString();
-    }
-
-    /**
-     * 对 {@code header} 按规定的格式进行处理
-     *
-     * @param header
-     * @return
-     */
-    private static String dotHeaders(String header) {
-        String[] headers = header.split(LINE_SEPARATOR);
-        StringBuilder builder = new StringBuilder();
-        String tag = "─ ";
-        if (headers.length > 1) {
-            for (int i = 0; i < headers.length; i++) {
-                if (i == 0) {
-                    tag = CORNER_UP;
-                } else if (i == headers.length - 1) {
-                    tag = CORNER_BOTTOM;
-                } else {
-                    tag = CENTER_LINE;
-                }
-                builder.append(tag).append(headers[i]).append("\n");
-            }
-        } else {
-            for (String item : headers) {
-                builder.append(tag).append(item).append("\n");
-            }
-        }
-        return builder.toString();
-    }
-
-    private static String getTag(boolean isRequest) {
-        if (isRequest) {
-            return TAG + "-Request";
-        } else {
-            return TAG + "-Response";
-        }
-    }
-
-    /**
-     * 打印网络请求信息, 当网络请求时 {{@link okhttp3.RequestBody}} 可以解析的情况
+     * 打印网络请求信息, 当网络请求时 {[okhttp3.RequestBody]} 可以解析的情况
      *
      * @param request
      * @param bodyString
      */
-    @Override
-    public void printJsonRequest(@NonNull Request request, @NonNull String bodyString) {
-        final String requestBody = LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyString;
-        final String tag = getTag(true);
+    override fun printJsonRequest(request: Request, bodyString: String) {
+        ThreadUtils.executeBySingle<String>(object : SimpleTask<String>() {
+            @Throws(Throwable::class)
+            override fun doInBackground(): String {
+                val requestBody = LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyString
+                val tag = getTag(true)
+                Timber.tag(tag).d(REQUEST_UP_LINE)
+                logLines(tag, arrayOf(URL_TAG + request.url()), false)
+                if (request.url().toString().contains("?")) {
+                    logLines(tag, getUrlParamsLines(request.url().toString()), true)
+                }
+                logLines(tag, getRequest(request), true)
+                logLines(tag, requestBody.split(LINE_SEPARATOR.toRegex()).toTypedArray(), true)
+                Timber.tag(tag).d(END_LINE)
+                return ""
+            }
 
-        Timber.tag(tag).d(REQUEST_UP_LINE);
-        logLines(tag, new String[]{URL_TAG + request.url()}, false);
-        logLines(tag, getRequest(request), true);
-        logLines(tag, requestBody.split(LINE_SEPARATOR), true);
-        Timber.tag(tag).d(END_LINE);
+            override fun onSuccess(result: String) {}
+        })
     }
 
     /**
-     * 打印网络请求信息, 当网络请求时 {{@link okhttp3.RequestBody}} 为 {@code null} 或不可解析的情况
+     * 打印网络请求信息, 当网络请求时 {[okhttp3.RequestBody]} 为 `null` 或不可解析的情况
      *
      * @param request
      */
-    @Override
-    public void printFileRequest(@NonNull Request request) {
-        final String tag = getTag(true);
+    override fun printFileRequest(request: Request) {
+        ThreadUtils.executeBySingle<String>(object : SimpleTask<String>() {
+            @Throws(Throwable::class)
+            override fun doInBackground(): String {
+                val tag = getTag(true)
+                Timber.tag(tag).d(REQUEST_UP_LINE)
+                logLines(tag, arrayOf(URL_TAG + request.url()), false)
+                if (request.url().toString().contains("?")) {
+                    logLines(tag, getUrlParamsLines(request.url().toString()), true)
+                }
+                logLines(tag, getRequest(request), true)
+                logLines(tag, OMITTED_REQUEST, true)
+                Timber.tag(tag).d(END_LINE)
+                return ""
+            }
 
-        Timber.tag(tag).d(REQUEST_UP_LINE);
-        logLines(tag, new String[]{URL_TAG + request.url()}, false);
-        logLines(tag, getRequest(request), true);
-        logLines(tag, OMITTED_REQUEST, true);
-        Timber.tag(tag).d(END_LINE);
+            override fun onSuccess(result: String) {}
+        })
     }
 
     /**
-     * 打印网络响应信息, 当网络响应时 {{@link okhttp3.ResponseBody}} 可以解析的情况
+     * 打印网络响应信息, 当网络响应时 {[okhttp3.ResponseBody]} 可以解析的情况
      *
      * @param chainMs      服务器响应耗时(单位毫秒)
      * @param isSuccessful 请求是否成功
@@ -229,25 +101,44 @@ public class DefaultFormatPrinter implements FormatPrinter {
      * @param message      响应信息
      * @param responseUrl  请求地址
      */
-    @Override
-    public void printJsonResponse(long chainMs, boolean isSuccessful, int code, @NonNull String headers, @Nullable MediaType contentType,
-                                  @Nullable String bodyString, @NonNull List<String> segments, @NonNull String message, @NonNull final String responseUrl) {
-        bodyString = RequestInterceptor.isJson(contentType) ? CharacterHandler.jsonFormat(bodyString)
-                : RequestInterceptor.isXml(contentType) ? CharacterHandler.xmlFormat(bodyString) : bodyString;
+    override fun printJsonResponse(
+        chainMs: Long, isSuccessful: Boolean, code: Int, headers: String, contentType: MediaType?,
+        bodyString: String?, segments: List<String>, message: String, responseUrl: String
+    ) {
+        ThreadUtils.executeBySingle<String>(object : SimpleTask<String>() {
+            @Throws(Throwable::class)
+            override fun doInBackground(): String {
+                val bodyTemp = if (isJson(contentType)) CharacterHandler.jsonFormat(bodyString) else if (isXml(contentType)) CharacterHandler.xmlFormat(bodyString) else bodyString!!
+                val responseBody = LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyTemp
+                val tag = getTag(false)
+                val urlLine = arrayOf(URL_TAG + responseUrl, N)
+                Timber.tag(tag).d(RESPONSE_UP_LINE)
+                logLines(tag, urlLine, true)
+                if (responseUrl.contains("?")) {
+                    logLines(tag, getUrlParamsLines(responseUrl), true)
+                }
+                logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments, message), true)
+                logLines(tag, responseBody.split(LINE_SEPARATOR.toRegex()).toTypedArray(), true)
+                Timber.tag(tag).d(END_LINE)
+                return ""
+            }
 
-        final String responseBody = LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyString;
-        final String tag = getTag(false);
-        final String[] urlLine = {URL_TAG + responseUrl, N};
+            override fun onSuccess(result: String) {}
+        })
+    }
 
-        Timber.tag(tag).d(RESPONSE_UP_LINE);
-        logLines(tag, urlLine, true);
-        logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments, message), true);
-        logLines(tag, responseBody.split(LINE_SEPARATOR), true);
-        Timber.tag(tag).d(END_LINE);
+    private fun getUrlParamsLines(responseUrl: String): Array<String> {
+        val params = responseUrl.split("\\?".toRegex()).toTypedArray()[1]
+        val urlParams = params.split("&".toRegex()).toTypedArray()
+        val stringBuilder = StringBuilder()
+        for (urlParam in urlParams) {
+            stringBuilder.append(urlParam).append(N)
+        }
+        return stringBuilder.toString().split(LINE_SEPARATOR.toRegex()).toTypedArray()
     }
 
     /**
-     * 打印网络响应信息, 当网络响应时 {{@link okhttp3.ResponseBody}} 为 {@code null} 或不可解析的情况
+     * 打印网络响应信息, 当网络响应时 {[okhttp3.ResponseBody]} 为 `null` 或不可解析的情况
      *
      * @param chainMs      服务器响应耗时(单位毫秒)
      * @param isSuccessful 请求是否成功
@@ -257,16 +148,173 @@ public class DefaultFormatPrinter implements FormatPrinter {
      * @param message      响应信息
      * @param responseUrl  请求地址
      */
-    @Override
-    public void printFileResponse(long chainMs, boolean isSuccessful, int code, @NonNull String headers,
-                                  @NonNull List<String> segments, @NonNull String message, @NonNull final String responseUrl) {
-        final String tag = getTag(false);
-        final String[] urlLine = {URL_TAG + responseUrl, N};
+    override fun printFileResponse(
+        chainMs: Long, isSuccessful: Boolean, code: Int, headers: String,
+        segments: List<String>, message: String, responseUrl: String
+    ) {
+        ThreadUtils.executeBySingle<String>(object : SimpleTask<String>() {
+            @Throws(Throwable::class)
+            override fun doInBackground(): String {
+                val tag = getTag(false)
+                val urlLine = arrayOf(URL_TAG + responseUrl, N)
+                Timber.tag(tag).d(RESPONSE_UP_LINE)
+                logLines(tag, urlLine, true)
+                if (responseUrl.contains("?")) {
+                    logLines(tag, getUrlParamsLines(responseUrl), true)
+                }
+                logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments, message), true)
+                logLines(tag, OMITTED_RESPONSE, true)
+                Timber.tag(tag).d(END_LINE)
+                return ""
+            }
 
-        Timber.tag(tag).d(RESPONSE_UP_LINE);
-        logLines(tag, urlLine, true);
-        logLines(tag, getResponse(headers, chainMs, code, isSuccessful, segments, message), true);
-        logLines(tag, OMITTED_RESPONSE, true);
-        Timber.tag(tag).d(END_LINE);
+            override fun onSuccess(result: String) {}
+        })
+    }
+
+    companion object {
+        private const val TAG = "ArmsHttpLog"
+        private val LINE_SEPARATOR = System.getProperty("line.separator")
+        private val DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR
+        private val OMITTED_RESPONSE = arrayOf(LINE_SEPARATOR, "Omitted response body")
+        private val OMITTED_REQUEST = arrayOf(LINE_SEPARATOR, "Omitted request body")
+        private const val N = "\n"
+        private const val T = "\t"
+        private const val REQUEST_UP_LINE = "┌────── Request ─────────────────────────────────────────────────────────────────────────────────────"
+        private const val END_LINE = "└────────────────────────────────────────────────────────────────────────────────────────────────────"
+        private const val RESPONSE_UP_LINE = "┌────── Response ────────────────────────────────────────────────────────────────────────────────────"
+        private const val BODY_TAG = "Body:"
+        private const val URL_TAG = "URL: "
+        private const val METHOD_TAG = "Method: @"
+        private const val HEADERS_TAG = "Headers:"
+        private const val STATUS_CODE_TAG = "Status Code: "
+        private const val RECEIVED_TAG = "Received in: "
+        private const val CORNER_UP = "┌ "
+        private const val CORNER_BOTTOM = "└ "
+        private const val CENTER_LINE = "├ "
+        private const val DEFAULT_LINE = "│ "
+        private val ARMS = arrayOf("-A-", "-R-", "-M-", "-S-")
+        private val last: ThreadLocal<Int> = object : ThreadLocal<Int>() {
+            override fun initialValue(): Int {
+                return 0
+            }
+        }
+
+        private fun isEmpty(line: String): Boolean {
+            return TextUtils.isEmpty(line) || N == line || T == line || TextUtils.isEmpty(line.trim { it <= ' ' })
+        }
+
+        /**
+         * 对 `lines` 中的信息进行逐行打印
+         *
+         * @param tag
+         * @param lines
+         * @param withLineSize 为 `true` 时, 每行的信息长度不会超过130, 超过则自动换行
+         */
+        private fun logLines(tag: String, lines: Array<String>, withLineSize: Boolean) {
+            for (line in lines) {
+                val lineLength = line.length
+                val maxLongSize = if (withLineSize) 130 else lineLength
+                for (i in 0..lineLength / maxLongSize) {
+                    val start = i * maxLongSize
+                    var end = (i + 1) * maxLongSize
+                    end = if (end > line.length) line.length else end
+                    Timber.tag(tag).d("%s%s", DEFAULT_LINE, line.substring(start, end))
+                }
+            }
+        }
+
+        private fun computeKey(): String {
+            if (last.get() >= 4) {
+                last.set(0)
+            }
+            val s = ARMS[last.get()]
+            last.set(last.get() + 1)
+            return s
+        }
+
+        /**
+         * 此方法是为了解决在 AndroidStudio v3.1 以上 Logcat 输出的日志无法对齐的问题
+         *
+         *
+         * 此问题引起的原因, 据 JessYan 猜测, 可能是因为 AndroidStudio v3.1 以上将极短时间内以相同 tag 输出多次的 log 自动合并为一次输出
+         * 导致本来对称的输出日志, 出现不对称的问题
+         * AndroidStudio v3.1 此次对输出日志的优化, 不小心使市面上所有具有日志格式化输出功能的日志框架无法正常工作
+         * 现在暂时能想到的解决方案有两个: 1. 改变每行的 tag (每行 tag 都加一个可变化的 token) 2. 延迟每行日志打印的间隔时间
+         *
+         *
+         * [.resolveTag] 使用第一种解决方案
+         *
+         * @param tag
+         */
+        private fun resolveTag(tag: String): String {
+            return computeKey() + tag
+        }
+
+        private fun getRequest(request: Request): Array<String> {
+            val log: String
+            val header = request.headers().toString()
+            log = LINE_SEPARATOR + METHOD_TAG + request.method() + DOUBLE_SEPARATOR +
+                    if (isEmpty(header)) "" else HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header)
+            return log.split(LINE_SEPARATOR.toRegex()).toTypedArray()
+        }
+
+        private fun getResponse(
+            header: String, tookMs: Long, code: Int, isSuccessful: Boolean,
+            segments: List<String>, message: String
+        ): Array<String> {
+            val log: String
+            val segmentString = slashSegments(segments)
+            log = (LINE_SEPARATOR + (if (!TextUtils.isEmpty(segmentString)) "$segmentString - " else "") + "is success : "
+                    + isSuccessful + " - " + RECEIVED_TAG + tookMs + "ms" + DOUBLE_SEPARATOR + STATUS_CODE_TAG +
+                    code + " / " + message + DOUBLE_SEPARATOR + if (isEmpty(header)) "" else HEADERS_TAG + LINE_SEPARATOR +
+                    dotHeaders(header))
+            return log.split(LINE_SEPARATOR.toRegex()).toTypedArray()
+        }
+
+        private fun slashSegments(segments: List<String>): String {
+            val segmentString = StringBuilder()
+            for (segment in segments) {
+                segmentString.append("/").append(segment)
+            }
+            return segmentString.toString()
+        }
+
+        /**
+         * 对 `header` 按规定的格式进行处理
+         *
+         * @param header
+         * @return
+         */
+        private fun dotHeaders(header: String): String {
+            val headers = header.split(LINE_SEPARATOR.toRegex()).toTypedArray()
+            val builder = StringBuilder()
+            var tag = "─ "
+            if (headers.size > 1) {
+                for (i in headers.indices) {
+                    tag = if (i == 0) {
+                        CORNER_UP
+                    } else if (i == headers.size - 1) {
+                        CORNER_BOTTOM
+                    } else {
+                        CENTER_LINE
+                    }
+                    builder.append(tag).append(headers[i]).append("\n")
+                }
+            } else {
+                for (item in headers) {
+                    builder.append(tag).append(item).append("\n")
+                }
+            }
+            return builder.toString()
+        }
+
+        private fun getTag(isRequest: Boolean): String {
+            return if (isRequest) {
+                "Request"
+            } else {
+                "Response"
+            }
+        }
     }
 }

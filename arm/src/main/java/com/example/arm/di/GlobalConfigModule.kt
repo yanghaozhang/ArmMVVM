@@ -2,9 +2,11 @@ package com.example.arm.di
 
 import android.app.Activity
 import android.app.Application
-import com.example.arm.http.BaseImageLoaderStrategy
 import com.example.arm.http.ErrorListener
 import com.example.arm.http.GlobalHttpHandler
+import com.example.arm.http.HttpHandlerInterceptor
+import com.example.arm.http.imageloader.BaseImageLoaderStrategy
+import com.example.arm.http.imageloader.ImageLoader
 import com.example.arm.http.log.DefaultFormatPrinter
 import com.example.arm.http.log.FormatPrinter
 import com.example.arm.http.log.RequestInterceptor
@@ -42,6 +44,7 @@ class GlobalConfigModule {
     var mExecutorService: ExecutorService? = null
     var mErrorListener: ErrorListener? = null
     var mObtainServiceDelegate: IRepositoryManager.ObtainServiceDelegate? = null
+    var mGlobalHttpHandler: GlobalHttpHandler? = null
 
     // 不暴露
     private val mInterceptors: MutableList<Interceptor> = mutableListOf()
@@ -53,7 +56,6 @@ class GlobalConfigModule {
 
     // 不能为空
     lateinit var mImageLoaderStrategy: BaseImageLoaderStrategy<*>
-    lateinit var mGlobalHttpHandler: GlobalHttpHandler
 
     fun addInterceptors(interceptor:Interceptor) {
         mInterceptors.add(interceptor)
@@ -115,9 +117,17 @@ class GlobalConfigModule {
             })
         }
 
-        bind() from singleton { mImageLoaderStrategy }
+        bind<BaseImageLoaderStrategy<*>>() with singleton {
+            mImageLoaderStrategy
+        }
 
-        bind() from singleton { mGlobalHttpHandler }
+        bind<ImageLoader<*>>() with singleton {
+            ImageLoader(instance<BaseImageLoaderStrategy<*>>())
+        }
+
+        bind() from singleton { mGlobalHttpHandler ?: GlobalHttpHandler.EMPTY }
+
+        bind<Interceptor>(tag = "HttpHandlerInterceptor") with singleton { HttpHandlerInterceptor(instance()) }
 
         bind(tag = "Interceptors") from singleton { mInterceptors }
 

@@ -1,6 +1,7 @@
 package com.example.arm.di
 
 import android.app.Application
+import com.example.arm.http.log.RequestInterceptor
 import com.example.arm.integration.IRepositoryManager
 import com.example.arm.integration.RepositoryManager
 import com.example.arm.integration.cache.Cache
@@ -52,9 +53,12 @@ val APP_MODEL = DI.Module("APP_MODULE") {
             for (interceptor in instance<MutableList<Interceptor>>(tag = "Interceptors")) {
                 addInterceptor(interceptor)
             }
+            addInterceptor(instance(tag = "HttpHandlerInterceptor"))
+
             for (interceptor in instance<MutableList<Interceptor>>(tag = "NetWorkInterceptor")) {
                 addNetworkInterceptor(interceptor)
             }
+            addNetworkInterceptor(RequestInterceptor())
             instance<(Application, OkHttpClient.Builder) -> Unit>().invoke(instance(), this)
         }
         builder.build()

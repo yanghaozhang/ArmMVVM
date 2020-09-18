@@ -15,31 +15,33 @@
  */
 package com.example.arm.http.imageloader
 
-import android.widget.ImageView
+import android.content.Context
 
 /**
  * ================================================
- * 这里是图片加载配置信息的基类,定义一些所有图片加载框架都可以用的通用参数
+ * 图片加载策略,实现 [BaseImageLoaderStrategy]
+ * 并通过 [ImageLoader.setLoadImgStrategy] 配置后,才可进行图片请求
  *
  *
- * Created by JessYan on 8/5/16 15:19
+ * Created by JessYan on 8/5/2016 15:50
  * [Contact me](mailto:jess.yan.effort@gmail.com)
  * [Follow me](https://github.com/JessYanCoding)
  * ================================================
  */
-open class ImageConfig {
+interface BaseImageLoaderStrategy<T : ImageConfig> {
+    /**
+     * 加载图片
+     *
+     * @param ctx    [Context]
+     * @param config 图片加载配置信息
+     */
+    fun loadImage(ctx: Context, config: T)
 
-    open var url: String? = null
-        protected set
-
-    var imageView: ImageView? = null
-        protected set
-
-    //占位符
-    var placeholder = 0
-        protected set
-
-    //错误占位符
-    var errorPic = 0
-        protected set
+    /**
+     * 停止加载
+     *
+     * @param ctx    [Context]
+     * @param config 图片加载配置信息
+     */
+    fun clear(ctx: Context, config: T)
 }
