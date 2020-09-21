@@ -10,7 +10,7 @@ import java.util.*
  * 2.延迟期期间,消息推送正常,延迟期结束,消息被认为是旧消息，不再能够收到旧消息的推送
  *
  */
-open class ProtectedUnPeekLiveData<T> : LiveData<T?>() {
+open class ProtectedUnPeekLiveData<T> : LiveData<T>() {
     var DELAY_TO_CLEAR_EVENT = 1000
     var isAllowNullValue = false
     private var status = Status.IDLE

@@ -10,14 +10,26 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onclick"
+        android:paddingTop="20dp"
         android:text="Hello World!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:onClick="onclick"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/tv_title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onclick"
         android:paddingTop="20dp"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Hello World!"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintVertical_bias="0" />
 
     <ImageView
         android:id="@+id/iv_img"
@@ -25,16 +37,72 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title2"
         tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/tv_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="changeClick"
+        android:padding="30dp"
+        android:text="change tag"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_change_fragment"
+        app:layout_constraintTop_toBottomOf="@id/iv_img" />
+
+    <TextView
+        android:id="@+id/tv_change_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="changeFragmentClick"
+        android:padding="30dp"
+        android:text="change fragment"
+        app:layout_constraintLeft_toRightOf="@id/tv_change"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_img" />
 
     <FrameLayout
         android:id="@+id/frame_content"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_change2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_change_fragment" />
+
+
+    <TextView
+        android:id="@+id/tv_change2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="changeClickMutable"
+        android:padding="30dp"
+        android:text="change tag"
+        app:layout_constraintBottom_toTopOf="@id/frame_content2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_change_fragment2"
+        app:layout_constraintTop_toBottomOf="@id/frame_content" />
+
+    <TextView
+        android:id="@+id/tv_change_fragment2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="changeFragmentClickMutable"
+        android:padding="30dp"
+        android:text="change fragment"
+        app:layout_constraintLeft_toRightOf="@id/tv_change2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/frame_content" />
+
+    <FrameLayout
+        android:id="@+id/frame_content2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_img" />
+        app:layout_constraintTop_toBottomOf="@id/tv_change2" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
