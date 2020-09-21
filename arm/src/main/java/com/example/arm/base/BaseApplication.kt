@@ -24,6 +24,10 @@ class BaseApplication : Application(), DIAware {
         bind<TestUtil>() with singleton { TestUtil() }
         bind<ApplicationDelegate>() with singleton { applicationDelegate }
         bind<GlobalConfigModule>() with singleton { applicationDelegate.globalConfigModule }
+
+        for (diConfig in applicationDelegate.globalConfigModule.mAppDIConfig) {
+            diConfig()
+        }
     }
 
     override val diContext: DIContext<*>

@@ -10,7 +10,7 @@ import com.example.arm.di.GlobalConfigModule
  *  description :
  */
 interface ConfigModule {
-    fun applyOption(context: Context, configModule: GlobalConfigModule)
+    fun applyOption(context: Context, globalConfigModule: GlobalConfigModule)
 
     fun injectAppLifecycle(context: Context, appLifecycleList: MutableList<AppLifecycle>)
 }

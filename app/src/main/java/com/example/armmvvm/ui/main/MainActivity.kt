@@ -34,7 +34,7 @@ class MainActivity : BaseActivity() {
         DIViewModelFactory(di)
     }
 
-    val mImageLoader by newInstance<ImageLoader<ImageConfigImpl>> { instance<ImageLoader<*>>() as ImageLoader<ImageConfigImpl> }
+    val mImageLoader: ImageLoader<ImageConfigImpl> by instance()
 
     override fun initView(savedInstanceState: Bundle?): Int {
         return R.layout.activity_main

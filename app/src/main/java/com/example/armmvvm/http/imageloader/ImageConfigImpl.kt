@@ -108,6 +108,6 @@ class ImageConfigImpl : ImageConfig() {
 
 fun ImageConfigImplBuilder(init:ImageConfigImpl.()->Unit):ImageConfigImpl {
     val imageConfigImpl = ImageConfigImpl()
-    init(imageConfigImpl)
+    imageConfigImpl.init()
     return imageConfigImpl
 }

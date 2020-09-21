@@ -29,7 +29,7 @@ class TestActivity : BaseActivity() {
 
     val mTestUtil: TestUtil by instance()
 
-    val mImageLoader by instance<ImageLoader<*>>()
+    val mImageLoader: ImageLoader<ImageConfigImpl> by instance()
 
     val mRepositoryManager: IRepositoryManager by instance()
 
@@ -48,8 +48,6 @@ class TestActivity : BaseActivity() {
         Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mCache")
         Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mTestUtil")
         Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mImageLoader")
-        val mImageLoader1: ImageLoader<ImageConfigImpl> = mImageLoader as ImageLoader<ImageConfigImpl>
-        Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mImageLoader1")
         Timber.tag("TestActivity")
             .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mRepositoryManager")
     }

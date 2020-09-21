@@ -45,6 +45,7 @@ class GlobalConfigModule {
     var mErrorListener: ErrorListener? = null
     var mObtainServiceDelegate: IRepositoryManager.ObtainServiceDelegate? = null
     var mGlobalHttpHandler: GlobalHttpHandler? = null
+    var mAppDIConfig: MutableList<DI.MainBuilder.() -> Unit> = mutableListOf()
 
     // 不暴露
     private val mInterceptors: MutableList<Interceptor> = mutableListOf()
@@ -61,7 +62,7 @@ class GlobalConfigModule {
         mInterceptors.add(interceptor)
     }
 
-    fun addNetWorkInterceptor(interceptor:Interceptor) {
+    fun addNetWorkInterceptor(interceptor: Interceptor) {
         mNetWorkInterceptor.add(interceptor)
     }
 
@@ -69,16 +70,20 @@ class GlobalConfigModule {
         mOkHttpConfiguration.add(okHttpConfig)
     }
 
-    fun configRetrofit(okHttpConfig: (Application, Retrofit.Builder?) -> Unit) {
-        mRetrofitConfiguration.add(okHttpConfig)
+    fun configRetrofit(retrofitConfig: (Application, Retrofit.Builder?) -> Unit) {
+        mRetrofitConfiguration.add(retrofitConfig)
     }
 
-    fun configGsonBuilder(okHttpConfig: (Application, GsonBuilder?) -> Unit) {
-        mGsonConfiguration.add(okHttpConfig)
+    fun configGsonBuilder(gsonConfig: (Application, GsonBuilder?) -> Unit) {
+        mGsonConfiguration.add(gsonConfig)
     }
 
-    fun configActivityDelegate(okHttpConfig: (Activity) -> Unit) {
-        mActivityDelegate.add(okHttpConfig)
+    fun configActivityDelegate(activityDelegateConfig: (Activity) -> Unit) {
+        mActivityDelegate.add(activityDelegateConfig)
+    }
+
+    fun configAppDI(appDIConfig: DI.MainBuilder.() -> Unit) {
+        mAppDIConfig.add(appDIConfig)
     }
 
     val globalConfigModule = DI.Module(this.javaClass.simpleName) {
@@ -119,10 +124,6 @@ class GlobalConfigModule {
 
         bind<BaseImageLoaderStrategy<*>>() with singleton {
             mImageLoaderStrategy
-        }
-
-        bind<ImageLoader<*>>() with singleton {
-            ImageLoader(instance<BaseImageLoaderStrategy<*>>())
         }
 
         bind() from singleton { mGlobalHttpHandler ?: GlobalHttpHandler.EMPTY }

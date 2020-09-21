@@ -30,6 +30,7 @@ val APP_MODEL = DI.Module("APP_MODULE") {
 
     bind<GsonBuilder>() with singleton {
         GsonBuilder().also {
+            // 添加其他Module配置
             instance<((Application, GsonBuilder?) -> Unit)>().invoke(instance(), it)
         }
     }
@@ -50,15 +51,18 @@ val APP_MODEL = DI.Module("APP_MODULE") {
         val builder = OkHttpClient.Builder().apply {
             //使用项目统一的线程池
             dispatcher(Dispatcher(instance()))
+            // 添加监听,实现GlobalHttpHandler对请求进行预处理
+            addInterceptor(instance(tag = "HttpHandlerInterceptor"))
             for (interceptor in instance<MutableList<Interceptor>>(tag = "Interceptors")) {
                 addInterceptor(interceptor)
             }
-            addInterceptor(instance(tag = "HttpHandlerInterceptor"))
 
             for (interceptor in instance<MutableList<Interceptor>>(tag = "NetWorkInterceptor")) {
                 addNetworkInterceptor(interceptor)
             }
+            // 添加默认打印配置
             addNetworkInterceptor(RequestInterceptor())
+            // 添加其他Module配置
             instance<(Application, OkHttpClient.Builder) -> Unit>().invoke(instance(), this)
         }
         builder.build()
@@ -71,6 +75,8 @@ val APP_MODEL = DI.Module("APP_MODULE") {
             addCallAdapterFactory(RxJava2CallAdapterFactory.create())//使用 RxJava
             addConverterFactory(GsonConverterFactory.create(instance()))//使用 Gson;
             //addConverterFactory(ScalarsConverterFactory.create(gson));// 该库增加返回值为String的支持;
+
+            // 添加其他Module配置
             instance<(Application, Retrofit.Builder) -> Unit>().invoke(instance(), this)
         }
         builder.build()
