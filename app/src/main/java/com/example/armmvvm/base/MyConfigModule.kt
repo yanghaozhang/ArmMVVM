@@ -33,10 +33,11 @@ class MyConfigModule : ConfigModule {
                     ImageLoader(GlideImageLoaderStrategy())
                 }
             }
-            mHttpUrl1 = HttpUrl.parse("http://www.baidu.com")
+            mHttpUrl1 = HttpUrl.parse("http://v.juhe.cn")
             mErrorListener = MyErrorListener()
             mLevel = if (BuildConfig.DEBUG) RequestInterceptor.Level.ALL else RequestInterceptor.Level.NONE
             mImageLoaderStrategy = GlideImageLoaderStrategy()
+            mGlobalHttpHandler = MyGlobalHttpHandler()
         }
     }
 

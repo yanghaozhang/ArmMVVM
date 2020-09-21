@@ -18,7 +18,7 @@ class HttpHandlerInterceptor(var mHandler: GlobalHttpHandler) : RequestIntercept
             throw e
         }
         val responseBody = originalResponse.body()
-        //打印响应结果
+        //获取响应结果
         var bodyString: String? = null
         if (responseBody != null && isParseable(responseBody.contentType())) {
             bodyString = printResult(request, originalResponse, false)

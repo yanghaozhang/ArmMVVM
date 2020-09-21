@@ -46,8 +46,8 @@ class MainActivity : BaseActivity() {
     var mTag = 0
     var mMutableTag = 0
 
-    var mFragmentIndex = 0;
-    var mMutableFragmentIndex = 0;
+    var mFragmentIndex = 0
+    var mMutableFragmentIndex = 0
 
     val mMainFragment = MainFragment("UnPeekLiveData-UU")
     val mMainFragment2 = MainFragment("UnPeekLiveData-KK")
@@ -74,6 +74,10 @@ class MainActivity : BaseActivity() {
         changeFragmentClickMutable(frame_content2)
     }
 
+    fun onclick(view: View) {
+        startActivity(Intent(this, TestActivity::class.java))
+    }
+
     private fun onStateChange(msg: String) {
         Timber.tag("MainActivity").d("onStateChange() called with: msg = $msg   %s ", "")
         tv_title.setText("change to ${mTag++} and from Model is $msg")
@@ -84,10 +88,6 @@ class MainActivity : BaseActivity() {
         tv_title2.setText("change to ${mMutableTag++} and from Model is $msg")
     }
 
-    fun onclick(view: View) {
-        startActivity(Intent(this, TestActivity::class.java))
-    }
-
     fun changeClick(view: View) {
         mMainViewModel.updateTagInfo()
     }
@@ -95,7 +95,7 @@ class MainActivity : BaseActivity() {
     fun changeFragmentClick(view: View) {
         mFragmentIndex = if (mFragmentIndex == 0) 1 else 0
 
-        var showFragment = if (mFragmentIndex == 0) mMainFragment else mMainFragment2
+        val showFragment = if (mFragmentIndex == 0) mMainFragment else mMainFragment2
         val beginTransaction = supportFragmentManager.beginTransaction()
         beginTransaction.replace(R.id.frame_content, showFragment)
             .commit()
@@ -108,7 +108,7 @@ class MainActivity : BaseActivity() {
     fun changeFragmentClickMutable(view: View) {
         mMutableFragmentIndex = if (mMutableFragmentIndex == 0) 1 else 0
 
-        var showFragment = if (mMutableFragmentIndex == 0) mChangeFragment else mChangeFragment2
+        val showFragment = if (mMutableFragmentIndex == 0) mChangeFragment else mChangeFragment2
         val beginTransaction = supportFragmentManager.beginTransaction()
         beginTransaction.replace(R.id.frame_content2, showFragment)
             .commit()

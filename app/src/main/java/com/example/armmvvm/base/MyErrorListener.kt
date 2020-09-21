@@ -10,6 +10,7 @@ import timber.log.Timber
  */
 class MyErrorListener:ErrorListener {
     override fun handleResponseError(t: Throwable?) {
+        // show Toast or show Snackbar 弹提示
         Timber.tag("MyErrorListener").d("handleResponseError() called with: t = $t   %s ", "----")
     }
 

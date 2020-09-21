@@ -6,4 +6,55 @@
     android:layout_height="match_parent"
     tools:context=".ui.test.TestActivity">
 
+    <TextView
+        android:id="@+id/tv_province"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="getSupportProvince"
+        android:padding="30dp"
+        android:text="getSupportProvince"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_province2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="getSupportProvinceByRxJava"
+        android:padding="30dp"
+        android:text="getSupportProvinceByRxJava"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_province" />
+
+    <TextView
+        android:id="@+id/tv_province3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="getSupportProvinceByCompositeDisposable"
+        android:padding="30dp"
+        android:text="getSupportProvinceByCompositeDisposable"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_province2" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_province3" />
+
+    <TextView
+        android:id="@+id/tv_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="show weather detail"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recyclerview" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

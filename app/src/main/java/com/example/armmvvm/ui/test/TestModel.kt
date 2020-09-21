@@ -1,8 +1,12 @@
 package com.example.armmvvm.ui.test
 
 import com.example.arm.mvvm.BaseModel
+import com.example.armmvvm.http.net.HttpService
+import com.example.armmvvm.http.net.ProvinceBean
+import io.reactivex.Observable
 import okhttp3.HttpUrl
 import org.kodein.di.instance
+import retrofit2.Call
 import timber.log.Timber
 
 /**
@@ -16,5 +20,15 @@ class TestModel :BaseModel() {
 
     fun logInstance() {
         Timber.tag("TestModel").d("register() called   %s ", "$mHttpUrl")
+    }
+
+    fun request(): Observable<ProvinceBean> {
+        return mRepositoryManager.obtainRetrofitService(HttpService::class.java)
+            .getSupportProvince()
+    }
+
+    fun request2(): Call<ProvinceBean> {
+        return mRepositoryManager.obtainRetrofitService(HttpService::class.java)
+            .getSupportProvince2()
     }
 }
