@@ -13,4 +13,15 @@ interface ConfigModule {
     fun applyOption(context: Context, globalConfigModule: GlobalConfigModule)
 
     fun injectAppLifecycle(context: Context, appLifecycleList: MutableList<AppLifecycle>)
+
+//    如果需要监听所有Activity(包括第三方),可以通过下面函数让Module配置监听
+/*    fun injectActivityLifecycle(
+        context: Context,
+        activityLifecycleList: MutableList<Application.ActivityLifecycleCallbacks>
+    )
+
+    fun injectFragmentLifecycle(
+        context: Context,
+        fragmentLifecycleList: MutableList<FragmentManager.FragmentLifecycleCallbacks>
+    )*/
 }

@@ -18,7 +18,7 @@ import timber.log.Timber
 /**
  *  author : yanghaozhang
  *  date : 2020/9/9 11:28
- *  description :
+ *  description : 设置相关配置,包括App的生命周期,Activity的生命周期监听等
  */
 class MyConfigModule : ConfigModule {
     override fun applyOption(context: Context, configModule: GlobalConfigModule) {
