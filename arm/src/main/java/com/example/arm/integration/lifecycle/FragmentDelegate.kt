@@ -1,6 +1,6 @@
 package com.example.arm.integration.lifecycle
 
-import android.app.Activity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -8,16 +8,17 @@ import androidx.lifecycle.OnLifecycleEvent
 
 /**
  *  author : yanghaozhang
- *  date : 2020/9/10 11:28
+ *  date : 2020/9/22 16:45
  *  description :
  */
-open class ActivityDelegate(protected var mActivity: Activity?) : LifecycleObserver {
+open class FragmentDelegate(protected var mFragment: Fragment?) : LifecycleObserver {
 
     init {
-        if (mActivity is LifecycleOwner) {
-            (mActivity as LifecycleOwner).lifecycle.addObserver(this)
+        if (mFragment is LifecycleOwner) {
+            (mFragment as LifecycleOwner).lifecycle.addObserver(this)
         }
     }
+
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     open fun onCreated(owner: LifecycleOwner) {
@@ -40,12 +41,11 @@ open class ActivityDelegate(protected var mActivity: Activity?) : LifecycleObser
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy(owner: LifecycleOwner) {
+    open fun onDestroy(owner: LifecycleOwner) {
         owner.lifecycle.removeObserver(this)
         onDestroyed(owner)
-        mActivity = null
+        mFragment = null
     }
-
 
     open fun onDestroyed(owner: LifecycleOwner) {
 

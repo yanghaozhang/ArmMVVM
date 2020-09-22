@@ -51,7 +51,6 @@ class ActivityDelegateImp(mActivity: AppCompatActivity) : ActivityDelegate(mActi
         mActivity?.run {
             mAppManager.removeActivity(this)
         }
-        super.onDestroyed(owner)
         Timber.tag("ActivityDelegateImp").d("onDestroyed()  %s", mActivity?.javaClass?.simpleName)
     }
 }

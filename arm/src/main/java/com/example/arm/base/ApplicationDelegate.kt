@@ -9,6 +9,7 @@ import com.example.arm.integration.ManifestParser
 import com.example.arm.integration.lifecycle.ActivityDelegateImp
 import com.example.arm.integration.lifecycle.ActivityLifecycleForRxJava
 import com.example.arm.integration.lifecycle.AppLifecycle
+import com.example.arm.integration.lifecycle.FragmentDelegateForRxJava
 
 /**
  *  author : yanghaozhang
@@ -57,6 +58,10 @@ class ApplicationDelegate(context: Context) : AppLifecycle {
                     // 同步RxJava的生命周期
                     ActivityLifecycleForRxJava(it)
                 }
+            }
+
+            configFragmentDelegate {
+                FragmentDelegateForRxJava(it)
             }
         }
     }

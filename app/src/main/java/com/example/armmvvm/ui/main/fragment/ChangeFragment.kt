@@ -23,13 +23,12 @@ class ChangeFragment(val mFragmentName: Any)  : BaseFragment() {
 
     var mTag = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun initView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mRootView = inflater.inflate(R.layout.layout_fragment_main, container, false)
         return mRootView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initData(savedInstanceState: Bundle?) {
         observe(mMainViewModel.shareMutableLiveData, this::onStateChange)
         tv_main.setText("this is $mFragmentName $mTag")
     }
@@ -39,7 +38,4 @@ class ChangeFragment(val mFragmentName: Any)  : BaseFragment() {
         tv_main.setText("this is $mFragmentName ${++mTag} and from Model is $msg")
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }

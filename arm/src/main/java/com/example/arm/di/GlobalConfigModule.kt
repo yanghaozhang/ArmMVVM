@@ -2,11 +2,11 @@ package com.example.arm.di
 
 import android.app.Activity
 import android.app.Application
+import androidx.fragment.app.Fragment
 import com.example.arm.http.ErrorListener
 import com.example.arm.http.GlobalHttpHandler
 import com.example.arm.http.HttpHandlerInterceptor
 import com.example.arm.http.imageloader.BaseImageLoaderStrategy
-import com.example.arm.http.imageloader.ImageLoader
 import com.example.arm.http.log.DefaultFormatPrinter
 import com.example.arm.http.log.FormatPrinter
 import com.example.arm.http.log.RequestInterceptor
@@ -54,6 +54,7 @@ class GlobalConfigModule {
     private var mRetrofitConfiguration: MutableList<(Application, Retrofit.Builder) -> Unit> = mutableListOf()
     private var mGsonConfiguration: MutableList<(Application, GsonBuilder) -> Unit> = mutableListOf()
     private var mActivityDelegate: MutableList<(Activity) -> Unit> = mutableListOf()
+    private var mFragmentDelegate: MutableList<(Fragment) -> Unit> = mutableListOf()
 
     // 不能为空
     lateinit var mImageLoaderStrategy: BaseImageLoaderStrategy<*>
@@ -80,6 +81,10 @@ class GlobalConfigModule {
 
     fun configActivityDelegate(activityDelegateConfig: (Activity) -> Unit) {
         mActivityDelegate.add(activityDelegateConfig)
+    }
+
+    fun configFragmentDelegate(fragmentDelegateConfig: (Fragment) -> Unit) {
+        mFragmentDelegate.add(fragmentDelegateConfig)
     }
 
     fun configAppDI(appDIConfig: DI.MainBuilder.() -> Unit) {
@@ -162,6 +167,14 @@ class GlobalConfigModule {
             { activity: Activity ->
                 mActivityDelegate.forEach {
                     it(activity)
+                }
+            }
+        }
+
+        bind<(Fragment) -> Unit>() with singleton {
+            { fragment: Fragment ->
+                mFragmentDelegate.forEach {
+                    it(fragment)
                 }
             }
         }

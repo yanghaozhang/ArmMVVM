@@ -23,14 +23,12 @@ class MainFragment(val mFragmentName: Any) : BaseFragment() {
 
     var mTag = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun initView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mRootView = inflater.inflate(R.layout.layout_fragment_main, container, false)
         return mRootView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun initData(savedInstanceState: Bundle?) {
         Timber.tag("MainFragment")
             .d("onViewCreated() called with: view = $view, savedInstanceState = $savedInstanceState   %s ", "$mMainViewModel")
 

@@ -12,7 +12,7 @@ import timber.log.Timber
  */
 class ActivityLifecycleForRxJava(mActivity: AppCompatActivity) : ActivityDelegate(mActivity) {
 
-    private val mLifecycleable: ActivityLifecycleable? = mActivity as? ActivityLifecycleable
+    private var mLifecycleable: ActivityLifecycleable? = mActivity as? ActivityLifecycleable
 
     override fun onCreated(owner: LifecycleOwner) {
         Timber.tag("LifecycleForRxJava").d("onCreated()  %s", mActivity?.javaClass?.simpleName)
@@ -40,8 +40,8 @@ class ActivityLifecycleForRxJava(mActivity: AppCompatActivity) : ActivityDelegat
     }
 
     override fun onDestroyed(owner: LifecycleOwner) {
-        super.onDestroyed(owner)
         Timber.tag("LifecycleForRxJava").d("onDestroyed()  %s", mActivity?.javaClass?.simpleName)
         mLifecycleable?.provideLifecycleSubject()?.onNext(ActivityEvent.DESTROY)
+        mLifecycleable = null
     }
 }

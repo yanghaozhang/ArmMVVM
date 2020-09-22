@@ -5,8 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.kodein.di.DI
-import org.kodein.di.DIAware
+import com.example.arm.integration.EventBusManager
+import com.example.arm.integration.cache.Cache
+import com.example.arm.integration.cache.CacheType
+import com.example.arm.integration.lifecycle.FragmentLifecycleable
+import com.trello.rxlifecycle2.android.FragmentEvent
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
+import org.kodein.di.*
 import org.kodein.di.android.x.di
 
 /**
@@ -14,19 +20,42 @@ import org.kodein.di.android.x.di
  *  date : 2020/9/21 11:32
  *  description :
  */
-open class BaseFragment : Fragment(), DIAware {
+abstract class BaseFragment : Fragment(), DIAware, IFragment, FragmentLifecycleable {
     override val di: DI by di()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override val diContext: DIContext<*>
+        get() = diContext(this)
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+    private val mFragmentDelegate: ((Fragment) -> Unit) by instance()
+
+    private val mSubject: BehaviorSubject<FragmentEvent> = BehaviorSubject.create()
+
+    override val mCache: Cache<String, Any> by instance(arg = CacheType.FRAGMENT_CACHE)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        mFragmentDelegate(this)
+        if (useEventBus()) {
+            EventBusManager.instance.register(this)
+        }
+        return initView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initData(savedInstanceState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mCache.clear()
+        if (useEventBus()) {
+            EventBusManager.instance.unregister(this)
+        }
     }
+
+    override fun provideLifecycleSubject(): Subject<FragmentEvent?>? = mSubject
+
+
+    override fun useEventBus(): Boolean = true
+
 }

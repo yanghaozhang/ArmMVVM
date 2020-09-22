@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.InflateException
 import androidx.appcompat.app.AppCompatActivity
 import com.example.arm.ext.toast
+import com.example.arm.integration.EventBusManager
 import com.example.arm.integration.cache.Cache
 import com.example.arm.integration.cache.CacheType
 import com.example.arm.integration.lifecycle.ActivityLifecycleable
@@ -40,6 +41,9 @@ abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityL
         Timber.tag("BaseActivity").d("onCreate() called with: savedInstanceState = $savedInstanceState   %s ", "after")
         // 添加AppCompatActivity生命周期监听
         mActivityDelegate.invoke(this)
+        if (useEventBus()) {
+            EventBusManager.instance.register(this)
+        }
         try {
             val layoutResID = initView(savedInstanceState)
             if (layoutResID != 0) {
@@ -52,6 +56,14 @@ abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityL
             e.printStackTrace()
         }
         initData(savedInstanceState)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mCache.clear()
+        if (useEventBus()) {
+            EventBusManager.instance.unregister(this)
+        }
     }
 
     override fun provideLifecycleSubject(): Subject<ActivityEvent?>? {
@@ -75,6 +87,4 @@ abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityL
     }
 
     override fun useEventBus(): Boolean = true
-
-    override fun useFragment(): Boolean = true
 }
