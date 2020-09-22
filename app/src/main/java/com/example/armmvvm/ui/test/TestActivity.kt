@@ -21,6 +21,8 @@ import org.kodein.di.*
 import org.kodein.di.android.di
 import org.kodein.di.android.retainedSubDI
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TestActivity : BaseActivity() {
 
@@ -65,13 +67,13 @@ class TestActivity : BaseActivity() {
         recyclerview_city.layoutManager = GridLayoutManager(this, 4)
         recyclerview_city.adapter = cityAdapter
         cityAdapter.mOnClickListener = { _, city: CityBean ->
-            /*  var date = Date() //取时间
+              var date = Date() //取时间
               val calendar: Calendar = GregorianCalendar()
               calendar.time = date
               calendar.add(Calendar.DATE, -1) //把日期往前减少一天，若想把日期向后推一天则将负数改为正数
               date = calendar.time
               val formatter = SimpleDateFormat("yyyy-MM-dd")
-              mTestViewModel.geWeatherByCoroutines(mapOf("city_id" to city.id, "weather_date" to formatter.format(date)))*/
+              mTestViewModel.geWeatherByCoroutines(mapOf("city_id" to city.id, "weather_date" to formatter.format(date)))
         }
     }
 
