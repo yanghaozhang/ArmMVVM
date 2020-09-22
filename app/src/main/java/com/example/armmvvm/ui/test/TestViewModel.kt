@@ -5,16 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.arm.http.HttpDisposableObserver
 import com.example.arm.http.ResponseErrorObserver
+import com.example.arm.http.Results
 import com.example.arm.integration.lifecycle.Lifecycleable
 import com.example.arm.mvvm.BaseViewModel
 import com.example.arm.util.AppManager
 import com.example.arm.util.RxLifecycleUtils
-import com.example.armmvvm.http.net.ProvinceBean
+import com.example.armmvvm.http.net.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay
 import org.kodein.di.instance
 import timber.log.Timber
@@ -23,9 +22,9 @@ import timber.log.Timber
  *  author : yanghaozhang
  *  date : 2020/9/18 11:04
  *  description :
- *  RxJava Lifecycle 需要传递Lifecycleable绑定生命周期
- *  CompositeDisposable
- *  viewModelScope 协程
+ *  1,RxJava Lifecycle 需要传递Lifecycleable绑定生命周期
+ *  2,CompositeDisposable
+ *  3,viewModelScope 协程
  */
 class TestViewModel(val model: TestModel) : BaseViewModel() {
 
@@ -34,28 +33,31 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
         Timber.tag("TestViewModel").d("null() called   %s ", "instance AppManager")
     }
 
-    private val _provinceLiveData = MutableLiveData<ProvinceBean>()
-    val provinceLiveData: LiveData<ProvinceBean> = _provinceLiveData
+    private val _provinceLiveData = MutableLiveData<ResponseListBean<ProvinceBean>>()
+    val provinceLiveData: LiveData<ResponseListBean<ProvinceBean>> = _provinceLiveData
 
-    //
-    //
-    //
-    fun getProvinceByRx(life: Lifecycleable<*>) {
+    private val _cityLiveData = MutableLiveData<ResponseListBean<CityBean>>()
+    val cityLiveData: LiveData<ResponseListBean<CityBean>> = _cityLiveData
+
+    private val _weatherLiveData = MutableLiveData<ResponseBean<WeatherBean>>()
+    val weatherLiveData: LiveData<ResponseBean<WeatherBean>> = _weatherLiveData
+
+    fun getProvinceByRxLife(life: Lifecycleable<*>) {
         model.request()
             .subscribeOn(Schedulers.io())
             .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
             .observeOn(AndroidSchedulers.mainThread())
             .compose(RxLifecycleUtils.bindToLifecycle(life))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
-            .subscribe(object : ResponseErrorObserver<ProvinceBean?>(mErrorListener) {
-                override fun onNext(t: ProvinceBean) {
+            .subscribe(object : ResponseErrorObserver<ResponseListBean<ProvinceBean>?>(mErrorListener) {
+                override fun onNext(t: ResponseListBean<ProvinceBean>) {
                     _provinceLiveData.value = t
                 }
-            });
+            })
     }
 
     fun getProvinceByCompositeDisposable() {
-        val disposable = object : HttpDisposableObserver<ProvinceBean>() {
-            override fun onNext(t: ProvinceBean) {
+        val disposable = object : HttpDisposableObserver<ResponseListBean<ProvinceBean>>() {
+            override fun onNext(t: ResponseListBean<ProvinceBean>) {
                 _provinceLiveData.value = t
             }
         }
@@ -64,32 +66,55 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
             .subscribeOn(Schedulers.io())
             .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(disposable);
+            .subscribe(disposable)
     }
 
-    fun getProvince() {
+    fun getProvinceByCoroutines() {
         viewModelScope.launch {
-            val requestProvince = requestProvince()
-            Timber.tag("TestViewModel").d("getProvince() called   %s ", "$requestProvince")
-            if (requestProvince != null) {
-                _provinceLiveData.value = requestProvince
+            val requestProvince = requestByCoroutines {
+                model.request2().execute()
+            }
+            when (requestProvince) {
+                is Results.Failure -> {
+                    mErrorListener?.handleResponseError(requestProvince.error)
+                }
+                is Results.Success -> {
+                    _provinceLiveData.value = requestProvince.data
+                }
             }
         }
     }
 
-    private suspend fun requestProvince(): ProvinceBean? = withContext(Dispatchers.IO) {
-        val execute = try {
-            model.request2().execute()
-        } catch (e: Exception) {
-            mErrorListener?.handleResponseError(e)
-            return@withContext null
-        }
-        if (execute?.isSuccessful == true) {
-            return@withContext execute.body()
-        } else {
-            return@withContext null
+    fun geCityByCoroutines(bean: Map<String, String>) {
+        viewModelScope.launch {
+            val responseCity = requestByCoroutines {
+                model.requestCity(bean).execute()
+            }
+            when (responseCity) {
+                is Results.Failure -> {
+                    mErrorListener?.handleResponseError(responseCity.error)
+                }
+                is Results.Success -> {
+                    _cityLiveData.value = responseCity.data
+                }
+            }
         }
     }
 
+    fun geWeatherByCoroutines(bean: Map<String, String>) {
+        viewModelScope.launch {
+            val response = requestByCoroutines {
+                model.requestWeather(bean).execute()
+            }
+            when (response) {
+                is Results.Failure -> {
+                    mErrorListener?.handleResponseError(response.error)
+                }
+                is Results.Success -> {
+                    _weatherLiveData.value = response.data
+                }
+            }
+        }
+    }
 
 }

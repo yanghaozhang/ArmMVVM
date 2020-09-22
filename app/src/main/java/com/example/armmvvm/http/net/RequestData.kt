@@ -5,7 +5,7 @@ package com.example.armmvvm.http.net
  *  date : 2020/9/21 18:11
  *  description :
  */
-data class WeatherRequestBean(
+data class CityRequestBean(
     val province_id: String
 )
 

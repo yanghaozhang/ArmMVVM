@@ -33,6 +33,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import com.example.arm.base.BaseApplication
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import kotlin.experimental.and
@@ -228,6 +229,10 @@ class ArmsUtils private constructor() {
          */
         fun inflate(context: Context?, detailScreen: Int): View {
             return View.inflate(context, detailScreen, null)
+        }
+
+        fun makeText(string: String?) {
+            makeText(BaseApplication.INSTANCE, string)
         }
 
         /**

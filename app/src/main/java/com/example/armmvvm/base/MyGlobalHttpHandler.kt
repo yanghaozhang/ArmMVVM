@@ -1,11 +1,13 @@
 package com.example.armmvvm.base
 
+import android.text.TextUtils
 import com.example.arm.http.GlobalHttpHandler
+import com.example.arm.http.HttpResultErrorException
 import okhttp3.FormBody
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-
+import org.json.JSONObject
 
 /**
  *  author : yanghaozhang
@@ -37,6 +39,13 @@ class MyGlobalHttpHandler : GlobalHttpHandler {
     }
 
     override fun onHttpResultResponse(httpResult: String?, chain: Interceptor.Chain, response: Response): Response {
+        val jsonObject = JSONObject(httpResult)
+        val code = jsonObject.optInt("error_code", -1)
+        val reason = jsonObject.optString("reason")
+        if (code != 0 && !TextUtils.isEmpty(reason)) {
+            throw HttpResultErrorException(code, reason)
+        }
+
         return response
     }
 }

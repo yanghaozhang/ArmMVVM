@@ -14,7 +14,6 @@ class HttpHandlerInterceptor(var mHandler: GlobalHttpHandler) : RequestIntercept
         originalResponse = try {
             chain.proceed(mHandler.onHttpRequestBefore(chain, request))
         } catch (e: Exception) {
-            Timber.w(e)
             throw e
         }
         val responseBody = originalResponse.body()
