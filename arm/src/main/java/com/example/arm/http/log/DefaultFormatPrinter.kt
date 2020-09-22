@@ -108,7 +108,9 @@ class DefaultFormatPrinter : FormatPrinter {
         ThreadUtils.executeBySingle<String>(object : SimpleTask<String>() {
             @Throws(Throwable::class)
             override fun doInBackground(): String {
-                val bodyTemp = if (isJson(contentType)) CharacterHandler.jsonFormat(bodyString) else if (isXml(contentType)) CharacterHandler.xmlFormat(bodyString) else bodyString!!
+                val bodyTemp =
+                    if (isJson(contentType)) CharacterHandler.jsonFormat(bodyString) else if (isXml(contentType)) CharacterHandler.xmlFormat(
+                        bodyString) else bodyString!!
                 val responseBody = LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyTemp
                 val tag = getTag(false)
                 val urlLine = arrayOf(URL_TAG + responseUrl, N)
@@ -174,15 +176,18 @@ class DefaultFormatPrinter : FormatPrinter {
 
     companion object {
         private const val TAG = "ArmsHttpLog"
-        private val LINE_SEPARATOR = System.getProperty("line.separator")
+        private val LINE_SEPARATOR = System.getProperty("line.separator")!!
         private val DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR
         private val OMITTED_RESPONSE = arrayOf(LINE_SEPARATOR, "Omitted response body")
         private val OMITTED_REQUEST = arrayOf(LINE_SEPARATOR, "Omitted request body")
         private const val N = "\n"
         private const val T = "\t"
-        private const val REQUEST_UP_LINE = "┌────── Request ─────────────────────────────────────────────────────────────────────────────────────"
-        private const val END_LINE = "└────────────────────────────────────────────────────────────────────────────────────────────────────"
-        private const val RESPONSE_UP_LINE = "┌────── Response ────────────────────────────────────────────────────────────────────────────────────"
+        private const val REQUEST_UP_LINE =
+            "┌────── Request ─────────────────────────────────────────────────────────────────────────────────────"
+        private const val END_LINE =
+            "└────────────────────────────────────────────────────────────────────────────────────────────────────"
+        private const val RESPONSE_UP_LINE =
+            "┌────── Response ────────────────────────────────────────────────────────────────────────────────────"
         private const val BODY_TAG = "Body:"
         private const val URL_TAG = "URL: "
         private const val METHOD_TAG = "Method: @"
@@ -225,11 +230,11 @@ class DefaultFormatPrinter : FormatPrinter {
         }
 
         private fun computeKey(): String {
-            if (last.get() >= 4) {
+            if (last.get()!! >= 4) {
                 last.set(0)
             }
-            val s = ARMS[last.get()]
-            last.set(last.get() + 1)
+            val s = ARMS[last.get()!!]
+            last.set(last.get()!! + 1)
             return s
         }
 

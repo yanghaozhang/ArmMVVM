@@ -35,17 +35,17 @@ class RepositoryManager(
 
     override fun <T> obtainRetrofitService(serviceClass: Class<T>): T {
         requireNotNull(mRetrofitServiceCache) { "Cannot return null from a Cache.Factory#build(int) method" }
-        val retrofitService = mRetrofitServiceCache?.get(serviceClass.canonicalName)
+        val retrofitService = mRetrofitServiceCache[serviceClass.canonicalName!!]
             ?: mObtainServiceDelegate?.createRetrofitService(mRetrofit, serviceClass)
             ?: Proxy.newProxyInstance(
                 serviceClass.classLoader, arrayOf(serviceClass),
                 RetrofitServiceProxyHandler(mRetrofit, serviceClass)
             )
-        mRetrofitServiceCache?.put(serviceClass.canonicalName, retrofitService!!)
+        mRetrofitServiceCache.put(serviceClass.canonicalName!!, retrofitService)
         return retrofitService as T
     }
 
     override fun clearAllCache() {
-        mRetrofitServiceCache?.clear()
+        mRetrofitServiceCache.clear()
     }
 }
