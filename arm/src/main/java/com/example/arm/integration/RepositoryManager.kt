@@ -7,6 +7,7 @@ import com.example.arm.integration.cache.CacheType
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.di
+import org.kodein.di.factory
 import org.kodein.di.instance
 import retrofit2.Retrofit
 import timber.log.Timber
@@ -25,21 +26,23 @@ class RepositoryManager(
     // 必须写在顶部先赋值,不然如果属性用到kodein依赖,会报错
     override val di: DI by di(application)
     override val context: Context by instance()
-    val mRetrofit: Retrofit by instance()
 
-    val mRetrofitServiceCache: Cache<String, Any> by instance(arg = CacheType.RETROFIT_SERVICE_CACHE)
+    private val mDefaultHttpUrlTag: String by instance(tag = "DefaultHttpUrlTag")
+    private val mRetrofitFactory: ((String) -> Retrofit) by factory()
+
+    private val mRetrofitServiceCache: Cache<String, Any> by instance(arg = CacheType.RETROFIT_SERVICE_CACHE)
 
     init {
-        Timber.tag("RepositoryManager").d("null() called   %s ", "$context + $mRetrofit + $mRetrofitServiceCache")
+        Timber.tag("RepositoryManager").d("null() called   %s ", "$context + $mRetrofitServiceCache")
     }
 
-    override fun <T> obtainRetrofitService(serviceClass: Class<T>): T {
-        requireNotNull(mRetrofitServiceCache) { "Cannot return null from a Cache.Factory#build(int) method" }
+    override fun <T> obtainRetrofitService(serviceClass: Class<T>, tag: String?): T {
+        val retrofit = mRetrofitFactory.invoke(tag ?: mDefaultHttpUrlTag)
         val retrofitService = mRetrofitServiceCache[serviceClass.canonicalName!!]
-            ?: mObtainServiceDelegate?.createRetrofitService(mRetrofit, serviceClass)
+            ?: mObtainServiceDelegate?.createRetrofitService(retrofit, serviceClass)
             ?: Proxy.newProxyInstance(
                 serviceClass.classLoader, arrayOf(serviceClass),
-                RetrofitServiceProxyHandler(mRetrofit, serviceClass)
+                RetrofitServiceProxyHandler(retrofit, serviceClass)
             )
         mRetrofitServiceCache.put(serviceClass.canonicalName!!, retrofitService)
         return retrofitService as T

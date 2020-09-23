@@ -32,8 +32,6 @@ class TestActivity : BaseActivity() {
         }
     }
 
-    val mHttpUrl: HttpUrl by instance()
-
     val mTestUtil: TestUtil by instance()
 
     val mImageLoader: ImageLoader<ImageConfigImpl> by instance()
@@ -83,7 +81,6 @@ class TestActivity : BaseActivity() {
     }
 
     private fun printTest(savedInstanceState: Bundle?) {
-        Timber.tag("TestActivity").d(mHttpUrl.url().toString())
         Timber.tag("TestActivity").d(mErrorListener?.javaClass?.simpleName ?: "not exist")
         Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mCache")
         Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mTestUtil")

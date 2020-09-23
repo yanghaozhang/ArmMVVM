@@ -8,6 +8,9 @@ import com.example.arm.http.log.RequestInterceptor
 import com.example.arm.integration.ConfigModule
 import com.example.arm.integration.lifecycle.AppLifecycle
 import com.example.armmvvm.BuildConfig
+import com.example.armmvvm.base.constant.WEATHER_BASE_URL
+import com.example.armmvvm.base.constant.WEATHER_BASE_URL_TAG
+import com.example.armmvvm.base.constant.WEATHER_BASE_URL_TAG_TEST
 import com.example.armmvvm.http.imageloader.GlideImageLoaderStrategy
 import com.example.armmvvm.http.imageloader.ImageConfigImpl
 import okhttp3.HttpUrl
@@ -33,7 +36,9 @@ class MyConfigModule : ConfigModule {
                     ImageLoader(GlideImageLoaderStrategy())
                 }
             }
-            mHttpUrl1 = HttpUrl.parse("http://v.juhe.cn")
+            mDefaultHttpUrlTag = WEATHER_BASE_URL_TAG
+            addHttpUrlWithTag(HttpUrl.parse(WEATHER_BASE_URL)!!, WEATHER_BASE_URL_TAG)
+            addHttpUrlWithTag(HttpUrl.parse(WEATHER_BASE_URL)!!, WEATHER_BASE_URL_TAG_TEST)
             mErrorListener = MyErrorListener()
             mLevel = if (BuildConfig.DEBUG) RequestInterceptor.Level.ALL else RequestInterceptor.Level.NONE
             mImageLoaderStrategy = GlideImageLoaderStrategy()

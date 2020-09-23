@@ -1,12 +1,10 @@
 package com.example.armmvvm.ui.test
 
 import com.example.arm.mvvm.BaseModel
+import com.example.armmvvm.base.constant.WEATHER_BASE_URL_TAG_TEST
 import com.example.armmvvm.http.net.*
 import io.reactivex.Observable
-import okhttp3.HttpUrl
-import org.kodein.di.instance
 import retrofit2.Call
-import timber.log.Timber
 
 /**
  *  author : yanghaozhang
@@ -14,12 +12,6 @@ import timber.log.Timber
  *  description :
  */
 class TestModel : BaseModel() {
-
-    val mHttpUrl: HttpUrl by instance()
-
-    fun logInstance() {
-        Timber.tag("TestModel").d("register() called   %s ", "$mHttpUrl")
-    }
 
     fun request(): Observable<ResponseListBean<ProvinceBean>> {
         return mRepositoryManager.obtainRetrofitService(HttpService::class.java)
@@ -37,7 +29,7 @@ class TestModel : BaseModel() {
     }
 
     fun requestWeather(bean: Map<String,String>): Call<ResponseBean<WeatherBean>> {
-        return mRepositoryManager.obtainRetrofitService(HttpService::class.java)
+        return mRepositoryManager.obtainRetrofitService(HttpService::class.java, WEATHER_BASE_URL_TAG_TEST)
             .getCityWeather(bean)
     }
 }

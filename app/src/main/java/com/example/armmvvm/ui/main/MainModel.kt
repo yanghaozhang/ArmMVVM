@@ -1,9 +1,6 @@
 package com.example.armmvvm.ui.main
 
 import com.example.arm.mvvm.BaseModel
-import okhttp3.HttpUrl
-import org.kodein.di.instance
-import timber.log.Timber
 
 /**
  *  author : yanghaozhang
@@ -12,9 +9,7 @@ import timber.log.Timber
  */
 class MainModel : BaseModel() {
 
-    val mHttpUrl:HttpUrl by instance()
 
     fun register() {
-        Timber.tag("MainModel").d("register() called   %s ", "$mHttpUrl")
     }
 }

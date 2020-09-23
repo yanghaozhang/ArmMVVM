@@ -68,9 +68,9 @@ val APP_MODEL = DI.Module("APP_MODULE") {
         builder.build()
     }
 
-    bind<Retrofit>() with singleton {
+    bind<Retrofit>() with multiton { httpUrlTag: String ->
         val builder = Retrofit.Builder().apply {
-            baseUrl(instance<HttpUrl>())
+            baseUrl(instance<String, HttpUrl>(arg = httpUrlTag))
             client(instance())
             addCallAdapterFactory(RxJava2CallAdapterFactory.create())//使用 RxJava
             addConverterFactory(GsonConverterFactory.create(instance()))//使用 Gson;

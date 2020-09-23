@@ -19,10 +19,7 @@ import com.google.gson.GsonBuilder
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import org.kodein.di.*
 import retrofit2.Retrofit
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -36,8 +33,6 @@ import java.util.concurrent.ThreadFactory
 class GlobalConfigModule {
 
     // 可为空
-    var mHttpUrl1: HttpUrl? = null
-    var mHttpUrl2: HttpUrl? = null
     var mFactory: Cache.Factory? = null
     var mRequestPrinter: FormatPrinter? = null
     var mLevel: RequestInterceptor.Level? = null
@@ -48,6 +43,7 @@ class GlobalConfigModule {
     var mAppDIConfig: MutableList<DI.MainBuilder.() -> Unit> = mutableListOf()
 
     // 不暴露
+    private val mHttpUrlMap: MutableMap<String, HttpUrl> = mutableMapOf()
     private val mInterceptors: MutableList<Interceptor> = mutableListOf()
     private val mNetWorkInterceptor: MutableList<Interceptor> = mutableListOf()
     private var mOkHttpConfiguration: MutableList<(Application, OkHttpClient.Builder) -> Unit> = mutableListOf()
@@ -58,6 +54,7 @@ class GlobalConfigModule {
 
     // 不能为空
     lateinit var mImageLoaderStrategy: BaseImageLoaderStrategy<*>
+    lateinit var mDefaultHttpUrlTag: String
 
     fun addInterceptors(interceptor:Interceptor) {
         mInterceptors.add(interceptor)
@@ -91,10 +88,11 @@ class GlobalConfigModule {
         mAppDIConfig.add(appDIConfig)
     }
 
+    fun addHttpUrlWithTag(httpUrl: HttpUrl, tag: String) {
+        mHttpUrlMap[tag] = httpUrl
+    }
+
     val globalConfigModule = DI.Module(this.javaClass.simpleName) {
-        bind<HttpUrl>() with singleton {
-            (mHttpUrl1 ?: mHttpUrl2)!!
-        }
 
         bind<Cache.Factory>() with singleton {
             mFactory ?: object : Cache.Factory {
@@ -129,6 +127,14 @@ class GlobalConfigModule {
 
         bind<BaseImageLoaderStrategy<*>>() with singleton {
             mImageLoaderStrategy
+        }
+
+        bind<HttpUrl>() with factory { tag: String ->
+            mHttpUrlMap[tag] ?: HttpUrl.parse("http://www.google.com")!!
+        }
+
+        bind<String>(tag = "DefaultHttpUrlTag") with singleton {
+            mDefaultHttpUrlTag
         }
 
         bind() from singleton { mGlobalHttpHandler ?: GlobalHttpHandler.EMPTY }
