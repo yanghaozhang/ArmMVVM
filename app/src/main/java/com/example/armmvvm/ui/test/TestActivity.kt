@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.arm.base.BaseActivity
 import com.example.arm.di.GlobalConfigModule
 import com.example.arm.ext.DIViewModelFactory
-import com.example.arm.ext.observe
 import com.example.arm.http.ErrorListener
 import com.example.arm.http.imageloader.ImageLoader
 import com.example.arm.integration.IRepositoryManager
@@ -16,7 +15,6 @@ import com.example.armmvvm.R
 import com.example.armmvvm.http.imageloader.ImageConfigImpl
 import com.example.armmvvm.http.net.*
 import kotlinx.android.synthetic.main.activity_test.*
-import okhttp3.HttpUrl
 import org.kodein.di.*
 import org.kodein.di.android.di
 import org.kodein.di.android.retainedSubDI
@@ -53,9 +51,9 @@ class TestActivity : BaseActivity() {
 
     override fun initData(savedInstanceState: Bundle?) {
         printTest(savedInstanceState)
-        observe(mTestViewModel.provinceLiveData, this::onNewProvince)
-        observe(mTestViewModel.cityLiveData, this::onNewCity)
-        observe(mTestViewModel.weatherLiveData, this::onNewWeather)
+        mTestViewModel.provinceLiveData.observe(this, this::onNewProvince)
+        mTestViewModel.cityLiveData.observe(this, this::onNewCity)
+        mTestViewModel.weatherLiveData.observe(this, this::onNewWeather)
         recyclerview.layoutManager = GridLayoutManager(this, 4)
         recyclerview.adapter = provinceAdapter
         provinceAdapter.mOnClickListener = { _, province: ProvinceBean ->
@@ -65,7 +63,7 @@ class TestActivity : BaseActivity() {
         recyclerview_city.layoutManager = GridLayoutManager(this, 4)
         recyclerview_city.adapter = cityAdapter
         cityAdapter.mOnClickListener = { _, city: CityBean ->
-              var date = Date() //取时间
+            var date = Date() //取时间
               val calendar: Calendar = GregorianCalendar()
               calendar.time = date
               calendar.add(Calendar.DATE, -1) //把日期往前减少一天，若想把日期向后推一天则将负数改为正数

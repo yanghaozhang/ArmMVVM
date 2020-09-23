@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.arm.base.BaseFragment
-import com.example.arm.ext.observe
 import com.example.armmvvm.R
 import com.example.armmvvm.ui.main.MainViewModel
 import kotlinx.android.synthetic.main.layout_fragment_main.*
@@ -32,7 +31,7 @@ class MainFragment(val mFragmentName: Any) : BaseFragment() {
         Timber.tag("MainFragment")
             .d("onViewCreated() called with: view = $view, savedInstanceState = $savedInstanceState   %s ", "$mMainViewModel")
 
-        observe(mMainViewModel.shareLiveData, this::onStateChange)
+        mMainViewModel.shareLiveData.observe(this, this::onStateChange)
         tv_main.setText("this is $mFragmentName $mTag")
 
     }

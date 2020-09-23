@@ -6,7 +6,6 @@ import android.view.View
 import androidx.activity.viewModels
 import com.example.arm.base.BaseActivity
 import com.example.arm.ext.DIViewModelFactory
-import com.example.arm.ext.observe
 import com.example.arm.http.imageloader.ImageLoader
 import com.example.armmvvm.R
 import com.example.armmvvm.http.imageloader.ImageConfigImpl
@@ -67,8 +66,8 @@ class MainActivity : BaseActivity() {
             placeHoldDrawable = resources.getDrawable(R.drawable.ic_launcher_background, null)
         })
 
-        observe(mMainViewModel.shareLiveData, this::onStateChange)
-        observe(mMainViewModel.shareMutableLiveData, this::onStateChange2)
+        mMainViewModel.shareLiveData.observe(this, this::onStateChange)
+        mMainViewModel.shareMutableLiveData.observe(this, this::onStateChange2)
 
         changeFragmentClick(frame_content)
         changeFragmentClickMutable(frame_content2)
