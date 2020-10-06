@@ -3,6 +3,7 @@ package com.example.arm.di
 import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.arm.http.ErrorListener
 import com.example.arm.http.GlobalHttpHandler
 import com.example.arm.http.HttpHandlerInterceptor
@@ -41,6 +42,8 @@ class GlobalConfigModule {
     var mObtainServiceDelegate: IRepositoryManager.ObtainServiceDelegate? = null
     var mGlobalHttpHandler: GlobalHttpHandler? = null
     var mAppDIConfig: MutableList<DI.MainBuilder.() -> Unit> = mutableListOf()
+    var mActivityLifecycleCallbacks: MutableList<Application.ActivityLifecycleCallbacks> = mutableListOf()
+    var mFragmentLifecycleCallbacks: MutableList<FragmentManager.FragmentLifecycleCallbacks> = mutableListOf()
 
     // 不暴露
     private val mHttpUrlMap: MutableMap<String, HttpUrl> = mutableMapOf()
@@ -86,6 +89,14 @@ class GlobalConfigModule {
 
     fun configAppDI(appDIConfig: DI.MainBuilder.() -> Unit) {
         mAppDIConfig.add(appDIConfig)
+    }
+
+    fun configActivityLifecycleCallbacks(appDIConfig: Application.ActivityLifecycleCallbacks) {
+        mActivityLifecycleCallbacks.add(appDIConfig)
+    }
+
+    fun configFragmentLifecycleCallbacks(appDIConfig: FragmentManager.FragmentLifecycleCallbacks) {
+        mFragmentLifecycleCallbacks.add(appDIConfig)
     }
 
     fun addHttpUrlWithTag(httpUrl: HttpUrl, tag: String) {

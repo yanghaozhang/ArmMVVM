@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.arm.di.GlobalConfigModule
 import com.example.arm.integration.ConfigModule
 import com.example.arm.integration.ManifestParser
-import com.example.arm.integration.lifecycle.ActivityDelegateImp
 import com.example.arm.integration.lifecycle.ActivityLifecycleForRxJava
 import com.example.arm.integration.lifecycle.AppLifecycle
 import com.example.arm.integration.lifecycle.FragmentDelegateForRxJava
@@ -51,18 +50,23 @@ class ApplicationDelegate(context: Context) : AppLifecycle {
             for (configModule in configModuleList) {
                 configModule.applyOption(application, this)
             }
-            // 添加默认的ActivityDelegate监听AppCompatActivity的生命周期
+            // 默认订阅监听Activity/Fragment的生命周期管理RxJava,范围:手动订阅的Activity/Fragment
             configActivityDelegate {
                 if (it is AppCompatActivity) {
-                    ActivityDelegateImp(it)
                     // 同步RxJava的生命周期
                     ActivityLifecycleForRxJava(it)
                 }
             }
-
             configFragmentDelegate {
                 FragmentDelegateForRxJava(it)
             }
+            // 默认监听所有的Activity/Fragment,打印log,添加AppManager管理,范围:所有,包括所有Module和第三方库
+            configFragmentLifecycleCallbacks(FragmentLifecycleCallback())
+            configActivityLifecycleCallbacks(ActivityLifecycleCallback(mFragmentLifecycleCallbacks))
+        }
+
+        for (activityLifecycleCallback in globalConfigModule.mActivityLifecycleCallbacks) {
+            application.registerActivityLifecycleCallbacks(activityLifecycleCallback)
         }
     }
 }
