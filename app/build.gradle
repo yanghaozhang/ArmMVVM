@@ -39,6 +39,11 @@ dependencies {
 
     implementation rootProject.ext.defs["constraintlayout"]
     implementation rootProject.ext.defs["appcompat"]
+    implementation rootProject.ext.defs["design"]
+
+    // SmartRefreshLayout
+    implementation rootProject.ext.defs["refresh-kernel"]
+    implementation rootProject.ext.defs["refresh-classics"]
 
     kapt(rootProject.ext.defs["butterknife-compiler"]) {
         exclude module: 'annotation'

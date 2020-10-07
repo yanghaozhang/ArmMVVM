@@ -12,6 +12,7 @@ import com.example.armmvvm.http.imageloader.ImageConfigImpl
 import com.example.armmvvm.http.imageloader.ImageConfigImplBuilder
 import com.example.armmvvm.ui.main.fragment.ChangeFragment
 import com.example.armmvvm.ui.main.fragment.MainFragment
+import com.example.armmvvm.ui.refreshlayout.ToolbarActivity
 import com.example.armmvvm.ui.test.TestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.DI
@@ -75,6 +76,10 @@ class MainActivity : BaseActivity() {
 
     fun onclick(view: View) {
         startActivity(Intent(this, TestActivity::class.java))
+    }
+
+    fun onclick2(view: View) {
+        startActivity(Intent(this, ToolbarActivity::class.java))
     }
 
     private fun onStateChange(msg: String) {

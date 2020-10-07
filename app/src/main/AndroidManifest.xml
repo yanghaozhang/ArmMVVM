@@ -39,7 +39,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.test.TestActivity"/>
+        <activity android:name=".ui.test.TestActivity" />
+        <activity android:name=".ui.refreshlayout.ToolbarActivity" />
 
         <meta-data
             android:name="com.example.armmvvm.base.MyConfigModule"

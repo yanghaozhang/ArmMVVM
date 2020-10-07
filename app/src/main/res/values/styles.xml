@@ -1,10 +1,36 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="myToolbarNavigationButtonStyle" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minWidth">0dp</item>
+    </style>
+
+    <style name="AppTheme.Toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:minHeight">?attr/actionBarSize</item>
+        <item name="android:theme">@style/ZeroMinWidthNavTheme</item>
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetLeft">0dp</item>
+        <item name="contentInsetEnd">0dp</item>
+        <item name="contentInsetRight">0dp</item>
+        <item name="contentInsetStartWithNavigation">0dp</item>
+        <item name="buttonGravity">center_vertical</item>
+    </style>
+
+    <style name="ZeroMinWidthNavTheme" parent="Widget.AppCompat.Toolbar">
+        <item name="toolbarNavigationButtonStyle">@style/myToolbarNavigationButtonStyle</item>
+        <!--homeAsUpIndicator的颜色值-->
+        <!--<item name="colorControlNormal">#ff00ff</item>-->
+    </style>
+
+    <style name="BarTheme">
+        <item name="android:textSize">20dp</item>
+        <item name="android:textColor">#ffff00</item>
+    </style>
 </resources>
