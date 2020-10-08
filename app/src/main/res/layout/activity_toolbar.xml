@@ -18,7 +18,7 @@
             app:titleEnabled="false">
 
             <androidx.appcompat.widget.Toolbar
-                style="@style/AppTheme.Toolbar"
+                android:theme="@style/ZeroMinWidthNavTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:collapseIcon="@mipmap/ic_launcher"

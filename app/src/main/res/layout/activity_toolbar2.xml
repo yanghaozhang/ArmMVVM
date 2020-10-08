@@ -33,11 +33,10 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/tool_bar"
-                style="@style/AppTheme.Toolbar"
+                android:theme="@style/ZeroMinWidthNavTheme"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:collapseIcon="@mipmap/ic_launcher_round"
-                app:contentInsetEndWithActions="30dp"
                 app:layout_collapseMode="pin"
                 app:navigationIcon="?attr/homeAsUpIndicator"
                 app:title="this is Title">
