@@ -1,9 +1,6 @@
 
 package androidx.appcompat.widget;
 
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
-import static androidx.annotation.RestrictTo.Scope.TESTS;
-
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
@@ -51,6 +48,9 @@ import androidx.customview.view.AbsSavedState;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
+import static androidx.annotation.RestrictTo.Scope.TESTS;
 
 /**
  * A standard toolbar for use within application content.
@@ -110,19 +110,27 @@ import java.util.List;
  * {@link androidx.appcompat.R.attr#contentInsetStart}
  * --->内容(title)与Navigation的距离<---
  * {@link androidx.appcompat.R.attr#contentInsetStartWithNavigation}
- *
+ * --->Math.max(getContentInsetEnd(), Math.max(mContentInsetEndWithActions, 0))  与ContentInsetEnd一起决定内容与menu的距离<---
  * {@link androidx.appcompat.R.attr#contentInsetEndWithActions}
  * {@link android.R.attr#gravity}
+ * --->logo drawable<---
  * {@link androidx.appcompat.R.attr#logo}
  * {@link androidx.appcompat.R.attr#logoDescription}
+ * --->返回按钮/menu等按钮的最高高度<---
  * {@link androidx.appcompat.R.attr#maxButtonHeight}
  * {@link androidx.appcompat.R.attr#navigationContentDescription}
+ * --->导航按钮drawable<---
  * {@link androidx.appcompat.R.attr#navigationIcon}
+ * --->menu popup即OverflowMenu 的主题样式<---
  * {@link androidx.appcompat.R.attr#popupTheme}
+ * --->子标题<---
  * {@link androidx.appcompat.R.attr#subtitle}
  * {@link androidx.appcompat.R.attr#subtitleTextAppearance}
+ * --->子标题颜色<---
  * {@link androidx.appcompat.R.attr#subtitleTextColor}
+ * --->标题<---
  * {@link androidx.appcompat.R.attr#title}
+ * --->标题的一些margin<---
  * {@link androidx.appcompat.R.attr#titleMargin}
  * {@link androidx.appcompat.R.attr#titleMarginBottom}
  * {@link androidx.appcompat.R.attr#titleMarginEnd}
@@ -135,58 +143,102 @@ import java.util.List;
 public class Toolbar extends ViewGroup {
     private static final String TAG = "Toolbar";
 
+    // Menu菜单
     private ActionMenuView mMenuView;
+    // 标题View
     private TextView mTitleTextView;
+    // 子标题View
     private TextView mSubtitleTextView;
+    // 导航图标View
     private ImageButton mNavButtonView;
+    // 图标View
     private ImageView mLogoView;
 
+    // 返回图标drawable,用于mCollapseButtonView
+    // 使用场景menu 的showAsAction = collapseActionView时
+    // 点击该menu图标会切换到查看Action详情状态,Toolbar展示对应的actionViewClass界面,此时会展示mCollapseButtonView(点击返回到正常的状态)
     private Drawable mCollapseIcon;
     private CharSequence mCollapseDescription;
+    // 查看Action详情状态时,展示mCollapseButtonView,点击该View Toolbar返回正常状态
     ImageButton mCollapseButtonView;
+    // 查看Action详情状态时,Toolbar所展示的View,即Menu中声明的actionViewClass生成的View
+    // 如果返回正常状态,会被置空
+    // 比如android.widget.SearchView
     View mExpandedActionView;
 
-    /** Context against which to inflate popup menus. */
+    /**
+     * Context against which to inflate popup menus.
+     */
+    // 用于Menu的popup window,如果为popup设置了主题,通过ContextThemeWrapper将Theme传给context,并通过context传给popup
+    // 初始化Menu和添加MenuPresenter时使用
     private Context mPopupContext;
 
-    /** Theme resource against which to inflate popup menus. */
+    /**
+     * Theme resource against which to inflate popup menus.
+     */
+    // popup window的主题id
     private int mPopupTheme;
 
+    // 标题的样式id
     private int mTitleTextAppearance;
+    // 副标题的样式id
     private int mSubtitleTextAppearance;
 
+    // Menu/Nav/mCollapseButtonView/mExpandedActionView这些View在Vertical上的Gravity
+    // mButtonGravity & Gravity.VERTICAL_GRAVITY_MASK 只保留Vertical上的Gravity,去除Horizontal的Gravity
+    // 上述的View在Horizontal上为Start或End,都是写死的
     int mButtonGravity;
 
+    //??
     private int mMaxButtonHeight;
 
+    // 标题的margin
     private int mTitleMarginStart;
     private int mTitleMarginEnd;
     private int mTitleMarginTop;
     private int mTitleMarginBottom;
 
+    // content的Left/Right/Start/End
+    // mContentInsets与mContentInsetStartWithNavigation/mContentInsetEndWithActions的关系
+    // mContentInsetStartWithNavigation如果不存在,mContentInsets为
     private RtlSpacingHelper mContentInsets;
+    // content与Nav的距离
     private int mContentInsetStartWithNavigation;
+    // content与Menu的距离
     private int mContentInsetEndWithActions;
 
+    // ??
     private int mGravity = GravityCompat.START | Gravity.CENTER_VERTICAL;
 
+    // 标题内容
     private CharSequence mTitleText;
+    // 副标题内容
     private CharSequence mSubtitleText;
 
+    // 标题颜色
     private ColorStateList mTitleTextColor;
+    // 副标题颜色
     private ColorStateList mSubtitleTextColor;
 
+    // Toolbar默认消费所有的点击事件
+    // 如果Toolbar消费事件,则一直调用super.onTouchEvent(ev)
+    // 如果不消费事件,super.onTouchEvent(ev)->false,那么后续不会调用super.onTouchEvent(ev)
     private boolean mEatingTouch;
+    // 如果super.onHoverEvent(ev)消费事件返回true,则一直调用super.onHoverEvent(ev),否则只调用一次
     private boolean mEatingHover;
 
     // Clear me after use.
+    // 为了在onLayout中处理布局的位置,有Left/Right/CENTER_HORIZONTAL,使用前使用后都需要clear,只是临时使用
     private final ArrayList<View> mTempViews = new ArrayList<View>();
 
     // Used to hold views that will be removed while we have an expanded action view.
+    // 点击Menu显示ActionView,此时TitleView,Nav,Logo等View需要进行隐藏,在这里进行保存
     private final ArrayList<View> mHiddenViews = new ArrayList<>();
 
+    // 保存onMesure中的MarginStart/MarginEnd,在onLayout中使用
     private final int[] mTempMargins = new int[2];
 
+    // Menu点击事件监听
     OnMenuItemClickListener mOnMenuItemClickListener;
 
     private final ActionMenuView.OnMenuItemClickListener mMenuViewItemClickListener =
@@ -200,12 +252,35 @@ public class Toolbar extends ViewGroup {
                 }
             };
 
+    // 系统内部使用
     private ToolbarWidgetWrapper mWrapper;
+    /**
+     * 关于Menu的处理
+     * mMenuView是创建的ActionMenuView,用于承载菜单按钮与更多按钮
+     * ActionMenuView主要通过MenuBuilder和MenuPresenter来管理所有事件
+     * MenuPresenter是监听者,MenuBuilder是被监听者,当发生点击/展开/关闭等事件时,会向Presenter发送事件
+     * Toolbar实现Expanded的功能,即点击menu可以展示mExpandedActionView
+     * 1,Toolbar添加返回按钮mCollapseButtonView
+     * 2,Toolbar添加拓展功能布局mExpandedActionView
+     * 3,除了1,2的View和mMenuView,隐藏Toolbar其他子View
+     * 上述功能通过mExpandedMenuPresenter来根据ActionMenuView的事件来变动
+     * <p>
+     * ActionMenuView的生成有两种方式
+     * 方式一:在Activity中配置生成Menu
+     * 方式二:通过Toolbar生成,包括XML或者代码设置
+     * 如果是方式一,将通过内部调用setMenu(MenuBuilder menu, ActionMenuPresenter outerPresenter),此时会比方式二多了
+     * mOuterActionMenuPresenter/mActionMenuPresenterCallback/mMenuBuilderCallback
+     */
+    // Menu的外部管理类Presenter
     private ActionMenuPresenter mOuterActionMenuPresenter;
+    // 订阅ActionMenuView事件,并依据事件管理mExpandedActionView
     private ExpandedActionViewMenuPresenter mExpandedMenuPresenter;
+    // 系统外部提供的回调函数
     private MenuPresenter.Callback mActionMenuPresenterCallback;
+    // 系统外部提供的回调函数
     private MenuBuilder.Callback mMenuBuilderCallback;
 
+    // ??
     private boolean mCollapsible;
 
     private final Runnable mShowOverflowMenuRunnable = new Runnable() {
@@ -345,6 +420,7 @@ public class Toolbar extends ViewGroup {
     /**
      * Specifies the theme to use when inflating popup menus. By default, uses
      * the same theme as the toolbar itself.
+     *
      *
      * @param resId theme used to inflate popup menus
      * @see #getPopupTheme()
@@ -502,6 +578,9 @@ public class Toolbar extends ViewGroup {
     }
 
     /** @hide */
+    /**
+     * 菜单popup是否存在,不论弹出状态
+     */
     @RestrictTo(LIBRARY_GROUP_PREFIX)
     public boolean canShowOverflowMenu() {
         return getVisibility() == VISIBLE && mMenuView != null && mMenuView.isOverflowReserved();
@@ -510,6 +589,7 @@ public class Toolbar extends ViewGroup {
     /**
      * Check whether the overflow menu is currently showing. This may not reflect
      * a pending show operation in progress.
+     * -->菜单popup是否正在展示<--
      *
      * @return true if the overflow menu is currently showing
      */
@@ -542,6 +622,9 @@ public class Toolbar extends ViewGroup {
     }
 
     /** @hide */
+    /**
+     * 外部Activity/Fragment通过改方法生成Menu
+     */
     @RestrictTo(LIBRARY_GROUP_PREFIX)
     public void setMenu(MenuBuilder menu, ActionMenuPresenter outerPresenter) {
         if (menu == null && mMenuView == null) {
@@ -588,6 +671,7 @@ public class Toolbar extends ViewGroup {
     }
 
     /** @hide */
+    // 标题是否有省略
     @RestrictTo(LIBRARY_GROUP_PREFIX)
     public boolean isTitleTruncated() {
         if (mTitleTextView == null) {
@@ -1487,6 +1571,7 @@ public class Toolbar extends ViewGroup {
             mCollapseButtonView.setContentDescription(mCollapseDescription);
             final LayoutParams lp = generateDefaultLayoutParams();
             lp.gravity = GravityCompat.START | (mButtonGravity & Gravity.VERTICAL_GRAVITY_MASK);
+            // 在显示mExpandedActionView时不hidemCollapseButtonView
             lp.mViewType = LayoutParams.EXPANDED;
             mCollapseButtonView.setLayoutParams(lp);
             mCollapseButtonView.setOnClickListener(new OnClickListener() {
@@ -1498,6 +1583,13 @@ public class Toolbar extends ViewGroup {
         }
     }
 
+    /**
+     * Logo/Nav/Title/SubTitle/Menu走该方法,都是系统的View
+     * mCollapseButtonView/mExpandedActionView,属于外部定义的view,不走这个方法,他们的lp.mViewType = LayoutParams.EXPANDED,标志为EXPANDED状态
+     * @param allowHide 如果此时正展示mExpandedActionView,而该View属于需要隐藏的View(allowHide为true),则仅添加到mHiddenViews
+     *                  当mExpandedActionView collapse的时候,mHiddenViews将重新添加到Toolbar
+     *                  如果allowHide为false,即mExpandedActionView显示与否,该View都会显示,目前只有Menu如此
+     */
     private void addSystemView(View v, boolean allowHide) {
         final ViewGroup.LayoutParams vlp = v.getLayoutParams();
         final LayoutParams lp;
@@ -1522,10 +1614,12 @@ public class Toolbar extends ViewGroup {
     protected Parcelable onSaveInstanceState() {
         SavedState state = new SavedState(super.onSaveInstanceState());
 
+        // 如果展示mExpandedActionView正在展示,记录该id
         if (mExpandedMenuPresenter != null && mExpandedMenuPresenter.mCurrentExpandedItem != null) {
             state.expandedMenuItemId = mExpandedMenuPresenter.mCurrentExpandedItem.getItemId();
         }
 
+        // 记录Menu的popup是否正在展示
         state.isOverflowOpen = isOverflowMenuShowing();
         return state;
     }
@@ -1564,6 +1658,11 @@ public class Toolbar extends ViewGroup {
         removeCallbacks(mShowOverflowMenuRunnable);
     }
 
+    /**
+     * Toolbar默认消费所有的点击事件
+     * 如果Toolbar消费事件,则一直调用super.onTouchEvent(ev)
+     * 如果不消费事件,super.onTouchEvent(ev)->false,那么后续不会调用super.onTouchEvent(ev)
+     */
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Toolbars always eat touch events, but should still respect the touch event dispatch
@@ -1590,6 +1689,9 @@ public class Toolbar extends ViewGroup {
         return true;
     }
 
+    /**
+     *  如果super.onHoverEvent(ev)消费事件返回true,则一直调用super.onHoverEvent(ev),否则只调用一次
+     */
     @Override
     public boolean onHoverEvent(MotionEvent ev) {
         // Same deal as onTouchEvent() above. Eat all hover events, but still
@@ -1614,10 +1716,50 @@ public class Toolbar extends ViewGroup {
         return true;
     }
 
+    /**
+     *
+     * @param child 子View
+     * @param parentWidthSpec Toolbar的WidthSpec
+     * @param widthUsed View已使用的Width
+     * @param parentHeightSpec Toolbar的HeightSpec
+     * @param heightUsed View已使用的Height
+     * @param heightConstraint 高度限制
+     */
     private void measureChildConstrained(View child, int parentWidthSpec, int widthUsed,
             int parentHeightSpec, int heightUsed, int heightConstraint) {
         final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
 
+        /**
+         * getChildMeasureSpec(int spec, int padding, int childDimension)
+         * 该方法是用来获取子类的MeasureSpec值
+         * spec:父View的HeightMeasureSpec或者WidthMeasureSpec
+         * padding:已经使用的宽度或者高度
+         *      如果是width的话：父View左右Padding+子View左右Margin+widthUsed
+         *      如果是Height的话：父View上下Padding+子View上下Margin+heightUsed
+         *      widthUsed/heightUsed是当前LinearLayout中已经使用了的宽度/高度
+         * childDimension:
+         *      如果是Width的话：传入lp.width
+         *      如果是Height的话：传入lp.height
+         * 参数一和参数二可以计算出剩余的宽度/高度
+         * 如果父类为MeasureSpec.EXACTLY
+         *      子类有指定宽度:MeasureSpec.EXACTLY + 子类设定宽度
+         *      子类宽度为MATCH_PARENT:MeasureSpec.EXACTLY + 父类可用宽度
+         *      子类宽度为 WRAP_CONTENT:MeasureSpec.AT_MOST + 父类可用宽度
+         * 如果父类为MeasureSpec.AT_MOST
+         *      子类有指定宽度:MeasureSpec.EXACTLY + 子类设定宽度
+         *      子类宽度为MATCH_PARENT:MeasureSpec.AT_MOST + 父类可用宽度
+         *      子类宽度为 WRAP_CONTENT:MeasureSpec.AT_MOST + 父类可用宽度
+         * 如果父类为MeasureSpec.UNSPECIFIED
+         *      子类有指定宽度:MeasureSpec.EXACTLY + 子类设定宽度
+         *      子类宽度为MATCH_PARENT:MeasureSpec.UNSPECIFIED + 父类可用宽度(或者是0表示UNSPECIFIED,ConstraintLayout就是这么表示的)
+         *      子类宽度为 WRAP_CONTENT:MeasureSpec.UNSPECIFIED + 父类可用宽度(或者是0表示UNSPECIFIED)
+         * 对于子类:
+         *      指明大小:MeasureSpec.EXACTLY时,measure返回EXACTLY + 子类设定宽度
+         *      MATCH_PARENT:EXACTLY/AT_MOST/UNSPECIFIED + 父类可用宽度,MeasureSpec跟随父类
+         *      WRAP_CONTENT:AT_MOST/UNSPECIFIED + 父类可用宽度,不会是EXACTLY
+         *
+         *
+         */
         int childWidthSpec = getChildMeasureSpec(parentWidthSpec,
                 getPaddingLeft() + getPaddingRight() + lp.leftMargin + lp.rightMargin
                         + widthUsed, lp.width);
@@ -1625,6 +1767,7 @@ public class Toolbar extends ViewGroup {
                 getPaddingTop() + getPaddingBottom() + lp.topMargin + lp.bottomMargin
                         + heightUsed, lp.height);
 
+//     限制子类的宽度,不能超过heightConstraint
         final int childHeightMode = MeasureSpec.getMode(childHeightSpec);
         if (childHeightMode != MeasureSpec.EXACTLY && heightConstraint >= 0) {
             final int size = childHeightMode != MeasureSpec.UNSPECIFIED ?
@@ -1684,6 +1827,9 @@ public class Toolbar extends ViewGroup {
         int height = 0;
         int childState = 0;
 
+        // collapsingMargins = marginLeft marginRight
+        // 如果是Left To Right,marginLeft = marginStartIndex,marginRight = marginEndIndex
+        // 如果是Right To Left,marginLeft = marginEndIndex,marginRight = marginStartIndex
         final int[] collapsingMargins = mTempMargins;
         final int marginStartIndex;
         final int marginEndIndex;
@@ -2010,6 +2156,7 @@ public class Toolbar extends ViewGroup {
 
         // Centered views try to center with respect to the whole bar, but views pinned
         // to the left or right can push the mass of centered views to one side or the other.
+        // 将View居中,但是因为左侧和右侧的View,导致可能会偏向一边
         addCustomViewsWithGravity(mTempViews, Gravity.CENTER_HORIZONTAL);
         final int centerViewsWidth = getViewListMeasuredWidth(mTempViews, collapsingMargins);
         final int parentCenter = paddingLeft + (width - paddingLeft - paddingRight) / 2;
@@ -2430,6 +2577,10 @@ public class Toolbar extends ViewGroup {
 
     private class ExpandedActionViewMenuPresenter implements MenuPresenter {
         MenuBuilder mMenu;
+        // 用户点击某MenuItem展示mExpandedActionView,并隐藏该MenuItem,这是哪个MenuItem的引用
+        // 用于判断是否在展示mExpandedActionView
+        // 点击返回按钮mCollapseButtonView时通过MenuItem完成缩回操作
+        // 初始化以及更新Menu时做更新操作
         MenuItemImpl mCurrentExpandedItem;
 
         ExpandedActionViewMenuPresenter() {
@@ -2452,6 +2603,7 @@ public class Toolbar extends ViewGroup {
         @Override
         public void updateMenuView(boolean cleared) {
             // Make sure the expanded item we have is still there.
+            // 正在展示 mExpandedActionView,如果Menu中不含有该MenuItem,说明已被Menu移除,需要将mExpandedActionView缩回
             if (mCurrentExpandedItem != null) {
                 boolean found = false;
 
@@ -2493,6 +2645,7 @@ public class Toolbar extends ViewGroup {
 
         @Override
         public boolean expandItemActionView(MenuBuilder menu, MenuItemImpl item) {
+            // 确保初始化mCollapseButtonView,返回按钮
             ensureCollapseButtonView();
             ViewParent collapseButtonParent = mCollapseButtonView.getParent();
             if (collapseButtonParent != Toolbar.this) {
@@ -2501,6 +2654,7 @@ public class Toolbar extends ViewGroup {
                 }
                 addView(mCollapseButtonView);
             }
+            // 添加MenuItem对应的tActionView
             mExpandedActionView = item.getActionView();
             mCurrentExpandedItem = item;
             ViewParent expandedActionParent = mExpandedActionView.getParent();
@@ -2515,10 +2669,13 @@ public class Toolbar extends ViewGroup {
                 addView(mExpandedActionView);
             }
 
+            // 移除除了mExpandedActionView/mCollapseButtonView/Menu外的Toolbar的子View
             removeChildrenForExpandedActionView();
             requestLayout();
+            // 设置MenuItem为Expanded状态,隐藏该MenuItem
             item.setActionViewExpanded(true);
 
+            // CollapsibleActionView执行回调
             if (mExpandedActionView instanceof CollapsibleActionView) {
                 ((CollapsibleActionView) mExpandedActionView).onActionViewExpanded();
             }
@@ -2526,19 +2683,26 @@ public class Toolbar extends ViewGroup {
             return true;
         }
 
+        /**
+         * 缩回mExpandedActionView
+         */
         @Override
         public boolean collapseItemActionView(MenuBuilder menu, MenuItemImpl item) {
             // Do this before detaching the actionview from the hierarchy, in case
             // it needs to dismiss the soft keyboard, etc.
+            // CollapsibleActionView执行回调,隐藏软键盘
             if (mExpandedActionView instanceof CollapsibleActionView) {
                 ((CollapsibleActionView) mExpandedActionView).onActionViewCollapsed();
             }
 
+            // Toolbar移除mExpandedActionView/mCollapseButtonView返回键
             removeView(mExpandedActionView);
             removeView(mCollapseButtonView);
             mExpandedActionView = null;
 
+            // Toolbar重新添加回原来View
             addChildrenForExpandedActionView();
+            // 相当于更新外部状态
             mCurrentExpandedItem = null;
             requestLayout();
             item.setActionViewExpanded(false);

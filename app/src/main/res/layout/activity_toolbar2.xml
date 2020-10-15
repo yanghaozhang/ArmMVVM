@@ -36,6 +36,7 @@
                 android:theme="@style/ZeroMinWidthNavTheme"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                app:menu="@menu/menu_test"
                 app:collapseIcon="@mipmap/ic_launcher_round"
                 app:layout_collapseMode="pin"
                 app:navigationIcon="?attr/homeAsUpIndicator"
