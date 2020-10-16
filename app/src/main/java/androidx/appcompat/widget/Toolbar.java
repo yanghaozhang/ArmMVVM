@@ -103,12 +103,12 @@ import static androidx.annotation.RestrictTo.Scope.TESTS;
  * --->用作collapseActionView的drawable,与Menu配合使用,点击menu显示相应组件和collapseActionView(作用:点击返回),比如SearchView<---
  * https://developer.android.com/training/appbar/action-views
  * {@link androidx.appcompat.R.attr#collapseIcon}
- *  --->内容(title)与尾部的距离,以下规则相应<---
+ *  --->内容(content View)与尾部的距离,以下规则相应<---
  * {@link androidx.appcompat.R.attr#contentInsetEnd}
  * {@link androidx.appcompat.R.attr#contentInsetLeft}
  * {@link androidx.appcompat.R.attr#contentInsetRight}
  * {@link androidx.appcompat.R.attr#contentInsetStart}
- * --->内容(title)与Navigation的距离<---
+ * --->内容(content View)与Navigation的距离<---
  * {@link androidx.appcompat.R.attr#contentInsetStartWithNavigation}
  * --->Math.max(getContentInsetEnd(), Math.max(mContentInsetEndWithActions, 0))  与ContentInsetEnd一起决定内容与menu的距离<---
  * {@link androidx.appcompat.R.attr#contentInsetEndWithActions}
@@ -189,7 +189,7 @@ public class Toolbar extends ViewGroup {
     // 上述的View在Horizontal上为Start或End,都是写死的
     int mButtonGravity;
 
-    //??
+    // Nav/mCollapseButtonView/mMenuView的最高高度,在Measure的时候限制高度
     private int mMaxButtonHeight;
 
     // 标题的margin
@@ -1780,17 +1780,32 @@ public class Toolbar extends ViewGroup {
 
     /**
      * Returns the width + uncollapsed margins
+     *
+     * @param child 子View
+     * @param parentWidthMeasureSpec 父类宽度的MeasureSpec
+     * @param widthUsed 已经被使用了的width
+     * @param parentHeightMeasureSpec 父类高度的MeasureSpec
+     * @param heightUsed  已经被使用了的height
+     * @param collapsingMargins content View距离左侧Nav和右侧Menu的margins
+     * @return 返回子类所占的宽度 = getMeasuredWidth + 横向margin和
      */
     private int measureChildCollapseMargins(View child,
             int parentWidthMeasureSpec, int widthUsed,
             int parentHeightMeasureSpec, int heightUsed, int[] collapsingMargins) {
         final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
 
+        // 待定??
+        // margin diff:子View与左侧Nav/与右侧menu的margin,设计规则为不叠加collapsingMargins和自身的margin,而是max(collapsingMargins,lp.leftMargin)
+        // 以下面代码说明:
+        //      如果leftDiff > collapsingMargins ,leftMargin为leftDiff,实际上在onLayout时,子View与Nav的距离为leftDiff + collapsingMargins = lp.leftMargin
+        //      如果leftDiff < collapsingMargins,在onLayout时,子View与Nav的距离为collapsingMargins
         final int leftDiff = lp.leftMargin - collapsingMargins[0];
         final int rightDiff = lp.rightMargin - collapsingMargins[1];
         final int leftMargin = Math.max(0, leftDiff);
         final int rightMargin = Math.max(0, rightDiff);
+        // 子View横向margin和
         final int hMargins = leftMargin + rightMargin;
+        // 当leftDiff < collapsingMargins时,修改collapsingMargins
         collapsingMargins[0] = Math.max(0, -leftDiff);
         collapsingMargins[1] = Math.max(0, -rightDiff);
 
@@ -1801,6 +1816,7 @@ public class Toolbar extends ViewGroup {
                         + heightUsed, lp.height);
 
         child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
+        // 返回子类所占的宽度
         return child.getMeasuredWidth() + hMargins;
     }
 
@@ -1824,9 +1840,15 @@ public class Toolbar extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = 0;
+        // 取所有View最大值
         int height = 0;
         int childState = 0;
 
+        // 由mNavButtonView/mCollapseButtonView决定Left,mMenuView决定Right
+        // 影响mExpandedActionView/mLogoView/CUSTOM View的onMeasure
+        //      当显示mExpandedActionView时,该值表示mExpandedActionView距离mCollapseButtonView的宽度
+        //      当不显示mExpandedActionView时,该值表示content View距离mNavButtonView的宽度
+        //
         // collapsingMargins = marginLeft marginRight
         // 如果是Left To Right,marginLeft = marginStartIndex,marginRight = marginEndIndex
         // 如果是Right To Left,marginLeft = marginEndIndex,marginRight = marginStartIndex
@@ -1843,10 +1865,15 @@ public class Toolbar extends ViewGroup {
 
         // System views measure first.
 
+        // navWidth
+        // 显示mCollapseButtonView时,则为mCollapseButtonView,此时是mNavButtonView处于hide状态
+        // 如果不展示mCollapseButtonView,并存在mNavButtonView,则通过mNavButtonView来计算
         int navWidth = 0;
         if (shouldLayout(mNavButtonView)) {
+            // 调用Nav的measure()方法,让Nav计算自身的需要的宽高
             measureChildConstrained(mNavButtonView, widthMeasureSpec, width, heightMeasureSpec, 0,
                     mMaxButtonHeight);
+            // 获取Nav计算结果,加上Nav的margin值
             navWidth = mNavButtonView.getMeasuredWidth() + getHorizontalMargins(mNavButtonView);
             height = Math.max(height, mNavButtonView.getMeasuredHeight() +
                     getVerticalMargins(mNavButtonView));
@@ -1865,8 +1892,22 @@ public class Toolbar extends ViewGroup {
                     mCollapseButtonView.getMeasuredState());
         }
 
+        //存在Navigation,取getContentInsetStart(),mContentInsetStartWithNavigation的最大值
+        //不存在Navigation,取getContentInsetStart()
         final int contentInsetStart = getCurrentContentInsetStart();
+
+        // contentInsetStart: content view(logo/Title/subTitle)距离Toolbar左侧的宽度
+        // navWidth: mCollapseButtonView/mNavButtonView 占用的宽度
+        // 1,Nav所占宽度
+        // 2,mCollapseButtonView所占宽度
+        // 3,该值在两个状态是不一致的,因为mCollapseButtonView与Nav的宽度可能是不一致的
+        // 4,取contentInsetStart, navWidth的最大值,不取叠加值,Toolbar自定规则
+        // 5,所以决定content View距离Toolbar左侧的距离为contentInsetStart, navWidth,在编码时要根据这个来写
         width += Math.max(contentInsetStart, navWidth);
+
+        // 1,content View与Nav的距离
+        // 2,mExpandedActionView与mCollapseButtonView的距离
+        // 3,该值在两个状态是不一致的,因为mCollapseButtonView与Nav的宽度可能是不一致的
         collapsingMargins[marginStartIndex] = Math.max(0, contentInsetStart - navWidth);
 
         int menuWidth = 0;
@@ -1882,6 +1923,7 @@ public class Toolbar extends ViewGroup {
 
         final int contentInsetEnd = getCurrentContentInsetEnd();
         width += Math.max(contentInsetEnd, menuWidth);
+        // content View距离Menu的距离
         collapsingMargins[marginEndIndex] = Math.max(0, contentInsetEnd - menuWidth);
 
         if (shouldLayout(mExpandedActionView)) {

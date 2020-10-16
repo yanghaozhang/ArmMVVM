@@ -20,7 +20,7 @@
             app:expandedTitleMarginStart="0dp"
             app:expandedTitleTextAppearance="@style/BarTheme"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="true">
+            app:titleEnabled="false">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -33,21 +33,32 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/tool_bar"
-                android:theme="@style/ZeroMinWidthNavTheme"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:menu="@menu/menu_test"
-                app:collapseIcon="@mipmap/ic_launcher_round"
+                android:theme="@style/ZeroMinWidthNavTheme"
+                app:collapseIcon="@mipmap/icon_video"
+                app:contentInsetStartWithNavigation="50dp"
                 app:layout_collapseMode="pin"
-                app:navigationIcon="?attr/homeAsUpIndicator"
-                app:title="this is Title">
+                app:menu="@menu/menu_test"
+                app:navigationIcon="?attr/homeAsUpIndicator">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginLeft="30dp"
                     android:gravity="center"
-                    android:text="iiiii" />
+                    android:text="iiiii"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center"
+                    android:text="iiiii"
+                    android:textSize="16sp" />
+
+
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
