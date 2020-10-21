@@ -284,7 +284,8 @@ public class Toolbar extends ViewGroup {
     private boolean mCollapsible;
 
     private final Runnable mShowOverflowMenuRunnable = new Runnable() {
-        @Override public void run() {
+        @Override
+        public void run() {
             showOverflowMenu();
         }
     };
@@ -304,7 +305,7 @@ public class Toolbar extends ViewGroup {
         final TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(), attrs,
                 R.styleable.Toolbar, defStyleAttr, 0);
         ViewCompat.saveAttributeDataForStyleable(this, context, R.styleable.Toolbar, attrs,
-                    a.getWrappedTypeArray(), defStyleAttr, 0);
+                a.getWrappedTypeArray(), defStyleAttr, 0);
 
         mTitleTextAppearance = a.getResourceId(R.styleable.Toolbar_titleTextAppearance, 0);
         mSubtitleTextAppearance = a.getResourceId(R.styleable.Toolbar_subtitleTextAppearance, 0);
@@ -421,7 +422,6 @@ public class Toolbar extends ViewGroup {
      * Specifies the theme to use when inflating popup menus. By default, uses
      * the same theme as the toolbar itself.
      *
-     *
      * @param resId theme used to inflate popup menus
      * @see #getPopupTheme()
      */
@@ -438,7 +438,7 @@ public class Toolbar extends ViewGroup {
 
     /**
      * @return resource identifier of the theme used to inflate popup menus, or
-     *         0 if menus are inflated against the toolbar theme
+     * 0 if menus are inflated against the toolbar theme
      * @see #setPopupTheme(int)
      */
     public int getPopupTheme() {
@@ -448,9 +448,9 @@ public class Toolbar extends ViewGroup {
     /**
      * Sets the title margin.
      *
-     * @param start the starting title margin in pixels
-     * @param top the top title margin in pixels
-     * @param end the ending title margin in pixels
+     * @param start  the starting title margin in pixels
+     * @param top    the top title margin in pixels
+     * @param end    the ending title margin in pixels
      * @param bottom the bottom title margin in pixels
      * @see #getTitleMarginStart()
      * @see #getTitleMarginTop()
@@ -597,7 +597,9 @@ public class Toolbar extends ViewGroup {
         return mMenuView != null && mMenuView.isOverflowMenuShowing();
     }
 
-    /** @hide */
+    /**
+     * @hide
+     */
     @RestrictTo(LIBRARY_GROUP_PREFIX)
     public boolean isOverflowMenuShowPending() {
         return mMenuView != null && mMenuView.isOverflowMenuShowPending();
@@ -670,7 +672,9 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /** @hide */
+    /**
+     * @hide
+     */
     // 标题是否有省略
     @RestrictTo(LIBRARY_GROUP_PREFIX)
     public boolean isTitleTruncated() {
@@ -983,7 +987,7 @@ public class Toolbar extends ViewGroup {
      * as screen readers or tooltips.
      *
      * @return The navigation button's content description
-     *
+     * <p>
      * {@link androidx.appcompat.R.attr#navigationContentDescription}
      */
     @Nullable
@@ -998,8 +1002,8 @@ public class Toolbar extends ViewGroup {
      *
      * @param resId Resource ID of a content description string to set, or 0 to
      *              clear the description
-     *
-     * {@link androidx.appcompat.R.attr#navigationContentDescription}
+     *              <p>
+     *              {@link androidx.appcompat.R.attr#navigationContentDescription}
      */
     public void setNavigationContentDescription(@StringRes int resId) {
         setNavigationContentDescription(resId != 0 ? getContext().getText(resId) : null);
@@ -1012,8 +1016,8 @@ public class Toolbar extends ViewGroup {
      *
      * @param description Content description to set, or <code>null</code> to
      *                    clear the content description
-     *
-     * {@link androidx.appcompat.R.attr#navigationContentDescription}
+     *                    <p>
+     *                    {@link androidx.appcompat.R.attr#navigationContentDescription}
      */
     public void setNavigationContentDescription(@Nullable CharSequence description) {
         if (!TextUtils.isEmpty(description)) {
@@ -1035,8 +1039,8 @@ public class Toolbar extends ViewGroup {
      * tooltips.</p>
      *
      * @param resId Resource ID of a drawable to set
-     *
-     * {@link androidx.appcompat.R.attr#navigationIcon}
+     *              <p>
+     *              {@link androidx.appcompat.R.attr#navigationIcon}
      */
     public void setNavigationIcon(@DrawableRes int resId) {
         setNavigationIcon(AppCompatResources.getDrawable(getContext(), resId));
@@ -1053,8 +1057,8 @@ public class Toolbar extends ViewGroup {
      * tooltips.</p>
      *
      * @param icon Drawable to set, may be null to clear the icon
-     *
-     * {@link androidx.appcompat.R.attr#navigationIcon}
+     *             <p>
+     *             {@link androidx.appcompat.R.attr#navigationIcon}
      */
     public void setNavigationIcon(@Nullable Drawable icon) {
         if (icon != null) {
@@ -1075,7 +1079,7 @@ public class Toolbar extends ViewGroup {
      * Return the current drawable used as the navigation icon.
      *
      * @return The navigation icon drawable
-     *
+     * <p>
      * {@link androidx.appcompat.R.attr#navigationIcon}
      */
     @Nullable
@@ -1103,7 +1107,7 @@ public class Toolbar extends ViewGroup {
      * as screen readers or tooltips.
      *
      * @return The collapse button's content description
-     *
+     * <p>
      * {@link androidx.appcompat.R.attr#collapseContentDescription}
      */
     @Nullable
@@ -1118,8 +1122,8 @@ public class Toolbar extends ViewGroup {
      *
      * @param resId Resource ID of a content description string to set, or 0 to
      *              clear the description
-     *
-     * {@link androidx.appcompat.R.attr#collapseContentDescription}
+     *              <p>
+     *              {@link androidx.appcompat.R.attr#collapseContentDescription}
      */
     public void setCollapseContentDescription(@StringRes int resId) {
         setCollapseContentDescription(resId != 0 ? getContext().getText(resId) : null);
@@ -1132,8 +1136,8 @@ public class Toolbar extends ViewGroup {
      *
      * @param description Content description to set, or <code>null</code> to
      *                    clear the content description
-     *
-     * {@link androidx.appcompat.R.attr#collapseContentDescription}
+     *                    <p>
+     *                    {@link androidx.appcompat.R.attr#collapseContentDescription}
      */
     public void setCollapseContentDescription(@Nullable CharSequence description) {
         if (!TextUtils.isEmpty(description)) {
@@ -1148,7 +1152,7 @@ public class Toolbar extends ViewGroup {
      * Return the current drawable used as the collapse icon.
      *
      * @return The collapse icon drawable
-     *
+     * <p>
      * {@link androidx.appcompat.R.attr#collapseIcon}
      */
     @Nullable
@@ -1163,8 +1167,8 @@ public class Toolbar extends ViewGroup {
      * .</p>
      *
      * @param resId Resource ID of a drawable to set
-     *
-     * {@link androidx.appcompat.R.attr#collapseIcon}
+     *              <p>
+     *              {@link androidx.appcompat.R.attr#collapseIcon}
      */
     public void setCollapseIcon(@DrawableRes int resId) {
         setCollapseIcon(AppCompatResources.getDrawable(getContext(), resId));
@@ -1177,8 +1181,8 @@ public class Toolbar extends ViewGroup {
      * .</p>
      *
      * @param icon Drawable to set, may be null to use the default icon
-     *
-     * {@link androidx.appcompat.R.attr#collapseIcon}
+     *             <p>
+     *             {@link androidx.appcompat.R.attr#collapseIcon}
      */
     public void setCollapseIcon(@Nullable Drawable icon) {
         if (icon != null) {
@@ -1261,7 +1265,7 @@ public class Toolbar extends ViewGroup {
      * be modified or removed.</p>
      *
      * @param resId ID of a menu resource to inflate
-     * {@link androidx.appcompat.R.attr#menu}
+     *              {@link androidx.appcompat.R.attr#menu}
      */
     public void inflateMenu(@MenuRes int resId) {
         getMenuInflater().inflate(resId, getMenu());
@@ -1287,8 +1291,7 @@ public class Toolbar extends ViewGroup {
      * and can be used to effectively align Toolbar content along well-known gridlines.</p>
      *
      * @param contentInsetStart Content inset for the toolbar starting edge
-     * @param contentInsetEnd Content inset for the toolbar ending edge
-     *
+     * @param contentInsetEnd   Content inset for the toolbar ending edge
      * @see #setContentInsetsAbsolute(int, int)
      * @see #getContentInsetStart()
      * @see #getContentInsetEnd()
@@ -1310,7 +1313,6 @@ public class Toolbar extends ViewGroup {
      * and can be used to effectively align Toolbar content along well-known gridlines.</p>
      *
      * @return The starting content inset for this toolbar
-     *
      * @see #setContentInsetsRelative(int, int)
      * @see #setContentInsetsAbsolute(int, int)
      * @see #getContentInsetEnd()
@@ -1330,7 +1332,6 @@ public class Toolbar extends ViewGroup {
      * and can be used to effectively align Toolbar content along well-known gridlines.</p>
      *
      * @return The ending content inset for this toolbar
-     *
      * @see #setContentInsetsRelative(int, int)
      * @see #setContentInsetsAbsolute(int, int)
      * @see #getContentInsetStart()
@@ -1349,9 +1350,8 @@ public class Toolbar extends ViewGroup {
      * the navigation button and menu. Insets define the minimum margin for these components
      * and can be used to effectively align Toolbar content along well-known gridlines.</p>
      *
-     * @param contentInsetLeft Content inset for the toolbar's left edge
+     * @param contentInsetLeft  Content inset for the toolbar's left edge
      * @param contentInsetRight Content inset for the toolbar's right edge
-     *
      * @see #setContentInsetsAbsolute(int, int)
      * @see #getContentInsetStart()
      * @see #getContentInsetEnd()
@@ -1373,7 +1373,6 @@ public class Toolbar extends ViewGroup {
      * and can be used to effectively align Toolbar content along well-known gridlines.</p>
      *
      * @return The left content inset for this toolbar
-     *
      * @see #setContentInsetsRelative(int, int)
      * @see #setContentInsetsAbsolute(int, int)
      * @see #getContentInsetStart()
@@ -1393,7 +1392,6 @@ public class Toolbar extends ViewGroup {
      * and can be used to effectively align Toolbar content along well-known gridlines.</p>
      *
      * @return The right content inset for this toolbar
-     *
      * @see #setContentInsetsRelative(int, int)
      * @see #setContentInsetsAbsolute(int, int)
      * @see #getContentInsetStart()
@@ -1413,7 +1411,6 @@ public class Toolbar extends ViewGroup {
      * {@link #getContentInsetStart()} and this value will be used during layout.</p>
      *
      * @return the start content inset used when a navigation icon has been set in pixels
-     *
      * @see #setContentInsetStartWithNavigation(int)
      * {@link androidx.appcompat.R.attr#contentInsetStartWithNavigation}
      */
@@ -1432,7 +1429,6 @@ public class Toolbar extends ViewGroup {
      *
      * @param insetStartWithNavigation the inset to use when a navigation icon has been set
      *                                 in pixels
-     *
      * @see #getContentInsetStartWithNavigation()
      * {@link androidx.appcompat.R.attr#contentInsetStartWithNavigation}
      */
@@ -1456,7 +1452,6 @@ public class Toolbar extends ViewGroup {
      * {@link #getContentInsetEnd()} and this value will be used during layout.</p>
      *
      * @return the end content inset used when a menu has been set in pixels
-     *
      * @see #setContentInsetEndWithActions(int)
      * {@link androidx.appcompat.R.attr#contentInsetEndWithActions}
      */
@@ -1474,7 +1469,6 @@ public class Toolbar extends ViewGroup {
      * {@link #getContentInsetEnd()} and this value will be used during layout.</p>
      *
      * @param insetEndWithActions the inset to use when a menu has been set in pixels
-     *
      * @see #getContentInsetEndWithActions()
      * {@link androidx.appcompat.R.attr#contentInsetEndWithActions}
      */
@@ -1493,9 +1487,11 @@ public class Toolbar extends ViewGroup {
     /**
      * Gets the content inset that will be used on the starting side of the bar in the current
      * toolbar configuration.
+     * <p>
+     * 用两个值getContentInsetStart()和mContentInsetStartWithNavigation控制content View到Toolbar边距的距离
+     * 配置有Nav和没有Nav时到Toolbar边距的距离
      *
      * @return the current content inset start in pixels
-     *
      * @see #getContentInsetStartWithNavigation()
      */
     public int getCurrentContentInsetStart() {
@@ -1509,7 +1505,6 @@ public class Toolbar extends ViewGroup {
      * toolbar configuration.
      *
      * @return the current content inset end in pixels
-     *
      * @see #getContentInsetEndWithActions()
      */
     public int getCurrentContentInsetEnd() {
@@ -1528,7 +1523,6 @@ public class Toolbar extends ViewGroup {
      * toolbar configuration.
      *
      * @return the current content inset left in pixels
-     *
      * @see #getContentInsetStartWithNavigation()
      * @see #getContentInsetEndWithActions()
      */
@@ -1543,7 +1537,6 @@ public class Toolbar extends ViewGroup {
      * toolbar configuration.
      *
      * @return the current content inset right in pixels
-     *
      * @see #getContentInsetStartWithNavigation()
      * @see #getContentInsetEndWithActions()
      */
@@ -1584,8 +1577,9 @@ public class Toolbar extends ViewGroup {
     }
 
     /**
-     * Logo/Nav/Title/SubTitle/Menu走该方法,都是系统的View
-     * mCollapseButtonView/mExpandedActionView,属于外部定义的view,不走这个方法,他们的lp.mViewType = LayoutParams.EXPANDED,标志为EXPANDED状态
+     * Logo/Nav/Title/SubTitle/Menu属于LayoutParams.SYSTEM
+     * mCollapseButtonView/mExpandedActionView属于lp.mViewType = LayoutParams.EXPANDED,标志为EXPANDED类型,不走这个方法
+     *
      * @param allowHide 如果此时正展示mExpandedActionView,而该View属于需要隐藏的View(allowHide为true),则仅添加到mHiddenViews
      *                  当mExpandedActionView collapse的时候,mHiddenViews将重新添加到Toolbar
      *                  如果allowHide为false,即mExpandedActionView显示与否,该View都会显示,目前只有Menu如此
@@ -1690,7 +1684,7 @@ public class Toolbar extends ViewGroup {
     }
 
     /**
-     *  如果super.onHoverEvent(ev)消费事件返回true,则一直调用super.onHoverEvent(ev),否则只调用一次
+     * 如果super.onHoverEvent(ev)消费事件返回true,则一直调用super.onHoverEvent(ev),否则只调用一次
      */
     @Override
     public boolean onHoverEvent(MotionEvent ev) {
@@ -1717,16 +1711,15 @@ public class Toolbar extends ViewGroup {
     }
 
     /**
-     *
-     * @param child 子View
-     * @param parentWidthSpec Toolbar的WidthSpec
-     * @param widthUsed View已使用的Width
+     * @param child            子View
+     * @param parentWidthSpec  Toolbar的WidthSpec
+     * @param widthUsed        View已使用的Width
      * @param parentHeightSpec Toolbar的HeightSpec
-     * @param heightUsed View已使用的Height
+     * @param heightUsed       View已使用的Height
      * @param heightConstraint 高度限制
      */
     private void measureChildConstrained(View child, int parentWidthSpec, int widthUsed,
-            int parentHeightSpec, int heightUsed, int heightConstraint) {
+                                         int parentHeightSpec, int heightUsed, int heightConstraint) {
         final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
 
         /**
@@ -1781,20 +1774,19 @@ public class Toolbar extends ViewGroup {
     /**
      * Returns the width + uncollapsed margins
      *
-     * @param child 子View
-     * @param parentWidthMeasureSpec 父类宽度的MeasureSpec
-     * @param widthUsed 已经被使用了的width
+     * @param child                   子View
+     * @param parentWidthMeasureSpec  父类宽度的MeasureSpec
+     * @param widthUsed               已经被使用了的width
      * @param parentHeightMeasureSpec 父类高度的MeasureSpec
-     * @param heightUsed  已经被使用了的height
-     * @param collapsingMargins content View距离左侧Nav和右侧Menu的margins
+     * @param heightUsed              已经被使用了的height
+     * @param collapsingMargins       content View距离左侧Nav和右侧Menu的margins
      * @return 返回子类所占的宽度 = getMeasuredWidth + 横向margin和
      */
     private int measureChildCollapseMargins(View child,
-            int parentWidthMeasureSpec, int widthUsed,
-            int parentHeightMeasureSpec, int heightUsed, int[] collapsingMargins) {
+                                            int parentWidthMeasureSpec, int widthUsed,
+                                            int parentHeightMeasureSpec, int heightUsed, int[] collapsingMargins) {
         final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
 
-        // 待定??
         // margin diff:子View与左侧Nav/与右侧menu的margin,设计规则为不叠加collapsingMargins和自身的margin,而是max(collapsingMargins,lp.leftMargin)
         // 以下面代码说明:
         //      如果leftDiff > collapsingMargins ,leftMargin为leftDiff,实际上在onLayout时,子View与Nav的距离为leftDiff + collapsingMargins = lp.leftMargin
@@ -1805,7 +1797,9 @@ public class Toolbar extends ViewGroup {
         final int rightMargin = Math.max(0, rightDiff);
         // 子View横向margin和
         final int hMargins = leftMargin + rightMargin;
-        // 当leftDiff < collapsingMargins时,修改collapsingMargins
+        // 当leftDiff < collapsingMargins时,修改collapsingMargins,消耗collapsingMargins的值直到变成0
+        // 当collapsingMargins变成0后,后面的marginLeft就能正常显示
+        // 当leftDiff > collapsingMargins时,collapsingMargins变成0,后面的View的marginLeft能正常显示
         collapsingMargins[0] = Math.max(0, -leftDiff);
         collapsingMargins[1] = Math.max(0, -rightDiff);
 
@@ -1839,19 +1833,21 @@ public class Toolbar extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // 子View占用的width总和
         int width = 0;
         // 取所有View最大值
         int height = 0;
         int childState = 0;
 
-        // 由mNavButtonView/mCollapseButtonView决定Left,mMenuView决定Right
-        // 影响mExpandedActionView/mLogoView/CUSTOM View的onMeasure
-        //      当显示mExpandedActionView时,该值表示mExpandedActionView距离mCollapseButtonView的宽度
-        //      当不显示mExpandedActionView时,该值表示content View距离mNavButtonView的宽度
-        //
-        // collapsingMargins = marginLeft marginRight
-        // 如果是Left To Right,marginLeft = marginStartIndex,marginRight = marginEndIndex
-        // 如果是Right To Left,marginLeft = marginEndIndex,marginRight = marginStartIndex
+        /**
+         * 由mNavButtonView/mCollapseButtonView决定Left,mMenuView决定Right
+         * 影响mExpandedActionView/mLogoView/CUSTOM View的onMeasure
+         *      当显示mExpandedActionView时,该值表示mExpandedActionView距离mCollapseButtonView的宽度
+         *      当不显示mExpandedActionView时,该值表示content View距离mNavButtonView的宽度
+         * collapsingMargins = marginLeft marginRight
+         * 如果是Left To Right,marginLeft = marginStartIndex,marginRight = marginEndIndex
+         * 如果是Right To Left,marginLeft = marginEndIndex,marginRight = marginStartIndex
+         */
         final int[] collapsingMargins = mTempMargins;
         final int marginStartIndex;
         final int marginEndIndex;
@@ -1896,13 +1892,15 @@ public class Toolbar extends ViewGroup {
         //不存在Navigation,取getContentInsetStart()
         final int contentInsetStart = getCurrentContentInsetStart();
 
-        // contentInsetStart: content view(logo/Title/subTitle)距离Toolbar左侧的宽度
-        // navWidth: mCollapseButtonView/mNavButtonView 占用的宽度
-        // 1,Nav所占宽度
-        // 2,mCollapseButtonView所占宽度
-        // 3,该值在两个状态是不一致的,因为mCollapseButtonView与Nav的宽度可能是不一致的
-        // 4,取contentInsetStart, navWidth的最大值,不取叠加值,Toolbar自定规则
-        // 5,所以决定content View距离Toolbar左侧的距离为contentInsetStart, navWidth,在编码时要根据这个来写
+        /**
+         * contentInsetStart: content view(logo/Title/subTitle)距离Toolbar左侧的宽度
+         * navWidth: mCollapseButtonView/mNavButtonView 占用的宽度
+         * 1,Nav所占宽度
+         * 2,mCollapseButtonView所占宽度
+         * 3,该值在两个状态是不一致的,因为mCollapseButtonView与Nav的宽度可能是不一致的
+         * 4,取contentInsetStart, navWidth的最大值,不取叠加值,Toolbar自定规则
+         * 5,所以决定content View距离Toolbar左侧的距离为contentInsetStart, navWidth,在编码时要根据这个来写
+         */
         width += Math.max(contentInsetStart, navWidth);
 
         // 1,content View与Nav的距离
@@ -1922,10 +1920,12 @@ public class Toolbar extends ViewGroup {
         }
 
         final int contentInsetEnd = getCurrentContentInsetEnd();
+        // end占用位置以contentInsetEnd, menuWidth 较大值为主
         width += Math.max(contentInsetEnd, menuWidth);
         // content View距离Menu的距离
         collapsingMargins[marginEndIndex] = Math.max(0, contentInsetEnd - menuWidth);
 
+        // 如果展示mExpandedActionView
         if (shouldLayout(mExpandedActionView)) {
             width += measureChildCollapseMargins(mExpandedActionView, widthMeasureSpec, width,
                     heightMeasureSpec, 0, collapsingMargins);
@@ -1935,6 +1935,7 @@ public class Toolbar extends ViewGroup {
                     mExpandedActionView.getMeasuredState());
         }
 
+        // 如果不展示mExpandedActionView,需要考虑Logo/xml子view/title/subTitle
         if (shouldLayout(mLogoView)) {
             width += measureChildCollapseMargins(mLogoView, widthMeasureSpec, width,
                     heightMeasureSpec, 0, collapsingMargins);
@@ -1944,6 +1945,13 @@ public class Toolbar extends ViewGroup {
                     mLogoView.getMeasuredState());
         }
 
+        /**
+         * Logo/Nav/Title/SubTitle/Menu属于LayoutParams.SYSTEM
+         * mCollapseButtonView/mExpandedActionView属于LayoutParams.EXPANDED
+         * 在xml中添加的View属于LayoutParams.CUSTOM
+         * CUSTOM View比Title/SubTitle优先级更高,所以Title/SubTitle可能会不展示
+         *
+         */
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = getChildAt(i);
@@ -1959,6 +1967,8 @@ public class Toolbar extends ViewGroup {
             childState = View.combineMeasuredStates(childState, child.getMeasuredState());
         }
 
+        // 宽度由title/subTitle的max值决定
+        // 宽度由两者之和决定
         int titleWidth = 0;
         int titleHeight = 0;
         final int titleVertMargins = mTitleMarginTop + mTitleMarginBottom;
@@ -2002,23 +2012,28 @@ public class Toolbar extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        final boolean isRtl =  ViewCompat.getLayoutDirection(this) ==  ViewCompat.LAYOUT_DIRECTION_RTL;
+        final boolean isRtl = ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL;
         final int width = getWidth();
         final int height = getHeight();
         final int paddingLeft = getPaddingLeft();
         final int paddingRight = getPaddingRight();
         final int paddingTop = getPaddingTop();
         final int paddingBottom = getPaddingBottom();
+        // 如果是left to right,以left来逐步layout,从左到右增加所占用宽度
         int left = paddingLeft;
         int right = width - paddingRight;
 
+        // 初始化为0,后面进行计算赋值,并在子View中对其进行消耗
         final int[] collapsingMargins = mTempMargins;
         collapsingMargins[0] = collapsingMargins[1] = 0;
 
         // Align views within the minimum toolbar height, if set.
+        // 所有view只有在Gravity.TOP || Gravity.BOTTOM 时,alignmentHeight才会起作用
+        // b - t:当Toolbar的height为固定值时,高度固定,当不是固定值wrap_content时,该值为56dp
         final int minHeight = ViewCompat.getMinimumHeight(this);
         final int alignmentHeight = minHeight >= 0 ? Math.min(minHeight, b - t) : 0;
 
+        // mNavButtonView/mCollapseButtonView/mMenuView 都相对独立,优先进行layout
         if (shouldLayout(mNavButtonView)) {
             if (isRtl) {
                 right = layoutChildRight(mNavButtonView, right, collapsingMargins,
@@ -2049,13 +2064,23 @@ public class Toolbar extends ViewGroup {
             }
         }
 
+        // collapsingMargins 计算content 跟mNavButtonView/mCollapseButtonView/mMenuView的距离
         final int contentInsetLeft = getCurrentContentInsetLeft();
         final int contentInsetRight = getCurrentContentInsetRight();
+        // content view距离nav的距离
         collapsingMargins[0] = Math.max(0, contentInsetLeft - left);
+        // content view距离menu的距离
+        // (width - paddingRight - right) -->menu占用的宽度
+        // 如果contentInsetRight比menu占用的宽度大,计算 content view距离menu的距离,否则距离为0
         collapsingMargins[1] = Math.max(0, contentInsetRight - (width - paddingRight - right));
         left = Math.max(left, contentInsetLeft);
+        // (width - paddingRight - contentInsetRight) -->通过contentInsetRight直接计算right值,不算View的宽度
+        // 如果contentInsetRight比menu占用的宽度大,使用contentInsetRight来layout
         right = Math.min(right, width - paddingRight - contentInsetRight);
 
+        // 后续collapsingMargins主要作用在mExpandedActionView,或mLogoView/title/subTitle/xml声明的子view
+        // 后面的View的marginLeft会不断消耗collapsingMargins的值,直到collapsingMargins变为0,然后marginLeft才会正常显示
+        // 否则marginLeft<collapsingMargins,这部分margin是不会显示的
         if (shouldLayout(mExpandedActionView)) {
             if (isRtl) {
                 right = layoutChildRight(mExpandedActionView, right, collapsingMargins,
@@ -2182,6 +2207,7 @@ public class Toolbar extends ViewGroup {
         // Get all remaining children sorted for layout. This is all prepared
         // such that absolute layout direction can be used below.
 
+        // 获取xml中添加的Gravity.LEFT的子View
         addCustomViewsWithGravity(mTempViews, Gravity.LEFT);
         final int leftViewsCount = mTempViews.size();
         for (int i = 0; i < leftViewsCount; i++) {
@@ -2239,11 +2265,20 @@ public class Toolbar extends ViewGroup {
         return width;
     }
 
+    /**
+     * @param child             子view
+     * @param left              左侧已占用的宽度,从该坐标开始layout
+     * @param collapsingMargins content View距离nav的距离
+     * @param alignmentHeight   计算的高度
+     * @return 子view占用的宽度
+     */
     private int layoutChildLeft(View child, int left, int[] collapsingMargins,
-            int alignmentHeight) {
+                                int alignmentHeight) {
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+        // 子View的marginLeft不起效,除非比collapsingMargins大
         final int l = lp.leftMargin - collapsingMargins[0];
         left += Math.max(0, l);
+        // 子View的marginLeft不断消耗collapsingMargins的值
         collapsingMargins[0] = Math.max(0, -l);
         final int top = getChildTop(child, alignmentHeight);
         final int childWidth = child.getMeasuredWidth();
@@ -2253,7 +2288,7 @@ public class Toolbar extends ViewGroup {
     }
 
     private int layoutChildRight(View child, int right, int[] collapsingMargins,
-            int alignmentHeight) {
+                                 int alignmentHeight) {
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
         final int r = lp.rightMargin - collapsingMargins[1];
         right -= Math.max(0, r);
@@ -2268,6 +2303,22 @@ public class Toolbar extends ViewGroup {
     private int getChildTop(View child, int alignmentHeight) {
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
         final int childHeight = child.getMeasuredHeight();
+        // 只有在Gravity.TOP || Gravity.BOTTOM 时起效,Gravity.CENTER_VERTICAL失效
+        // alignmentHeight:当Toolbar的height为固定值时,高度固定,当不是固定值wrap_content时,该值为56dp
+        // 如果minHeight < 0,那么不需要考虑alignmentOffset
+        // alignmentHeight:
+        // 如果minHeight >= 0
+        //      Gravity.TOP:不考虑子View的topMargin
+        //          如果Toolbar.getPaddingTop() == 0,相当于居中显示
+        //          如果Toolbar.getPaddingTop() > 0,Toolbar高度wrap_content,alignmentHeight的高度并不包括padding的值,子View还是会居中
+        //          如果Toolbar.getPaddingTop() > 0,Toolbar高度为固定值,alignmentHeight的高度包括了padding的值,子View会被padding遮挡
+        //      Gravity.BOTTOM:考虑子View的bottomMargin
+        //          不懂为什么这里是-alignmentOffset,如果childHeight < alignmentHeight,则子View在底部的同时要往下移alignmentOffset
+        //          如果childHeight > alignmentHeight时,往上移alignmentOffset
+        //          即在Gravity.BOTTOM情况下,子View会在底部自动上移或下移(childHeight - alignmentHeight)高度
+        // 所以,Gravity.TOP时,子View仍是居中的,而如果Toolbar存在paddingTop,那么是不会在Y轴上居中的,getPaddingTop() - alignmentOffset 是一个不规则的数,布局是乱的
+        // Gravity.BOTTOM时,子View最好是match_parent的,不然上移下移的高度alignmentOffset不规则,布局肯定是乱的
+        // 如果有特别需求,最好是先通过布局ViewGroup match_parent,然后在ViewGroup里操作
         final int alignmentOffset = alignmentHeight > 0 ? (childHeight - alignmentHeight) / 2 : 0;
         switch (getChildVerticalGravity(lp.gravity)) {
             case Gravity.TOP:
@@ -2284,15 +2335,25 @@ public class Toolbar extends ViewGroup {
                 final int height = getHeight();
                 final int space = height - paddingTop - paddingBottom;
                 int spaceAbove = (space - childHeight) / 2;
+                // 如果childHeight > Toolbar.getHeight(),spaceAbove为负值,则界面相当于align TOP
+                // 如果childHeight < Toolbar.getHeight()
+                //      如果居中后顶部的剩余空间比topMargin小,包括当childHeight>Toolbar.getHeight()时,直接使用topMargin
+                //      如果比topMargin大,剩余空间充裕,则以bottomMargin为主,topMargin失效
                 if (spaceAbove < lp.topMargin) {
                     spaceAbove = lp.topMargin;
                 } else {
+                    // 实际等于space- childHeight - spaceAbove
+                    // 不直接用spaceAbove是因为奇数时是两个值是不一样的
                     final int spaceBelow = height - paddingBottom - childHeight -
                             spaceAbove - paddingTop;
+                    // 如果居中后底部的剩余空间比bottomMargin小,直接使用topMargin
+                    // 如果比topMargin大,底部剩余空间充裕,直接居中,bottomMargin也失效
                     if (spaceBelow < lp.bottomMargin) {
                         spaceAbove = Math.max(0, spaceAbove - (lp.bottomMargin - spaceBelow));
                     }
                 }
+                // topMargin/bottomMargin 如果比spaceAbove/spaceBelow 大时,以childView的margin为主
+                // 否则如果剩余空间充裕时,直接居中,topMargin/bottomMargin失效
                 return paddingTop + spaceAbove;
         }
     }
@@ -2313,11 +2374,11 @@ public class Toolbar extends ViewGroup {
      * Prepare a list of non-SYSTEM child views. If the layout direction is RTL
      * this will be in reverse child order.
      *
-     * @param views List to populate. It will be cleared before use.
+     * @param views   List to populate. It will be cleared before use.
      * @param gravity Horizontal gravity to match against
      */
     private void addCustomViewsWithGravity(List<View> views, int gravity) {
-        final boolean isRtl =  ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL;
+        final boolean isRtl = ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL;
         final int childCount = getChildCount();
         final int absGrav = GravityCompat.getAbsoluteGravity(gravity,
                 ViewCompat.getLayoutDirection(this));
@@ -2346,7 +2407,7 @@ public class Toolbar extends ViewGroup {
     }
 
     private int getChildHorizontalGravity(int gravity) {
-        final int ld =  ViewCompat.getLayoutDirection(this);
+        final int ld = ViewCompat.getLayoutDirection(this);
         final int absGrav = GravityCompat.getAbsoluteGravity(gravity, ld);
         final int hGrav = absGrav & Gravity.HORIZONTAL_GRAVITY_MASK;
         switch (hGrav) {
@@ -2402,7 +2463,9 @@ public class Toolbar extends ViewGroup {
         return super.checkLayoutParams(p) && p instanceof LayoutParams;
     }
 
-    /** @hide */
+    /**
+     * @hide
+     */
     @RestrictTo(LIBRARY_GROUP_PREFIX)
     public DecorToolbar getWrapper() {
         if (mWrapper == null) {
@@ -2440,6 +2503,7 @@ public class Toolbar extends ViewGroup {
     /**
      * Force the toolbar to collapse to zero-height during measurement if
      * it could be considered "empty" (no visible elements with nonzero measured size)
+     *
      * @hide
      */
     @RestrictTo(LIBRARY_GROUP_PREFIX)
@@ -2450,6 +2514,7 @@ public class Toolbar extends ViewGroup {
 
     /**
      * Must be called before the menu is accessed
+     *
      * @hide
      */
     @RestrictTo(LIBRARY_GROUP_PREFIX)
