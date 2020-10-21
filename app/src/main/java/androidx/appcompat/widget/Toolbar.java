@@ -207,7 +207,7 @@ public class Toolbar extends ViewGroup {
     // content与Menu的距离
     private int mContentInsetEndWithActions;
 
-    // ??
+    // Title的Gravity,TOP/BOTTOM/CENTER_VERTICAL的布局方式不一样
     private int mGravity = GravityCompat.START | Gravity.CENTER_VERTICAL;
 
     // 标题内容
@@ -280,7 +280,7 @@ public class Toolbar extends ViewGroup {
     // 系统外部提供的回调函数
     private MenuBuilder.Callback mMenuBuilderCallback;
 
-    // ??
+    // Toolbar是否高度为0,内部不存在可见元素
     private boolean mCollapsible;
 
     private final Runnable mShowOverflowMenuRunnable = new Runnable() {
@@ -2029,7 +2029,7 @@ public class Toolbar extends ViewGroup {
 
         // Align views within the minimum toolbar height, if set.
         // 所有view只有在Gravity.TOP || Gravity.BOTTOM 时,alignmentHeight才会起作用
-        // b - t:当Toolbar的height为固定值时,高度固定,当不是固定值wrap_content时,该值为56dp
+        // 取较小值来进行计算,所以哪怕Toolbar设定固定值高度/设置padding超过56dp,alignmentHeight都不会超过56dp(?attr/actionBarSize)
         final int minHeight = ViewCompat.getMinimumHeight(this);
         final int alignmentHeight = minHeight >= 0 ? Math.min(minHeight, b - t) : 0;
 
@@ -2121,7 +2121,7 @@ public class Toolbar extends ViewGroup {
             final LayoutParams bottomlp = (LayoutParams) bottomChild.getLayoutParams();
             final boolean titleHasWidth = (layoutTitle && (mTitleTextView.getMeasuredWidth() > 0))
                     || (layoutSubtitle && mSubtitleTextView.getMeasuredWidth() > 0);
-
+            // 计算获取titleTop
             switch (mGravity & Gravity.VERTICAL_GRAVITY_MASK) {
                 case Gravity.TOP:
                     titleTop = getPaddingTop() + toplp.topMargin + mTitleMarginTop;
@@ -2130,11 +2130,14 @@ public class Toolbar extends ViewGroup {
                 case Gravity.CENTER_VERTICAL:
                     final int space = height - paddingTop - paddingBottom;
                     int spaceAbove = (space - titleHeight) / 2;
+                    // space < titleHeight
+                    // 或者space > titleHeight 并且 顶部空余的空间小于marginTop
                     if (spaceAbove < toplp.topMargin + mTitleMarginTop) {
                         spaceAbove = toplp.topMargin + mTitleMarginTop;
                     } else {
                         final int spaceBelow = height - paddingBottom - titleHeight -
                                 spaceAbove - paddingTop;
+                        // 底部空余的空间小于marginBottom
                         if (spaceBelow < toplp.bottomMargin + mTitleMarginBottom) {
                             spaceAbove = Math.max(0, spaceAbove -
                                     (bottomlp.bottomMargin + mTitleMarginBottom - spaceBelow));
@@ -2225,15 +2228,19 @@ public class Toolbar extends ViewGroup {
         // Centered views try to center with respect to the whole bar, but views pinned
         // to the left or right can push the mass of centered views to one side or the other.
         // 将View居中,但是因为左侧和右侧的View,导致可能会偏向一边
+        // 居中是在padding内居中,找到padding内的中心点parentCenter,中心点减去二分一中间内容的宽度,就是中间View layout的起点
         addCustomViewsWithGravity(mTempViews, Gravity.CENTER_HORIZONTAL);
         final int centerViewsWidth = getViewListMeasuredWidth(mTempViews, collapsingMargins);
         final int parentCenter = paddingLeft + (width - paddingLeft - paddingRight) / 2;
         final int halfCenterViewsWidth = centerViewsWidth / 2;
         int centerLeft = parentCenter - halfCenterViewsWidth;
         final int centerRight = centerLeft + centerViewsWidth;
+        // 校验:如果布局左侧会发生重叠,那么直接接着left进行layout;
         if (centerLeft < left) {
             centerLeft = left;
-        } else if (centerRight > right) {
+        }
+        // 校验:如果布局左侧未重叠,而右侧会发生重叠,从右侧开始layout
+        else if (centerRight > right) {
             centerLeft -= centerRight - right;
         }
 
@@ -2304,14 +2311,13 @@ public class Toolbar extends ViewGroup {
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
         final int childHeight = child.getMeasuredHeight();
         // 只有在Gravity.TOP || Gravity.BOTTOM 时起效,Gravity.CENTER_VERTICAL失效
-        // alignmentHeight:当Toolbar的height为固定值时,高度固定,当不是固定值wrap_content时,该值为56dp
-        // 如果minHeight < 0,那么不需要考虑alignmentOffset
+        // alignmentHeight:为minHeight和layout高度的最小值,所以哪怕设定有padding值,高度大于?attr/actionBarSize,alignmentHeight的值都是56dp:?attr/actionBarSize
+        // 如果minHeight < 0,alignmentHeight = 0,那么不需要考虑alignmentOffset
         // alignmentHeight:
         // 如果minHeight >= 0
         //      Gravity.TOP:不考虑子View的topMargin
         //          如果Toolbar.getPaddingTop() == 0,相当于居中显示
-        //          如果Toolbar.getPaddingTop() > 0,Toolbar高度wrap_content,alignmentHeight的高度并不包括padding的值,子View还是会居中
-        //          如果Toolbar.getPaddingTop() > 0,Toolbar高度为固定值,alignmentHeight的高度包括了padding的值,子View会被padding遮挡
+        //          如果Toolbar.getPaddingTop() > 0,当childHeight > alignmentHeight,但实际上当childHeight<=getHeight()(measure时会计算最大的高度),子View会被遮挡
         //      Gravity.BOTTOM:考虑子View的bottomMargin
         //          不懂为什么这里是-alignmentOffset,如果childHeight < alignmentHeight,则子View在底部的同时要往下移alignmentOffset
         //          如果childHeight > alignmentHeight时,往上移alignmentOffset
@@ -2640,7 +2646,9 @@ public class Toolbar extends ViewGroup {
     }
 
     public static class SavedState extends AbsSavedState {
+        // 展示的mExpandedActionView的menuid
         int expandedMenuItemId;
+        // 是否点击menu的更多按钮展示popup
         boolean isOverflowOpen;
 
         public SavedState(Parcel source) {
@@ -2696,6 +2704,7 @@ public class Toolbar extends ViewGroup {
         @Override
         public void initForMenu(Context context, MenuBuilder menu) {
             // Clear the expanded action view when menus change.
+            // menu改变时,先将原来展Expanded的mExpandedActionView collapse收缩回来
             if (mMenu != null && mCurrentExpandedItem != null) {
                 mMenu.collapseItemActionView(mCurrentExpandedItem);
             }

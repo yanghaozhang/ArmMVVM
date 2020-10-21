@@ -10,11 +10,20 @@ class ToolbarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_toolbar2)
-        setSupportActionBar(tool_bar)
+        tool_bar.title = ""
+        /**
+         * 该方法会初始化ActionBar
+         * 1,setNavigationOnClickListener,该方法必须放置setSupportActionBar之后,否则无效
+         * 2,如果Toolbar在xml中设置了menu,在该方法中AppCompatDelegateImpl.invalidateOptionsMenu();会使设置的menu无效
+         */
+//        setSupportActionBar(tool_bar)
+        tool_bar.setNavigationOnClickListener {
+            finish()
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_test, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.menu_test, menu)
+//        return true
+//    }
 }
