@@ -2704,7 +2704,7 @@ public class Toolbar extends ViewGroup {
         @Override
         public void initForMenu(Context context, MenuBuilder menu) {
             // Clear the expanded action view when menus change.
-            // menu改变时,先将原来展Expanded的mExpandedActionView collapse收缩回来
+            // menu改变时,先将原来展Expanded的mExpandedActionView collapse折叠回来
             if (mMenu != null && mCurrentExpandedItem != null) {
                 mMenu.collapseItemActionView(mCurrentExpandedItem);
             }
