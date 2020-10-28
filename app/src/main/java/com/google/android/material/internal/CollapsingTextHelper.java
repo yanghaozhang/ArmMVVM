@@ -340,6 +340,9 @@ public final class CollapsingTextHelper {
         }
     }
 
+    /**
+     * @return 通过tmpPaint计算text占用的宽度(受折叠文本的字体大小和字体样式限制)
+     */
     public float calculateCollapsedTextWidth() {
         if (text == null) {
             return 0;
@@ -348,12 +351,18 @@ public final class CollapsingTextHelper {
         return tmpPaint.measureText(text, 0, text.length());
     }
 
+    /**
+     * @return 获取拓展时字体的高度(ascent到baseline的高度)
+     */
     public float getExpandedTextHeight() {
         getTextPaintExpanded(tmpPaint);
         // Return expanded height measured from the baseline.
         return -tmpPaint.ascent();
     }
 
+    /**
+     * @return 获取折叠时字体的高度(ascent到baseline的高度)
+     */
     public float getCollapsedTextHeight() {
         getTextPaintCollapsed(tmpPaint);
         // Return collapsed height measured from the baseline.
@@ -370,6 +379,9 @@ public final class CollapsingTextHelper {
         textPaint.setTypeface(collapsedTypeface);
     }
 
+    /**
+     * 当collapsedBounds/expandedBounds发生改变的时候,需要改变drawTitle的值,是否需要绘制Title
+     */
     void onBoundsChanged() {
         drawTitle =
                 collapsedBounds.width() > 0
@@ -400,6 +412,10 @@ public final class CollapsingTextHelper {
         return collapsedTextGravity;
     }
 
+    /**
+     * 设置折叠时文字的样式
+     * 提取需要的样式
+     */
     public void setCollapsedTextAppearance(int resId) {
         TextAppearance textAppearance = new TextAppearance(view.getContext(), resId);
 
@@ -420,6 +436,9 @@ public final class CollapsingTextHelper {
         if (collapsedFontCallback != null) {
             collapsedFontCallback.cancel();
         }
+        // 异步使用fontFamily，style和fonts解析请求的字体Typeface
+        // 如果解析失败，则调用expandedFontCallback.onFontRetrievalFailed(),使用textAppearance.getFallbackFont()备用字体Typeface调用new ApplyFont()
+        // 如果解析成功,生成新的Typeface调用new ApplyFont()
         collapsedFontCallback =
                 new CancelableFontCallback(
                         new ApplyFont() {
@@ -467,6 +486,9 @@ public final class CollapsingTextHelper {
         recalculate();
     }
 
+    /**
+     * 修改折叠字体的Typeface,如果Typeface改变了,重新计算界面
+     */
     public void setCollapsedTypeface(Typeface typeface) {
         if (setCollapsedTypefaceInternal(typeface)) {
             recalculate();
@@ -487,6 +509,7 @@ public final class CollapsingTextHelper {
         }
     }
 
+    // 改变折叠字体样式Typeface
     @SuppressWarnings("ReferenceEquality") // Matches the Typeface comparison in TextView
     private boolean setCollapsedTypefaceInternal(Typeface typeface) {
         // Explicit Typeface setting cancels pending async fetch, if any, to avoid old font overriding
@@ -524,6 +547,8 @@ public final class CollapsingTextHelper {
     }
 
     /**
+     * 滚动到当前拓展的百分比值,0.0为完全折叠,1.0为拓展全部
+     *
      * Set the value indicating the current scroll value. This decides how much of the background will
      * be displayed, as well as the title metrics/positioning.
      *
