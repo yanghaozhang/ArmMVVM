@@ -41,6 +41,7 @@
         </activity>
         <activity android:name=".ui.test.TestActivity" />
         <activity android:name=".ui.refreshlayout.ToolbarActivity" />
+        <activity android:name=".ui.livedata.LiveDataActivity" />
 
         <meta-data
             android:name="com.example.armmvvm.base.MyConfigModule"

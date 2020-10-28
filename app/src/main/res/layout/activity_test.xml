@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:onClick="getSupportProvince"
             android:padding="10dp"
-            android:text="getSupportProvince"
+            android:text="getSupportProvinceByCoroutines"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="30dp"
             android:paddingTop="20dp"
-            android:text="show weather detail"
+            android:text="waiting to show weather detail"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_city" />

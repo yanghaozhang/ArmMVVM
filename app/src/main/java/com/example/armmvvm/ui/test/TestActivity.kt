@@ -75,7 +75,9 @@ class TestActivity : BaseActivity() {
 
     private fun onNewWeather(responseBean: ResponseBean<WeatherBean>) {
         val result = responseBean.result
-        tv_detail.setText("${result.city_name}--${result.day_weather} --${result.day_temp} --${result.night_weather} --${result.night_temp} ")
+        val weather = "${result.city_name}--${result.day_weather} --${result.day_temp} --${result.night_weather} --${result.night_temp} "
+        tv_detail.text = weather
+        showMessage(weather)
     }
 
     private fun printTest(savedInstanceState: Bundle?) {
@@ -88,13 +90,15 @@ class TestActivity : BaseActivity() {
     }
 
     private fun onNewProvince(listBean: ResponseListBean<ProvinceBean>) {
-        showMessage("province_new")
+        showMessage("get province success")
         provinceAdapter.mProvinceList = listBean.result.toMutableList()
         provinceAdapter.notifyDataSetChanged()
+        cityAdapter.mCityList.clear()
+        cityAdapter.notifyDataSetChanged()
     }
 
     private fun onNewCity(responseList: ResponseListBean<CityBean>) {
-        showMessage("city_new")
+        showMessage("get city success")
         cityAdapter.mCityList = responseList.result.toMutableList()
         cityAdapter.notifyDataSetChanged()
     }

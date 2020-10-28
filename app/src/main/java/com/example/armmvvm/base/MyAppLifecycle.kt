@@ -31,7 +31,6 @@ class MyAppLifecycle : AppLifecycle {
             ClassicsHeader(context) //.setTimeFormat(new DynamicTimeFormat("更新于 %s"));//指定为经典Header，默认是 贝塞尔雷达Header
         }
         //设置全局的Footer构建器
-        //设置全局的Footer构建器
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ -> //指定为经典Footer，默认是 BallPulseFooter
             ClassicsFooter(context).setDrawableSize(20f)
         }
