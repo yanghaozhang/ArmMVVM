@@ -57,7 +57,6 @@
                     android:text="iiiii"
                     android:textSize="16sp" />
 
-
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -79,7 +78,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 app:cardBackgroundColor="@android:color/white"
-                app:cardCornerRadius="8dp">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="5dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -88,6 +88,36 @@
                     android:src="@mipmap/ic_launcher" />
 
             </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/colorPrimary" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/colorAccent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/colorPrimaryDark" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/white" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/red" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/gray" />
 
         </LinearLayout>
 

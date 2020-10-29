@@ -28,7 +28,7 @@ class MyConfigModule : ConfigModule {
         configModule.run {
             configActivityDelegate {
                 if (it is AppCompatActivity) {
-                    MyActivityDelegateImp(it)
+                    MyActivityDelegateImp.observe(it)
                 }
             }
             configAppDI {

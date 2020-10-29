@@ -10,7 +10,7 @@ import timber.log.Timber
  *  date : 2020/9/10 11:29
  *  description :
  */
-class MyActivityDelegateImp(mActivity: AppCompatActivity) : ActivityDelegate(mActivity) {
+class MyActivityDelegateImp private constructor(mActivity: AppCompatActivity) : ActivityDelegate(mActivity) {
 
     override fun onCreated(owner: LifecycleOwner) {
         Timber.tag("MY_ActivityDelegateImp").d("onCreated()  %s", mActivity?.javaClass?.simpleName)
@@ -34,5 +34,11 @@ class MyActivityDelegateImp(mActivity: AppCompatActivity) : ActivityDelegate(mAc
 
     override fun onDestroyed(owner: LifecycleOwner) {
         Timber.tag("MY_ActivityDelegateImp").d("onDestroyed()  %s", mActivity?.javaClass?.simpleName)
+    }
+
+    companion object{
+        fun observe(activity: AppCompatActivity){
+            MyActivityDelegateImp(activity)
+        }
     }
 }
