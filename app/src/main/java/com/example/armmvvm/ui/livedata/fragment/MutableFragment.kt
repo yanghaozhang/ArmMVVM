@@ -29,12 +29,12 @@ class MutableFragment(val mFragmentName: Any) : BaseFragment() {
 
     override fun initData(savedInstanceState: Bundle?) {
         liveDataViewModel.mutableLiveData.observe(this, this::onStateChange)
-        tv_main.setText("this is $mFragmentName \n Number is $mTag")
+        tv_main.text = "this is $mFragmentName \n Number is $mTag"
     }
 
     private fun onStateChange(msg: String) {
-        Timber.tag("MainFragment").d("onStateChange() called with: msg = $msg")
-        tv_main.setText("this is $mFragmentName \n Increase Number is ${++mTag} and Model is $msg")
+        Timber.tag("MutableFragment").d("onStateChange() called with: msg = $msg")
+        tv_main.text = "this is $mFragmentName \n Increase Number is ${++mTag} and Model is $msg"
     }
 
 }

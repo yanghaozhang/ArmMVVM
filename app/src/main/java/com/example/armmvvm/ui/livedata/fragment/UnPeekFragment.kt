@@ -28,17 +28,14 @@ class UnPeekFragment(val mFragmentName: Any) : BaseFragment() {
     }
 
     override fun initData(savedInstanceState: Bundle?) {
-        Timber.tag("MainFragment")
-                .d("onViewCreated() called with: view = $view, savedInstanceState = $savedInstanceState   %s ", "$liveDataViewModel")
-
         liveDataViewModel.unPeekLiveData.observe(this, this::onStateChange)
-        tv_main.setText("this is $mFragmentName \n Number is $mTag")
+        tv_main.text = "this is $mFragmentName \n Number is $mTag"
 
     }
 
     private fun onStateChange(msg: String) {
-        Timber.tag("MainFragment").d("onStateChange() called with: msg = $msg   ")
-        tv_main.setText("this is $mFragmentName \n Increase Number is ${++mTag} and Model is $msg")
+        Timber.tag("UnPeekFragment").d("onStateChange() called with: msg = $msg   ")
+        tv_main.text = "this is $mFragmentName \n Increase Number is ${++mTag} and Model is $msg"
     }
 
     override fun onDestroyView() {

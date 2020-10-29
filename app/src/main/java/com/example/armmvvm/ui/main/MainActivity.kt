@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import com.example.arm.base.BaseActivity
 import com.example.arm.ext.DIViewModelFactory
 import com.example.arm.http.imageloader.ImageLoader
@@ -20,7 +21,6 @@ import org.kodein.di.android.retainedSubDI
 import org.kodein.di.bind
 import org.kodein.di.instance
 import org.kodein.di.singleton
-
 
 /**
  *  author : yanghaozhang
@@ -48,9 +48,9 @@ class MainActivity : BaseActivity() {
     override fun initData(savedInstanceState: Bundle?) {
         mImageLoader.loadImage(this, ImageConfigImplBuilder {
             url =
-                "https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1600419019&di=459faf2d2c55150df94d1e1b91337fea&src=http://gss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/14ce36d3d539b6002ac5706de850352ac75cb7e4.jpg"
+                    "https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1600419019&di=459faf2d2c55150df94d1e1b91337fea&src=http://gss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/14ce36d3d539b6002ac5706de850352ac75cb7e4.jpg"
             imageView = iv_img
-            placeHoldDrawable = resources.getDrawable(R.drawable.ic_launcher_background, null)
+            placeHoldDrawable = ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_launcher_background)
         })
     }
 
