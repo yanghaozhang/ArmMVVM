@@ -120,7 +120,7 @@ import static com.google.android.material.theme.overlay.MaterialThemeOverlay.wra
  * Toolbar的id
  * @attr ref com.google.android.material.R.styleable#CollapsingToolbarLayout_toolbarId
  */
-public class  extends FrameLayout {
+public class CollapsingToolbarLayout extends FrameLayout {
 
     private static final int DEF_STYLE_RES = R.style.Widget_Design_CollapsingToolbar;
     private static final int DEFAULT_SCRIM_ANIMATION_DURATION = 600;
