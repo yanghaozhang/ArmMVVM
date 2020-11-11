@@ -56,4 +56,8 @@ dependencies {
         exclude module: 'fragment'
         exclude module: 'vectordrawable-animated'
     }
+
+    testImplementation rootProject.ext.defs["junit"]
+    androidTestImplementation rootProject.ext.defs["androidx-unit"]
+    androidTestImplementation rootProject.ext.defs["espresso-core"]
 }
