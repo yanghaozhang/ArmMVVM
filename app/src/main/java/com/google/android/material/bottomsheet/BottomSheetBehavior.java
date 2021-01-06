@@ -16,10 +16,6 @@
 
 package com.google.android.material.bottomsheet;
 
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
@@ -40,6 +36,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -63,6 +60,7 @@ import com.google.android.material.internal.ViewUtils.RelativePadding;
 import com.google.android.material.resources.MaterialResources;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.ShapeAppearanceModel;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -70,12 +68,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 
 /**
+ * 折叠高度:
+ *    如果没有配置,默认peekHeightAuto为true,折叠高度 = 父布局宽度 * 16 / 9 (按黄金分割计算高度)
+ *    如果有配置,可以设置需要的高度
+ *
+ * 展开高度:
+ *    fitToContents=true,根据父布局高度与子布局高度比较计算得到
+ *    fitToContents=false,没有配置就为0
+ *
+ * 半展开高度 halfExpandedOffset:
+ *    fitToContents=false时才存在的状态 = parentHeight * (1 - halfExpandedRatio)
+ *
+ * --------------------------------------------------------------------
+ * NestedScrollView无法滚动
+ *    在布局结束后,重新设置高度
+ * 背景不会使用
+ *
+ * 上拉AppBarLayout跟着上拉
+ *
+ *
+ *
  * 多种模式,实现在CoordinatorLayout子类中配置上拉抽屉
  * 折叠高度
- *    peekHeightAuto:
- *      自动计算折叠高度 = 父布局宽度 * 16 / 9 (按黄金分割计算高度)
+ *    peekHeightAuto boolean:
+ *      是否为自动配置高度,如果为true折叠高度 = 父布局宽度 * 16 / 9 (按黄金分割计算高度)
  *    gestureInsetBottomIgnored:
  *      不忽略底部虚拟按键高度,折叠高度 =
  *          Max(peekHeight, gestureInsetBottom + peekHeightGestureInsetBuffer)
@@ -91,9 +113,15 @@ import java.util.Map;
  *    true(默认):
  *      释放手势,View转变的状态仅跟最后手势方向有关
  *      状态:展开/折叠/隐藏
+ *      高度分别为:fitToContentsOffset/collapsedOffset/parentHeight
  *    false:
  *      释放实时,View转变的状态跟最后手势方向,以及当前Top与halfExpandedOffset的大小有关
  *      状态:展开/折叠/隐藏/STATE_HALF_EXPANDED
+ *      高度分别为:expandedOffset/collapsedOffset/parentHeight/halfExpandedOffset
+ *    区别:
+ *      fitToContentsOffset:根据父布局高度与子布局高度比较计算得到
+ *      expandedOffset:没有配置就为0
+ *      collapsedOffset:fitToContents为true时,collapsedOffset需要取max值,max(parentHeight - peek, fitToContentsOffset)
  *    相关参数:
  *      fitToContentsOffset
  *      	fitToContents == false,展开时的偏移值,max(0, parentHeight - childHeight)
