@@ -2,7 +2,6 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:id="@+id/parent_coordinator"
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -129,91 +128,101 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:clickable="true"
+        android:elevation="3dp"
         android:src="@android:drawable/ic_btn_speak_now"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|right|end" />
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/bottom_scroll_view"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/parent_coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:behavior_expandedOffset="148dp"
-        app:behavior_fitToContents="false"
-        app:behavior_peekHeight="148dp"
-        app:backgroundTint="#ff0"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:shapeAppearance="@style/BottomSheetShapeAppearance">
+        android:elevation="10dp">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/bottom_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:elevation="5dp"
+            app:backgroundTint="#ff0"
+            app:behavior_expandedOffset="148dp"
+            app:behavior_fitToContents="false"
+            app:behavior_peekHeight="148dp"
+            app:layout_behavior="@string/bottom_sheet_behavior"
+            app:shapeAppearance="@style/BottomSheetShapeAppearance">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="1111" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="222" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="1111" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="333" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="222" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="333" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="333" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="333" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="333" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="333" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="333" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="333" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="333" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="333" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="333" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:background="#0000"
-                android:gravity="center"
-                android:text="888" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="333" />
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:background="#0000"
+                    android:gravity="center"
+                    android:text="888" />
 
-    </androidx.core.widget.NestedScrollView>
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

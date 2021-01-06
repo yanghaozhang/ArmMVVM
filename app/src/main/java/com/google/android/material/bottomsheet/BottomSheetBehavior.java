@@ -93,8 +93,8 @@ import static java.lang.Math.min;
  *    在xml声明shapeAppearance属性,并在属性中定义角的类型(圆角/直角)和角的大小
  *    在xml声明backgroundTint可以设置对应的背景颜色
  *    主要实现是通过MaterialShapeDrawable作为背景,综上可以设置背景颜色和圆角属性
- * 上拉AppBarLayout跟着上拉
- *
+ * 上拉NestedScrollView时,AppBarLayout的CollapsingToolbarLayout跟着上拉
+ *    需要重新添加CoordinatorLayout来包裹NestedScrollView,使NestedScrollView的上拉事件不会通过Behavior传到顶层的CoordinatorLayout,从而不会影响AppBarLayout的CollapsingToolbarLayout
  *
  *
  * 多种模式,实现在CoordinatorLayout子类中配置上拉抽屉
