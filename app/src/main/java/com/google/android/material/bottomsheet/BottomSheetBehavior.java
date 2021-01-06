@@ -86,10 +86,13 @@ import static java.lang.Math.min;
  *    fitToContents=false时才存在的状态 = parentHeight * (1 - halfExpandedRatio)
  *
  * --------------------------------------------------------------------
+ * 问题:
  * NestedScrollView无法滚动
- *    在布局结束后,重新设置高度
+ *    在布局加载结束后,重新设置高度,否则NestedScrollView的高度是根据子View决定的高度,无法滑动
  * 背景不会使用
- *
+ *    在xml声明shapeAppearance属性,并在属性中定义角的类型(圆角/直角)和角的大小
+ *    在xml声明backgroundTint可以设置对应的背景颜色
+ *    主要实现是通过MaterialShapeDrawable作为背景,综上可以设置背景颜色和圆角属性
  * 上拉AppBarLayout跟着上拉
  *
  *
