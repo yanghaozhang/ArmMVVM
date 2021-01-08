@@ -30,7 +30,10 @@ import static androidx.core.view.ViewCompat.TYPE_TOUCH;
 
 /**
  *
- * ChildView调用NestedScrollingChildHelper->ViewParentCompat->NestedScrollingParent接口实现的ParentView
+ * ChildView调用NestedScrollingChild接口方法->调用NestedScrollingChildHelper->ViewParentCompat->NestedScrollingParent接口实现的ParentView
+ *
+ * NestedScrollingChild接口方法与NestedScrollingChildHelper一一对应
+ * 实现接口时,不需要自己编写接口方法,只需要调用NestedScrollingChildHelper的对应方法
  *
  * NestedScrollingChildHelper->NestedScrollingParent的调用对应方法如下:
  *      startNestedScroll
@@ -39,7 +42,7 @@ import static androidx.core.view.ViewCompat.TYPE_TOUCH;
  *      	    onNestedScrollAccepted
  *      dispatchNestedPreScroll
  *      	    onNestedPreScroll
- *      dispatchNestedScrollInternal
+ *      dispatchNestedScroll
  *      	    onNestedScroll
  *      dispatchNestedPreFling
  *      	    onNestedPreFling
@@ -50,13 +53,15 @@ import static androidx.core.view.ViewCompat.TYPE_TOUCH;
  *
  * 上述的对应方法,组成了滚动事件的传递顺序,并在方法中传递的consumed[]参数中对滚动距离进行了消费分配
  *
- * 有的ViewGroup不仅仅是NestedScrollingParent还是NestedScrollingChild,比如NestedScrollView
+ * ViewGroup往往不仅仅是NestedScrollingParent还是NestedScrollingChild,比如NestedScrollView
  * 所以会出现不断上传滚动事件的情况,且对于这样的ViewGroup,它的NestedScrollingParent接口实现与NestedScrollingChildHelper一一对应
  *      NestedScrollingChild->
  *          NestedScrollingChildHelper->
  *              NestedScrollingParent->
- *                  NestedScrollingChildHelper->
- *                      NestedScrollingParent
+ *                  NestedScrollingParentHelper调用
+ *                  NestedScrollingChild调用->
+ *                      NestedScrollingChildHelper->
+ *                          NestedScrollingParent
  *
  *
  * Helper class for implementing nested scrolling child views compatible with Android platform

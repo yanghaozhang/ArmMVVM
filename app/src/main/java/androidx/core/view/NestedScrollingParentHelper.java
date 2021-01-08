@@ -27,6 +27,8 @@ import androidx.core.view.ViewCompat.ScrollAxis;
 /**
  * ChildView调用NestedScrollingChildHelper->ViewParentCompat->NestedScrollingParent接口实现的ParentView->ParentView调用NestedScrollingParentHelper
  *
+ * 实现NestedScrollingParent接口时,一般只需要特别处理onStopNestedScroll/onStartNestedScroll/onNestedScrollAccepted对滚动进行处理
+ *
  * NestedScrollingParent->NestedScrollingParentHelper的调用对应方法如下:
  * onNestedScrollAccepted->onNestedScrollAccepted
  * onStopNestedScroll->onStopNestedScroll
