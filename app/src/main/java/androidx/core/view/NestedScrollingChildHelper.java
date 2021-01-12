@@ -254,6 +254,8 @@ public class NestedScrollingChildHelper {
     }
 
     /**
+     * 子视图消费完滚动事件后,将剩余未消费的滚动距离交由嵌套层父布局处理
+     *
      * Dispatch one step of a nested scrolling operation to the current nested scrolling parent.
      *
      * <p>This is a delegate method. Call it from your {@link NestedScrollingChild2} interface
@@ -344,6 +346,9 @@ public class NestedScrollingChildHelper {
     }
 
     /**
+     * 当子视图滚动前调用该方法,允许嵌套层父布局预先消费滚动事件,然后子视图再滚动
+     *
+     *
      * Dispatch one step of a nested pre-scrolling operation to the current nested scrolling parent.
      *
      * <p>This is a delegate method. Call it from your {@link View View} subclass
@@ -358,6 +363,8 @@ public class NestedScrollingChildHelper {
     }
 
     /**
+     * 当子视图滚动前调用该方法,允许嵌套层父布局预先消费滚动事件,然后子视图再滚动
+     *
      * Dispatch one step of a nested pre-scrolling operation to the current nested scrolling parent.
      *
      * <p>This is a delegate method. Call it from your {@link View View} subclass

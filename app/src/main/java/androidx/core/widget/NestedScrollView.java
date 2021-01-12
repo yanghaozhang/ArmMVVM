@@ -68,15 +68,63 @@ import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
  *      在接口回调中对滑动处理
  *      调用NestedScrollingParentHelper记录滑动方向
  *      调用NestedScrollingChild3接口方法,将滑动向上传递,或者由它处理滑动事件
+ *      onNestedScroll:关键接口方法,消费嵌套的滚动,对NestedScrollView来说,消费滚动直到滚动到顶部为止
  *
- * ACTION_DOWN / smoothScrollBy / fling
- *      startNestedScroll
- * ACTION_MOVE / computeScroll(动画滚动)
- *      dispatchNestedPreScroll
- *      dispatchNestedScroll
- * ACTION_UP / computeScroll(动画滚动) / smoothScrollBy / fling
- *      dispatchNestedPreFling
- *      dispatchNestedFling
+ * 调用NestedScrollingChildHelper
+ *      NestedScrollingChild3接口调用对应方法
+ *      NestedScrollingParent.onNestedScroll回调时调用,目的是回调顶层的嵌套滚动
+ * 调用NestedScrollingParentHelper
+ *      NestedScrollingParent3接口调用对应方法记录滚动数据
+ *
+ * 作为触摸事件消费者
+ * 调用NestedScrollingChild接口方法->NestedScrollingChildHelper->调用NestedScrollingParent的接口方法
+ *      ACTION_DOWN / smoothScrollBy / fling
+ *           startNestedScroll
+ *                  onStartNestedScroll
+ *                  如果onStartNestedScroll返回true,调用onNestedScrollAccepted
+ *                  onNestedScrollAccepted
+ *      ACTION_MOVE / computeScroll(动画滚动)
+ *           dispatchNestedPreScroll
+ *                  滚动前先让嵌套层先处理滚动
+ *                  onNestedPreScroll
+ *           进行滚动
+ *               当前View滚动的距离 = 滚动的距离 - 顶层嵌套消耗的距离
+ *           dispatchNestedScroll
+ *                  滚动结束后让嵌套层处理未消费掉的滚动
+ *                  onNestedScroll
+ *      ACTION_UP / computeScroll(动画滚动) / smoothScrollBy / fling
+ *           dispatchNestedPreFling
+ *                  onNestedPreFling
+ *           dispatchNestedFling
+ *                  onNestedFling
+ *           stopNestedScroll
+ *                  onStopNestedScroll
+ *
+ * 作为触摸事件的嵌套层
+ *      onStartNestedScroll
+ *          对NestedScrollView来说,数值方向滚动都接收
+ *      onNestedScrollAccepted
+ *          NestedScrollingParentHelper记录状态
+ *          NestedScrollingChild.startNestedScroll 滚动嵌套
+ *      onNestedPreScroll
+ *          NestedScrollingChild.dispatchNestedPreScroll 滚动嵌套
+ *          内部滚动前不进行处理,即对于滚动事件先内部处理,然后NestedScrollView再处理
+ *      onNestedScroll
+ *          处理内部滚动处理不完的滚动距离
+ *          消费滚动直到滚动到顶部为止
+ *          调用NestedScrollingChildHelper.dispatchNestedScroll 滚动嵌套,剩余的交由更顶部嵌套层处理
+ *      onNestedPreFling
+ *          NestedScrollingChild.dispatchNestedPreFling
+ *      onNestedFling
+ *          如果子类不处理Fling,处理Fling,并调NestedScrollingChild.dispatchNestedFling,向顶层传递Fling,但消费参数为true代表fling已消费
+ *          如果子类已处理,返回false,Fling会自动继续上传
+ *      onStopNestedScroll
+ *          NestedScrollingParentHelper记录状态
+ *          并调NestedScrollingChild.stopNestedScroll
+ *
+ *
+ *
+ *
  *
  * NestedScrollView is just like {@link ScrollView}, but it supports acting
  * as both a nested scrolling parent and child on both new and old versions of Android.
