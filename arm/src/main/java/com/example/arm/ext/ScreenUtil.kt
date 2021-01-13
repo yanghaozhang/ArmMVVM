@@ -14,3 +14,6 @@ val Float.dp
         this,
         Resources.getSystem().displayMetrics
     )
+
+val Float.dpInt
+    get() = this.dp.toInt()

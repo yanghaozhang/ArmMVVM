@@ -13,6 +13,7 @@ import com.example.armmvvm.http.imageloader.ImageConfigImpl
 import com.example.armmvvm.http.imageloader.ImageConfigImplBuilder
 import com.example.armmvvm.ui.livedata.LiveDataActivity
 import com.example.armmvvm.ui.refreshlayout.ToolbarActivity
+import com.example.armmvvm.ui.scrollview.PreNestedScrollViewActivity
 import com.example.armmvvm.ui.test.TestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.DI
@@ -64,5 +65,9 @@ class MainActivity : BaseActivity() {
 
     fun onclick3(view: View) {
         startActivity(Intent(this, LiveDataActivity::class.java))
+    }
+
+    fun onclick4(view: View) {
+        startActivity(Intent(this, PreNestedScrollViewActivity::class.java))
     }
 }

@@ -42,6 +42,7 @@
         <activity android:name=".ui.test.TestActivity" />
         <activity android:name=".ui.refreshlayout.ToolbarActivity" />
         <activity android:name=".ui.livedata.LiveDataActivity" />
+        <activity android:name=".ui.scrollview.PreNestedScrollViewActivity" />
 
         <meta-data
             android:name="com.example.armmvvm.base.MyConfigModule"

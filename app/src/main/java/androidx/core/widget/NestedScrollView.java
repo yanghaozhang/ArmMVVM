@@ -102,7 +102,7 @@ import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
  *
  * 作为触摸事件的嵌套层
  *      onStartNestedScroll
- *          对NestedScrollView来说,数值方向滚动都接收
+ *          对NestedScrollView来说,竖直方向滚动都接收
  *      onNestedScrollAccepted
  *          NestedScrollingParentHelper记录状态
  *          NestedScrollingChild.startNestedScroll 滚动嵌套
