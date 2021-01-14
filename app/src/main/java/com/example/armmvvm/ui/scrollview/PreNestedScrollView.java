@@ -2,7 +2,6 @@ package com.example.armmvvm.ui.scrollview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,6 +9,12 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+
+import timber.log.Timber;
 
 /**
  * 向上滚动:消费子视图的滚动,并且先让父视图优先消费滚动
@@ -42,13 +47,13 @@ public class PreNestedScrollView extends NestedScrollView {
      * 子视图的滚动
      */
     @Override
-    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
+    public void onNestedPreScroll(@NotNull View target, int dx, int dy, int @NotNull [] consumed) {
         if (dy < 0) {
             super.onNestedPreScroll(target, dx, dy, consumed);
             return;
         }
         if (DEBUG_LOG) {
-            Log.d(TAG, "onNestedPreScroll() --: target = [" + target + "], dx = [" + dx + "], dy = [" + dy + "], consumed = [" + consumed[1] + "]");
+            Timber.tag(TAG).d("onNestedPreScroll() --: target = [" + target + "], dx = [" + dx + "], dy = [" + dy + "], consumed = [" + consumed[1] + "]");
         }
         // 顶层滚动
         if (dy > 0 && getScrollY() == 0) {
@@ -57,7 +62,7 @@ public class PreNestedScrollView extends NestedScrollView {
             consumed[1] -= offsetInWindow[1];
             dy += offsetInWindow[1];
             if (DEBUG_LOG) {
-                Log.d(TAG, "dispatchNestedPreScroll: offsetInWindow[1]:" + offsetInWindow[1]);
+                Timber.tag(TAG).d("dispatchNestedPreScroll: offsetInWindow[1]:%s", offsetInWindow[1]);
             }
         }
         // 当前PreNestedScrollView滚动
@@ -66,7 +71,7 @@ public class PreNestedScrollView extends NestedScrollView {
         final int myConsumed = getScrollY() - oldScrollY;
         consumed[1] += myConsumed;
         if (DEBUG_LOG) {
-            Log.d(TAG, "dispatchNestedPreScroll: myConsumed:" + myConsumed);
+            Timber.tag(TAG).d("dispatchNestedPreScroll: myConsumed:%s", myConsumed);
         }
     }
 
@@ -77,7 +82,7 @@ public class PreNestedScrollView extends NestedScrollView {
             return;
         }
         if (DEBUG_LOG) {
-            Log.d(TAG, "onNestedPreScroll() --: target = [" + target + "], dx = [" + dx + "], dy = [" + dy + "], consumed = [" + consumed[1] + "]");
+            Timber.tag(TAG).d("onNestedPreScroll() --: target = [" + target + "], dx = [" + dx + "], dy = [" + dy + "], consumed = [" + consumed[1] + "]");
         }
         // 顶层滚动
         if (dy > 0 && getScrollY() == 0) {
@@ -86,7 +91,7 @@ public class PreNestedScrollView extends NestedScrollView {
             consumed[1] -= offsetInWindow[1];
             dy += offsetInWindow[1];
             if (DEBUG_LOG) {
-                Log.d(TAG, "dispatchNestedPreScroll: offsetInWindow[1]:" + offsetInWindow[1]);
+                Timber.tag(TAG).d("dispatchNestedPreScroll: offsetInWindow[1]:%s", offsetInWindow[1]);
             }
         }
         // 当前PreNestedScrollView滚动
@@ -95,7 +100,7 @@ public class PreNestedScrollView extends NestedScrollView {
         final int myConsumed = getScrollY() - oldScrollY;
         consumed[1] += myConsumed;
         if (DEBUG_LOG) {
-            Log.d(TAG, "dispatchNestedPreScroll: myConsumed:" + myConsumed);
+            Timber.tag(TAG).d("dispatchNestedPreScroll: myConsumed:%s", myConsumed);
         }
     }
 
@@ -108,7 +113,7 @@ public class PreNestedScrollView extends NestedScrollView {
             return super.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
         }
         if (DEBUG_LOG) {
-            Log.d(TAG, "dispatchNestedPreScroll() --: dx = [" + dx + "], dy = [" + dy + "], consumed = [" + consumed[1] + "], offsetInWindow = [" + offsetInWindow + "]");
+            Timber.tag(TAG).d("dispatchNestedPreScroll() --: dx = [" + dx + "], dy = [" + dy + "], consumed = [" + consumed[1] + "], offsetInWindow = [" + Arrays.toString(offsetInWindow) + "]");
         }
         if (offsetInWindow == null) {
             offsetInWindow = new int[2];
@@ -118,7 +123,7 @@ public class PreNestedScrollView extends NestedScrollView {
         dispatchNestedScroll(dx, dy, dx, dy, offsetInWindow);
         consumed[1] = -offsetInWindow[1];
         if (DEBUG_LOG) {
-            Log.d(TAG, "dispatchNestedPreScroll: offsetInWindow[1]:" + offsetInWindow[1]);
+            Timber.tag(TAG).d("dispatchNestedPreScroll: offsetInWindow[1]:%s", offsetInWindow[1]);
         }
         return consumed[1] != 0;
     }
@@ -132,7 +137,7 @@ public class PreNestedScrollView extends NestedScrollView {
             return super.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type);
         }
         if (DEBUG_LOG) {
-            Log.d(TAG, "dispatchNestedPreScroll() --: dx = [" + dx + "], dy = [" + dy + "], consumed = [" + consumed[1] + "], offsetInWindow = [" + offsetInWindow + "], type = [" + type + "]");
+            Timber.tag(TAG).d("dispatchNestedPreScroll() --: dx = [" + dx + "], dy = [" + dy + "], consumed = [" + consumed[1] + "], offsetInWindow = [" + Arrays.toString(offsetInWindow) + "], type = [" + type + "]");
         }
         if (offsetInWindow == null) {
             offsetInWindow = new int[2];
@@ -142,7 +147,7 @@ public class PreNestedScrollView extends NestedScrollView {
         dispatchNestedScroll(dx, dy, dx, dy, offsetInWindow, type);
         consumed[1] = -offsetInWindow[1];
         if (DEBUG_LOG) {
-            Log.d(TAG, "dispatchNestedPreScroll: offsetInWindow[1]:" + offsetInWindow[1]);
+            Timber.tag(TAG).d("dispatchNestedPreScroll: offsetInWindow[1]:%s", offsetInWindow[1]);
         }
         return consumed[1] != 0;
     }
@@ -153,7 +158,7 @@ public class PreNestedScrollView extends NestedScrollView {
     @Override
     public boolean onNestedPreFling(@NonNull View target, float velocityX, float velocityY) {
         if (DEBUG_LOG) {
-            Log.d(TAG, "onNestedPreFling() called with: target = [" + target + "], velocityX = [" + velocityX + "], velocityY = [" + velocityY + "]");
+            Timber.tag(TAG).d("onNestedPreFling() called with: target = [" + target + "], velocityX = [" + velocityX + "], velocityY = [" + velocityY + "]");
         }
         if (velocityY < 0) {
             // RecyclerView向下滚动时,且已经到达顶部,PreNestedScrollView消费滚动
@@ -182,7 +187,7 @@ public class PreNestedScrollView extends NestedScrollView {
     @Override
     public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
         if (DEBUG_LOG) {
-            Log.d(TAG, "dispatchNestedPreFling() called with: velocityX = [" + velocityX + "], velocityY = [" + velocityY + "]");
+            Timber.tag(TAG).d("dispatchNestedPreFling() called with: velocityX = [" + velocityX + "], velocityY = [" + velocityY + "]");
         }
         // 向下滚动 或向上滚动时,PreNestedScrollView已到达顶部,不处理
         if (velocityY < 0 || (velocityY > 0 && getScrollY() > 0)) {
