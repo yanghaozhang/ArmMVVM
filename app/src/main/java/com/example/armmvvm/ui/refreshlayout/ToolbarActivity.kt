@@ -44,7 +44,6 @@ class ToolbarActivity : AppCompatActivity() {
             mTopHeight = ll_top.measuredHeight
             mHeaderHeight = header.height
         }
-        ll_top.alpha = 0f
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 val resId =

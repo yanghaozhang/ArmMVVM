@@ -62,9 +62,9 @@ import java.util.List;
 import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP_PREFIX;
 
 /**
- * 实现NestedScrollingChild3接口
+ * 实现NestedScrollingChild3接口    ->用于调用
  *      在接口中调用对应的NestedScrollingChildHelper方法来处理滑动事件
- * 实现NestedScrollingParent3接口
+ * 实现NestedScrollingParent3接口   ->用于处理子视图的嵌套滚动
  *      在接口回调中对滑动处理
  *      调用NestedScrollingParentHelper记录滑动方向
  *      调用NestedScrollingChild3接口方法,将滑动向上传递,或者由它处理滑动事件

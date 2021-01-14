@@ -151,107 +151,108 @@
             app:layout_behavior="@string/bottom_sheet_behavior"
             app:shapeAppearance="@style/BottomSheetShapeAppearance">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="#f00"
-                android:dividerPadding="3dp"
-                android:orientation="vertical"
-                android:showDividers="middle">
-
-                <ImageView
-                    android:id="@+id/iv_arrow"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="5dp"
-                    android:src="@mipmap/icon_arrow_up_gray" />
+                    android:divider="#f00"
+                    android:dividerPadding="3dp"
+                    android:orientation="vertical"
+                    android:showDividers="none">
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <include
-                        android:id="@+id/header"
-                        layout="@layout/layout_header_normal" />
-
-                    <LinearLayout
-                        android:id="@+id/ll_top"
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:id="@+id/iv_arrow"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_gravity="center_horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="5dp"
+                        android:src="@mipmap/icon_arrow_up_gray" />
 
-                        <TextView
-                            android:id="@+id/tv_top"
-                            android:layout_width="wrap_content"
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include
+                            android:id="@+id/header"
+                            layout="@layout/layout_header_normal" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_top"
+                            android:alpha="0"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:background="#0000"
-                            android:gravity="center"
-                            android:padding="15dp"
-                            android:text="this is the title" />
-                    </LinearLayout>
+                            android:orientation="vertical">
 
-                </FrameLayout>
+                            <TextView
+                                android:id="@+id/tv_top"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:background="#0000"
+                                android:gravity="center"
+                                android:padding="15dp"
+                                android:text="this is the title" />
+                        </LinearLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="#0000"
-                    android:gravity="center"
-                    android:text="222" />
+                    </FrameLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="#0000"
-                    android:gravity="center"
-                    android:text="333" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="#0000"
+                        android:gravity="center"
+                        android:text="222" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="#0000"
-                    android:gravity="center"
-                    android:text="333" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="#0000"
+                        android:gravity="center"
+                        android:text="333" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="#0000"
-                    android:gravity="center"
-                    android:text="333" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="#0000"
+                        android:gravity="center"
+                        android:text="333" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="#0000"
-                    android:gravity="center"
-                    android:text="333" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="#0000"
+                        android:gravity="center"
+                        android:text="333" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="#0000"
-                    android:gravity="center"
-                    android:text="333" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="#0000"
+                        android:gravity="center"
+                        android:text="333" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="#0000"
-                    android:gravity="center"
-                    android:text="333" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="#0000"
+                        android:gravity="center"
+                        android:text="333" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:background="#0000"
-                    android:gravity="center"
-                    android:text="888" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="#0000"
+                        android:gravity="center"
+                        android:text="333" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:background="#0000"
+                        android:gravity="center"
+                        android:text="888" />
+
+                </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 

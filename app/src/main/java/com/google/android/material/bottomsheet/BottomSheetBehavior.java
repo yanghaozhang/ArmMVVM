@@ -158,6 +158,19 @@ import static java.lang.Math.min;
  *    materialShapeDrawable
  *      加载到View的Drawable
  *
+ * 理清CoordinatorLayout的Behavior与NestedScrolling的执行顺序
+ * CoordinatorLayout实现了NestedScrollingParen接口
+ * 对于CoordinatorLayout的子View来说
+ * 	  1,如果该View实现了NestedScrollingChild3接口,将会自身消费滚动事件,并通过NestedScrollingChildHelper向上传递滚动事件
+ * 	  2,如果该View声明了Behavior,当CoordinatorLayout.onInterceptTouchEvent()遍历子View中的behavior,如果behavior返回true拦截,CoordinatorLayout拦截事件
+ * 		  并在后续onTouchEvent也交由该behavior处理
+ * 所以对于Behavior中的方法执行顺序如下
+ * 	  1,如果Behavior对点击事件进行拦截,那么就不会触发子视图的NestedScrolling事件,因为触摸事件无法走到子View
+ * 		  从而触发CoordinatorLayout.onTouchEvent->Behavior.onTouchEvent->ViewDragHelper事件
+ * 	  2,如果Behavior对点击事件不进行拦截,那么就可能会触发子View的NestedScrolling事件
+ * 		  从而触发CoordinatorLayout.onNestedScroll->Behavior.onNestedScroll
+ * 	      综上:如果子View实现了NestedScrollingChild接口,在该View上操作时触发Behavior.onNestedScroll;
+ * 		       如果子View未实现NestedScrollingChild接口,在该View上操作时触发Behavior.onTouchEvent->ViewDragHelper事件
  *
  */
 
@@ -395,7 +408,11 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
   /** View引用 */
   @Nullable WeakReference<V> viewRef;
 
-  /** View下可滚动的View引用 */
+  /**
+   * View下可滚动的View引用,如果触摸事件发生在该View上,不通过ViewDragHelper处理触摸事件
+   * 因为Behavior下只保存第一个检索到的支持嵌套滚动的View,所以声明Behavior的最好是支持嵌套滚动的,或者子View就是
+   *    如果在Behavior下是两个并列的嵌套View,会出现其中一个能嵌套滚动,另一个不能的情况
+   */
   @Nullable WeakReference<View> nestedScrollingChildRef;
 
   /** 回调数组 */
@@ -404,13 +421,13 @@ public class BottomSheetBehavior<V extends View> extends CoordinatorLayout.Behav
   /** 速度计算类 */
   @Nullable private VelocityTracker velocityTracker;
 
-  /** 触摸时间的id */
+  /** 触摸事件的id,如果触摸到的是nestedScrollingChildRef引用的子View,会记录id */
   int activePointerId;
 
   /** down时间的初始化Y坐标 */
   private int initialY;
 
-  /** 点击事件是否在滚动View上,如果不在,viewDragHelper不处理 */
+  /** 点击事件是否在nestedScrollingChildRef引用的子View上,如果不在,viewDragHelper不处理 */
   boolean touchingScrollingChild;
 
   /** 各个View对应的无障碍状态 */
