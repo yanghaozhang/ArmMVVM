@@ -6,7 +6,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
 import androidx.customview.widget.ViewDragHelper;
+
+import java.lang.ref.WeakReference;
 
 /**
  * @author 创建人 ：yanghaozhang
@@ -85,12 +88,46 @@ public class DrainageAnchorSheetBehavior<V extends View> extends AnchorSheetBeha
         super(context, attrs);
     }
 
+    /**
+     * 1,使用mDelegateCallback,修复向下滑直接从STATE_EXPANDED改变到STATE_COLLAPSED
+     * 2,修改每次都调用parent.onLayoutChild(child, layoutDirection) 实现子View的改变能实时更新
+     */
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
+        // First let the parent lay it out
+        if (mState != STATE_DRAGGING && mState != STATE_SETTLING) {
+            if (ViewCompat.getFitsSystemWindows(parent) &&
+                    !ViewCompat.getFitsSystemWindows(child)) {
+                ViewCompat.setFitsSystemWindows(child, true);
+            }
+//            parent.onLayoutChild(child, layoutDirection);
+        }
+        int savedTop = child.getTop();
+        // First let the parent lay it out
+        parent.onLayoutChild(child, layoutDirection);
+        // Offset the bottom sheet
+        mParentHeight = parent.getHeight();
+        mMinOffset = Math.max(0, mParentHeight - child.getHeight());
+        mMaxOffset = Math.max(mParentHeight - mPeekHeight, mMinOffset);
+        if (mState == STATE_EXPANDED) {
+            ViewCompat.offsetTopAndBottom(child, mMinOffset);
+        } else if (mHideable && mState == STATE_HIDDEN) {
+            ViewCompat.offsetTopAndBottom(child, mParentHeight);
+        } else if (mState == STATE_COLLAPSED) {
+            ViewCompat.offsetTopAndBottom(child, mMaxOffset);
+        } else if (mState == STATE_ANCHOR){
+            ViewCompat.offsetTopAndBottom(child, mParentHeight - mAnchorHeight);
+        } else if (mState == STATE_DRAGGING || mState == STATE_SETTLING) {
+            ViewCompat.offsetTopAndBottom(child, savedTop - child.getTop());
+        }
         if (mViewDragHelper == null) {
             mViewDragHelper = ViewDragHelper.create(parent, mDelegateCallback);
         }
-        return super.onLayoutChild(parent, child, layoutDirection);
+        mViewRef = new WeakReference<>(child);
+        if (!mNestedScrollingChildAssigned) {
+            mNestedScrollingChildRef = new WeakReference<>(findScrollingChild(child));
+        }
+        return true;
     }
 
     @Override

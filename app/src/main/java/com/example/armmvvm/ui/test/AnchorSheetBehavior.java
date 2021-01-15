@@ -51,17 +51,19 @@ import java.lang.reflect.Field;
  * （1）可以通过{@link #setAllowDragdown(boolean)}进行设置当展开状态下是否允许向下拖动，true表示可以向下拖动，false表示不可以；
  * （2）可以通过{@link #setAnchorHeight(int)}}进行设置中间状态的高度,
  * （3）该Behavior默认优先响应Bottomsheet的拖动事件，再响应内部可滑动view的滑动事件；
+ *
  * @author 创建人 ：xuciluan
+ * @version 1.0
  * @package 包名 ：com.augurit.am.cmpt.widget.bottomsheet
  * @createTime 创建时间 ：2017-05-16
  * @modifyBy 修改人 ：xuciluan
  * @modifyTime 修改时间 ：2017-05-16
  * @modifyMemo 修改备注：
- * @version 1.0
  */
-public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> implements IBottomSheetBehavior{
+public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> implements IBottomSheetBehavior {
 
     private static final String TAG = "AnchorSheetBehavior";
+
     /**
      * Callback for monitoring events about bottom sheets.
      */
@@ -183,17 +185,14 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
-       /* // First let the parent lay it out
+        // First let the parent lay it out
         if (mState != STATE_DRAGGING && mState != STATE_SETTLING) {
             if (ViewCompat.getFitsSystemWindows(parent) &&
                     !ViewCompat.getFitsSystemWindows(child)) {
                 ViewCompat.setFitsSystemWindows(child, true);
             }
-//            parent.onLayoutChild(child, layoutDirection);
+            parent.onLayoutChild(child, layoutDirection);
         }
-        int savedTop = child.getTop();
-        // First let the parent lay it out
-        parent.onLayoutChild(child, layoutDirection);
         // Offset the bottom sheet
         mParentHeight = parent.getHeight();
         mMinOffset = Math.max(0, mParentHeight - child.getHeight());
@@ -204,10 +203,8 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
             ViewCompat.offsetTopAndBottom(child, mParentHeight);
         } else if (mState == STATE_COLLAPSED) {
             ViewCompat.offsetTopAndBottom(child, mMaxOffset);
-        } else if (mState == STATE_ANCHOR){
+        } else if (mState == STATE_ANCHOR) {
             ViewCompat.offsetTopAndBottom(child, mParentHeight - mAnchorHeight);
-        } else if (mState == STATE_DRAGGING || mState == STATE_SETTLING) {
-            ViewCompat.offsetTopAndBottom(child, savedTop - child.getTop());
         }
         if (mViewDragHelper == null) {
             mViewDragHelper = ViewDragHelper.create(parent, mDragCallback);
@@ -216,9 +213,9 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         if (!mNestedScrollingChildAssigned) {
             mNestedScrollingChildRef = new WeakReference<>(findScrollingChild(child));
         }
-        return true;*/
+        return true;
 
-        if (ViewCompat.getFitsSystemWindows(parent) && !ViewCompat.getFitsSystemWindows(child)) {
+       /* if (ViewCompat.getFitsSystemWindows(parent) && !ViewCompat.getFitsSystemWindows(child)) {
             child.setFitsSystemWindows(true);
         }
 
@@ -258,7 +255,7 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         if (!mNestedScrollingChildAssigned) {
             mNestedScrollingChildRef = new WeakReference<>(findScrollingChild(child));
         }
-        return true;
+        return true;*/
     }
 
     private void updateAccessibilityActions() {
@@ -274,23 +271,20 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         ViewCompat.removeAccessibilityAction(child, AccessibilityNodeInfoCompat.ACTION_DISMISS);
 
         switch (mState) {
-            case STATE_EXPANDED:
-            {
+            case STATE_EXPANDED: {
                 int nextState = STATE_ANCHOR;
                 addAccessibilityActionForState(
                         child, AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_COLLAPSE, nextState);
                 break;
             }
-            case STATE_ANCHOR:
-            {
+            case STATE_ANCHOR: {
                 addAccessibilityActionForState(
                         child, AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_COLLAPSE, STATE_COLLAPSED);
                 addAccessibilityActionForState(
                         child, AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_EXPAND, STATE_EXPANDED);
                 break;
             }
-            case STATE_COLLAPSED:
-            {
+            case STATE_COLLAPSED: {
                 int nextState = STATE_ANCHOR;
                 addAccessibilityActionForState(child, AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_EXPAND, nextState);
                 break;
@@ -361,9 +355,10 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         //todo 在冲突检测中，由于parent.isPointInChildBounds(scroll, (int) event.getX(), (int) event.getY())返回了false，导致拦截了事件的分发，子view收到MotionEvent.CANCEL,所以在冲突界面中的
         //的结果列表中滑动失灵
         View scroll = mNestedScrollingChildRef.get();
-        /*return*/boolean flag =  action == MotionEvent.ACTION_MOVE && scroll != null &&
+        /*return*/
+        boolean flag = action == MotionEvent.ACTION_MOVE && scroll != null &&
                 !mIgnoreEvents && mState != STATE_DRAGGING &&
-                !parent.isPointInChildBounds(scroll, (int) event.getX(), (int) event.getY())/* !test(parent,scroll, (int) event.getX(), (int) event.getY())*/&&
+                !parent.isPointInChildBounds(scroll, (int) event.getX(), (int) event.getY())/* !test(parent,scroll, (int) event.getX(), (int) event.getY())*/ &&
                 Math.abs(mInitialY - event.getY()) > mViewDragHelper.getTouchSlop() && isAllowDragdown;
 
         return flag;
@@ -372,7 +367,7 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
     @Override
     public boolean onTouchEvent(CoordinatorLayout parent, V child, MotionEvent event) {
         Log.d(TAG, "onTouchEvent() called with: parent = [" + parent + "], child = [" + child + "], event = [" + event + "]");
-        if (!child.isShown() ||  (!isAllowDragdown && mState == STATE_EXPANDED) || (!isAllowPullUp && mState == STATE_COLLAPSED)) {
+        if (!child.isShown() || (!isAllowDragdown && mState == STATE_EXPANDED) || (!isAllowPullUp && mState == STATE_COLLAPSED)) {
             return false;
         }
         int action = MotionEventCompat.getActionMasked(event);
@@ -582,7 +577,7 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
             top = mMinOffset;
         } else if (mHideable && state == STATE_HIDDEN) {
             top = mParentHeight;
-        } else if (state == STATE_ANCHOR){
+        } else if (state == STATE_ANCHOR) {
             top = mParentHeight - mAnchorHeight;
         } else {
             throw new IllegalArgumentException("Illegal state argument: " + state);
@@ -612,7 +607,7 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
         mState = state;
         View bottomSheet = mViewRef.get();
         if (bottomSheet != null && mCallback != null) {
-            mCallback.onStateChanged(bottomSheet, oldState,state);
+            mCallback.onStateChanged(bottomSheet, oldState, state);
         }
     }
 
@@ -707,11 +702,11 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
             if (yvel < 0 && currentTop < anchorOffect) { // Moving up
                 top = mMinOffset;
                 targetState = STATE_EXPANDED; //如果超过中间状态再向上移动，
-            } else if (yvel < 0 && currentTop > anchorOffect){
+            } else if (yvel < 0 && currentTop > anchorOffect) {
                 top = anchorOffect;
                 targetState = STATE_ANCHOR; //如果未超过中间状态，那么直接移动到中间状态
 
-            }else if (mHideable && shouldHide(releasedChild, yvel)) {
+            } else if (mHideable && shouldHide(releasedChild, yvel)) {
                 top = mParentHeight;
                 targetState = STATE_HIDDEN;
             } else if (yvel == 0.f) {
@@ -879,6 +874,7 @@ public class AnchorSheetBehavior<V extends View> extends CoordinatorLayout.Behav
      * 指定可嵌套滑动的子View<br>
      * 通常BottomSheetBehavior会自动找到第一个可嵌套滑动的子View，参照 {@link #findScrollingChild(View)} <br>
      * 如果内容中有多个可嵌套滑动的View, 则只有第一个View会生效，第二个View将无法嵌套滑动，如果希望动态指定这个View，则调用此方法来指定
+     *
      * @param view 传null为不指定
      */
     public void assignNestedScrollingChild(View view) {
