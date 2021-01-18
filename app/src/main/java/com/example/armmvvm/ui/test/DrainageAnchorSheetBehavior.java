@@ -47,7 +47,7 @@ public class DrainageAnchorSheetBehavior<V extends View> extends AnchorSheetBeha
             if (yvel > 0 && currentTop < anchorOffect && currentTop > mMinOffset) {
                 setState(STATE_ANCHOR);
             } else if (yvel == 0f) {
-                if (currentTop > anchorOffect) {
+                if (currentTop < anchorOffect) {
                     if (Math.abs(currentTop - mMinOffset) < Math.abs(currentTop - anchorOffect)) {
                         setState(STATE_EXPANDED);
                     } else {

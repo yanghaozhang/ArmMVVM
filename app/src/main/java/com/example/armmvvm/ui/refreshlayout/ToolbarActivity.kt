@@ -6,8 +6,9 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
-import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.armmvvm.R
+import com.example.armmvvm.ui.scrollview.PreNestedScrollAdapter
 import com.example.armmvvm.ui.test.AnchorSheetBehavior
 import com.example.armmvvm.ui.test.IBottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -34,6 +35,16 @@ class ToolbarActivity : AppCompatActivity() {
         tool_bar.setNavigationOnClickListener {
             finish()
         }
+
+        val list = mutableListOf("ss","kk","jj","ss","kk","jj","ss","kk","jj","ss","kk","jj","ss","kk","jj")
+        list.addAll(list)
+        list.addAll(list)
+        list.addAll(list)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val preNestedScrollAdapter = PreNestedScrollAdapter()
+        preNestedScrollAdapter.textList = list
+        recyclerView.adapter = preNestedScrollAdapter
 
         var behaviorTemp: CoordinatorLayout.Behavior<*>? = null
         try {
@@ -78,7 +89,7 @@ class ToolbarActivity : AppCompatActivity() {
         }
     }
 
-    private fun ustBottomSheetBehavior(behavior: BottomSheetBehavior<NestedScrollView>) {
+    private fun ustBottomSheetBehavior(behavior: BottomSheetBehavior<*>) {
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 val resId =
@@ -96,7 +107,7 @@ class ToolbarActivity : AppCompatActivity() {
                 header.updateLayoutParams {
                     height = heightSet
                 }
-                header.alpha = (1 - percent).toFloat()
+                header.alpha = 1 - percent
 
                 ll_top.updateLayoutParams {
                     height = heightSet
@@ -106,7 +117,7 @@ class ToolbarActivity : AppCompatActivity() {
         })
     }
 
-    private fun useAnchorSheetBehavior(behavior: AnchorSheetBehavior<NestedScrollView>) {
+    private fun useAnchorSheetBehavior(behavior: AnchorSheetBehavior<*>) {
         behavior.state = IBottomSheetBehavior.STATE_COLLAPSED
         behavior.anchorHeight = resources.displayMetrics.heightPixels / 2
         behavior.setBottomSheetCallback(object : AnchorSheetBehavior.BottomSheetCallback() {

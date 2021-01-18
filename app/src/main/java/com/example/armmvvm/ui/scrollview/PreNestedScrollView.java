@@ -27,6 +27,7 @@ import timber.log.Timber;
  * @modifyTime 修改时间 ：
  * @modifyMemo 修改备注：
  */
+@Deprecated
 public class PreNestedScrollView extends NestedScrollView {
     private static final String TAG = "PreNestedScrollView";
     private static final boolean DEBUG_LOG = true;
