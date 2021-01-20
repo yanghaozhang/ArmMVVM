@@ -12,6 +12,10 @@ import androidx.core.widget.NestedScrollView;
 /**
  *
  * 上滑时顶层先滚动
+ * 可以比较好地支持滚动,但会拦截所有点击事件
+ * 子类如果需要点击事件,使用{@link PreNestedScrollView}
+ *
+ *
  * @author 创建人 ：yanghaozhang
  * @version 1.0
  * @package 包名 ：com.augurit.agmobile.agwater5.drainage.common.scrollview

@@ -6,11 +6,13 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.armmvvm.R
-import com.example.armmvvm.ui.scrollview.PreNestedScrollAdapter
 import com.example.armmvvm.ui.test.AnchorSheetBehavior
 import com.example.armmvvm.ui.test.IBottomSheetBehavior
+import com.example.armmvvm.ui.viewpager.SimpleBackgroundFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_toolbar2.*
 import timber.log.Timber
@@ -36,15 +38,15 @@ class ToolbarActivity : AppCompatActivity() {
             finish()
         }
 
-        val list = mutableListOf("ss","kk","jj","ss","kk","jj","ss","kk","jj","ss","kk","jj","ss","kk","jj")
-        list.addAll(list)
-        list.addAll(list)
-        list.addAll(list)
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        val preNestedScrollAdapter = PreNestedScrollAdapter()
-        preNestedScrollAdapter.textList = list
-        recyclerView.adapter = preNestedScrollAdapter
+        val fragmentList = listOf(
+            SimpleBackgroundFragment("aa"),
+            SimpleBackgroundFragment("bb"),
+            SimpleBackgroundFragment("cc"),
+            SimpleBackgroundFragment("dd"),
+        )
+        view_pager_up.offscreenPageLimit = fragmentList.size
+        view_pager_up.adapter = ToolReuseAdapter(fragmentList, supportFragmentManager)
+        tab_layout.setupWithViewPager(view_pager_up)
 
         var behaviorTemp: CoordinatorLayout.Behavior<*>? = null
         try {
@@ -149,10 +151,40 @@ class ToolbarActivity : AppCompatActivity() {
         })
     }
 
+    fun changeAdapter(view: View) {
+        val fragmentList = listOf(
+            SimpleBackgroundFragment("ee"),
+            SimpleBackgroundFragment("ff"),
+            SimpleBackgroundFragment("gg"),
+            SimpleBackgroundFragment("hh"),
+        )
+        view_pager_up.offscreenPageLimit = fragmentList.size
+        view_pager_up.adapter = ToolReuseAdapter(fragmentList, supportFragmentManager)
+    }
+
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 //        menuInflater.inflate(R.menu.menu_test, menu)
 //        return true
 //    }
+
+    class ToolReuseAdapter(var fragmentlist: List<SimpleBackgroundFragment>, fragmentManager: FragmentManager) :
+        FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_SET_USER_VISIBLE_HINT) {
+        private var createNum = 0
+        override fun getCount(): Int {
+            return fragmentlist.size
+        }
+
+        override fun getItem(position: Int): Fragment {
+            Timber.d("--::create Fragment $createNum")
+            return fragmentlist[position].apply {
+                name = "${name.split(",")[0]},${createNum++}"
+            }
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return fragmentlist[position].name + createNum
+        }
+    }
 
     companion object {
         private const val SHOW_PERCENT = 0.3

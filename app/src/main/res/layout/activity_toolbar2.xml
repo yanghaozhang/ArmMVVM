@@ -140,7 +140,7 @@
         android:layout_height="match_parent"
         android:elevation="10dp">
 
-        <com.example.armmvvm.ui.scrollview.InterceptNestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/bottom_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -150,7 +150,7 @@
             app:behavior_expandedOffset="148dp"
             app:behavior_fitToContents="false"
             app:behavior_peekHeight="148dp"
-            app:layout_behavior="@string/bottom_sheet_behavior"
+            app:layout_behavior="com.example.armmvvm.ui.test.DrainageAnchorSheetBehavior"
             app:shapeAppearance="@style/BottomSheetShapeAppearance">
 
             <LinearLayout
@@ -255,9 +255,9 @@
                     android:gravity="center"
                     android:text="888" />
 
-                <com.example.armmvvm.ui.scrollview.InterceptNestedScrollView
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="500dp"
                     android:background="#0ff">
 
                     <LinearLayout
@@ -300,18 +300,41 @@
                             android:gravity="center"
                             android:text="888" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView"
+                        <TextView
+                            android:id="@+id/tv_name"
                             android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:background="@color/colorPrimaryDark" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:onClick="changeAdapter"
+                            android:text="change adapter" />
+
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/tab_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:layout_marginLeft="0dp"
+                            android:layout_marginRight="0dp"
+                            android:layout_marginBottom="2dp"
+                            app:tabGravity="fill"
+                            app:tabIndicatorHeight="0dp"
+                            app:tabMode="fixed"
+                            app:tabPaddingEnd="0dp"
+                            app:tabPaddingStart="0dp"
+                            app:tabSelectedTextColor="#1A7AFE"
+                            app:tabTextColor="#000" />
+
+                        <androidx.viewpager.widget.ViewPager
+                            android:id="@+id/view_pager_up"
+                            android:layout_width="match_parent"
+                            android:layout_height="400dp" />
 
                     </LinearLayout>
-                </com.example.armmvvm.ui.scrollview.InterceptNestedScrollView>
+                </androidx.core.widget.NestedScrollView>
 
             </LinearLayout>
 
-        </com.example.armmvvm.ui.scrollview.InterceptNestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

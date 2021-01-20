@@ -19,6 +19,8 @@ import timber.log.Timber;
 /**
  * 向上滚动:消费子视图的滚动,并且先让父视图优先消费滚动
  *
+ * 如果子类中不需要点击事件,可以使用{@link InterceptNestedScrollView},该类可以比较好地支持滚动,但会拦截所有事件
+ *
  * @author 创建人 ：yanghaozhang
  * @version 1.0
  * @package 包名 ：com.augurit.agmobile.agwater5.drainage.common.scrollview
@@ -27,7 +29,6 @@ import timber.log.Timber;
  * @modifyTime 修改时间 ：
  * @modifyMemo 修改备注：
  */
-@Deprecated
 public class PreNestedScrollView extends NestedScrollView {
     private static final String TAG = "PreNestedScrollView";
     private static final boolean DEBUG_LOG = true;
