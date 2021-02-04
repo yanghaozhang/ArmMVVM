@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.observe
 import com.example.arm.base.BaseFragment
 import com.example.armmvvm.R
 import com.example.armmvvm.ui.livedata.LiveDataViewModel

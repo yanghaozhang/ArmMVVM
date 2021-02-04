@@ -14,6 +14,7 @@ import java.net.URLDecoder
 import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.jvm.Throws
 
 open class RequestInterceptor : Interceptor,AppDIAware {
 

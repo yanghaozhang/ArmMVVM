@@ -3,6 +3,7 @@ package com.example.armmvvm.ui.test
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.arm.base.BaseActivity
 import com.example.arm.di.GlobalConfigModule

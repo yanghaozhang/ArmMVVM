@@ -3,6 +3,7 @@ package com.example.armmvvm.ui.livedata
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.observe
 import com.example.arm.base.BaseActivity
 import com.example.arm.ext.DIViewModelFactory
 import com.example.armmvvm.R

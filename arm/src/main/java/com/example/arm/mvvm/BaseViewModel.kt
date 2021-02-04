@@ -50,13 +50,13 @@ abstract class BaseViewModel : AndroidViewModel(BaseApplication.INSTANCE), DIAwa
         val execute = try {
             request()
         } catch (e: Exception) {
-            return@withContext Results.failure(e)
+            return@withContext Results.failure<R>(e)
         }
 
         if (execute?.isSuccessful == true) {
             return@withContext Results.success(execute.body()!!)
         }
-        return@withContext Results.failure(HttpRequestFailException())
+        return@withContext Results.failure<R>(HttpRequestFailException())
     }
 
     override fun onCleared() {
