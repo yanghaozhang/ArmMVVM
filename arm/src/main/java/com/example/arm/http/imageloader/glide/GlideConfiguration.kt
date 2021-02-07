@@ -20,6 +20,7 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import kotlin.jvm.Throws
 
 @GlideModule(glideName = "ArmsForkGlide")
 class GlideConfiguration : AppGlideModule() {

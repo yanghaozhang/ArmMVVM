@@ -3,7 +3,6 @@ package com.example.armmvvm.ui.test
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.arm.http.HttpDisposableObserver
 import com.example.arm.http.ResponseErrorObserver
 import com.example.arm.http.Results
 import com.example.arm.integration.lifecycle.Lifecycleable
@@ -44,29 +43,25 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
 
     fun getProvinceByRxLife(life: Lifecycleable<*>) {
         model.request()
-            .subscribeOn(Schedulers.io())
-            .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(RxLifecycleUtils.bindToLifecycle(life))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
-            .subscribe(object : ResponseErrorObserver<ResponseListBean<ProvinceBean>?>(mErrorListener) {
-                override fun onNext(t: ResponseListBean<ProvinceBean>) {
-                    _provinceLiveData.value = t
-                }
-            })
+                .subscribeOn(Schedulers.io())
+                .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxLifecycleUtils.bindToLifecycle(life))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
+                .subscribe(object : ResponseErrorObserver<ResponseListBean<ProvinceBean>?>(mErrorListener) {
+                    override fun onNext(t: ResponseListBean<ProvinceBean>) {
+                        _provinceLiveData.value = t
+                    }
+                })
     }
 
     fun getProvinceByCompositeDisposable() {
-        val disposable = object : HttpDisposableObserver<ResponseListBean<ProvinceBean>>() {
-            override fun onNext(t: ResponseListBean<ProvinceBean>) {
-                _provinceLiveData.value = t
-            }
-        }
-        addDispose(disposable)
         model.request()
-            .subscribeOn(Schedulers.io())
-            .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(disposable)
+                .subscribeOn(Schedulers.io())
+                .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(withDispose {
+                    _provinceLiveData.value = it
+                })
     }
 
     fun getProvinceByCoroutines() {

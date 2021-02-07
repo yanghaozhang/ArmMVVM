@@ -4,11 +4,11 @@ import androidx.lifecycle.AndroidViewModel
 import com.example.arm.base.BaseApplication
 import com.example.arm.di.GlobalConfigModule
 import com.example.arm.http.ErrorListener
+import com.example.arm.http.HttpDisposableObserver
 import com.example.arm.http.HttpRequestFailException
 import com.example.arm.http.Results
 import com.example.arm.integration.EventBusManager
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.kodein.di.*
@@ -39,14 +39,20 @@ abstract class BaseViewModel : AndroidViewModel(BaseApplication.INSTANCE), DIAwa
         }
     }
 
-    open fun addDispose(disposable: Disposable) {
+    open fun <T> withDispose(onNext: (any: T) -> Unit): HttpDisposableObserver<T> {
         if (mCompositeDisposable == null) {
             mCompositeDisposable = CompositeDisposable()
         }
+        val disposable = object : HttpDisposableObserver<T>() {
+            override fun onNext(t: T) {
+                onNext(t)
+            }
+        }
         mCompositeDisposable!!.add(disposable) //将所有 Disposable 放入容器集中处理
+        return disposable
     }
 
-    protected open suspend fun <R> requestByCoroutines(request: () -> Response<R>?) : Results<R> = withContext(Dispatchers.IO) {
+    protected open suspend fun <R> requestByCoroutines(request: () -> Response<R>?): Results<R> = withContext(Dispatchers.IO) {
         val execute = try {
             request()
         } catch (e: Exception) {

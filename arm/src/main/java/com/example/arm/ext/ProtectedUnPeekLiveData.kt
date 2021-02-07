@@ -18,7 +18,7 @@ open class ProtectedUnPeekLiveData<T> : LiveData<T>() {
     private var mTask: TimerTask? = null
 
     override fun observe(owner: LifecycleOwner, observer: Observer<in T?>) {
-        super.observe(owner, { t: T? ->
+        super.observe(owner, Observer<T> { t ->
             if (status == Status.START) {
                 status = Status.DOING
                 observer.onChanged(t)
