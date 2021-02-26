@@ -32,6 +32,9 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
         Timber.tag("TestViewModel").d("null() called   %s ", "instance AppManager")
     }
 
+    override val useEventBus: Boolean
+        get() = false
+
     private val _provinceLiveData = MutableLiveData<ResponseListBean<ProvinceBean>>()
     val provinceLiveData: LiveData<ResponseListBean<ProvinceBean>> = _provinceLiveData
 

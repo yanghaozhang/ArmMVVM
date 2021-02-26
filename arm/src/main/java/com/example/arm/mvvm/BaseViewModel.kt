@@ -29,7 +29,9 @@ abstract class BaseViewModel : AndroidViewModel(BaseApplication.INSTANCE), DIAwa
 
     open val useEventBus: Boolean = true
 
-    var mCompositeDisposable: CompositeDisposable? = null
+    val mCompositeDisposable: CompositeDisposable by lazy {
+        CompositeDisposable()
+    }
 
     val mErrorListener: ErrorListener? by newInstance { instance<GlobalConfigModule>().mErrorListener }
 
@@ -40,15 +42,12 @@ abstract class BaseViewModel : AndroidViewModel(BaseApplication.INSTANCE), DIAwa
     }
 
     open fun <T> withDispose(onNext: (any: T) -> Unit): HttpDisposableObserver<T> {
-        if (mCompositeDisposable == null) {
-            mCompositeDisposable = CompositeDisposable()
-        }
         val disposable = object : HttpDisposableObserver<T>() {
             override fun onNext(t: T) {
                 onNext(t)
             }
         }
-        mCompositeDisposable!!.add(disposable) //将所有 Disposable 放入容器集中处理
+        mCompositeDisposable.add(disposable) //将所有 Disposable 放入容器集中处理
         return disposable
     }
 
@@ -69,6 +68,6 @@ abstract class BaseViewModel : AndroidViewModel(BaseApplication.INSTANCE), DIAwa
         if (useEventBus) {
             EventBusManager.instance.unregister(this)
         }
-        mCompositeDisposable?.clear()
+        mCompositeDisposable.clear()
     }
 }

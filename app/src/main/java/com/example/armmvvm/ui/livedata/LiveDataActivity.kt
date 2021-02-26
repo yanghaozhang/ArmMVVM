@@ -3,7 +3,6 @@ package com.example.armmvvm.ui.livedata
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import androidx.lifecycle.observe
 import com.example.arm.base.BaseActivity
 import com.example.arm.ext.DIViewModelFactory
 import com.example.armmvvm.R
@@ -47,9 +46,12 @@ class LiveDataActivity : BaseActivity() {
     }
 
     override fun initData(savedInstanceState: Bundle?) {
-        mLiveDataViewModel.unPeekLiveData.observe(this, this::onStateChange)
-        mLiveDataViewModel.mutableLiveData.observe(this, this::onStateChange2)
-
+        mLiveDataViewModel.unPeekLiveData.observe(this) {
+            onStateChange(it)
+        }
+        mLiveDataViewModel.mutableLiveData.observe(this) {
+            onStateChange2(it)
+        }
         changeFragmentClickUnPeek(frame_content)
         changeFragmentClickMutable(frame_content2)
     }
