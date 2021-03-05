@@ -2,18 +2,12 @@ package com.example.armmvvm.ui.livedata
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
 import com.example.arm.base.BaseActivity
-import com.example.arm.ext.DIViewModelFactory
+import com.example.arm.ext.viewModelKt
 import com.example.armmvvm.R
 import com.example.armmvvm.ui.livedata.fragment.MutableFragment
 import com.example.armmvvm.ui.livedata.fragment.UnPeekFragment
 import kotlinx.android.synthetic.main.activity_live_data.*
-import org.kodein.di.DI
-import org.kodein.di.android.di
-import org.kodein.di.android.retainedSubDI
-import org.kodein.di.bind
-import org.kodein.di.singleton
 import timber.log.Timber
 
 /**
@@ -23,14 +17,14 @@ import timber.log.Timber
  */
 class LiveDataActivity : BaseActivity() {
 
-    override val di: DI by retainedSubDI(di()) {
+/*    override val di: DI by retainedSubDI(di()) {
         bind<LiveDataViewModel>() with singleton {
             LiveDataViewModel(LiveDataModel())
         }
-    }
+    }*/
 
-    val mLiveDataViewModel: LiveDataViewModel by viewModels() {
-        DIViewModelFactory(di)
+    private val mLiveDataViewModel: LiveDataViewModel by viewModelKt {
+        LiveDataViewModel(LiveDataModel())
     }
 
     var mUnPeekFragmentIndex = 0
