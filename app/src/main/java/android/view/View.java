@@ -833,6 +833,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     /**
      * When set to true, this view will save its attribute data.
      *
+     * 设置为true时，此视图将保存其属性数据。
+     *
      * @hide
      */
     public static boolean sDebugViewAttributes = false;
@@ -867,36 +869,53 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     /**
      * Signals that compatibility booleans have been initialized according to
      * target SDK versions.
+     *
+     * 标志位:是否在创建View时,是否已处理兼容性
+     *
+     * 可以看到这里是静态变量,意味着在应用程序中只调用一次,所有View公用变量
      */
     private static boolean sCompatibilityDone = false;
 
     /**
      * Use the old (broken) way of building MeasureSpecs.
+     *
+     * 如果编译版本<=4.2,需要使用旧的测量方式 building MeasureSpecs
      */
     private static boolean sUseBrokenMakeMeasureSpec = false;
 
     /**
      * Always return a size of 0 for MeasureSpec values with a mode of UNSPECIFIED
+     *
+     * 在M及更高版本中，我们的窗口小部件可以传递“ hint”值，以表示未处理的MeasureSpecs的大小
      */
     static boolean sUseZeroUnspecifiedMeasureSpec = false;
 
     /**
      * Ignore any optimizations using the measure cache.
+     *
+     * 如果编译版本<=4.4,则每次在layout()时都应调用该View的onMeasure(),不管该View是否有调用requested
      */
     private static boolean sIgnoreMeasureCache = false;
 
     /**
      * Ignore an optimization that skips unnecessary EXACTLY layout passes.
+     *
+     * 平台的旧版本使用EXACTLY和non-EXACTLY模式会产生与LinearLayout测量过程不同的结果，因此我们始终需要运行其他EXACTLY过程。
      */
     private static boolean sAlwaysRemeasureExactly = false;
 
     /**
      * Allow setForeground/setBackground to be called (and ignored) on a textureview,
      * without throwing
+     *
+     * 在N之前，TextureView会静默忽略对setBackgroundsetForeground的调用。在N +上，我们抛出异常，但这破坏了与使用这些方法的应用程序的兼容性。
      */
     static boolean sTextureViewIgnoresDrawableSetters = false;
 
     /**
+     *
+     * 在N之前，我们会降低LayoutParam转换中的边距。该修复程序会触发应用程序中的错误，因此我们有针对性地对其进行检查，以避免破坏现有的应用程序。
+     *
      * Prior to N, some ViewGroups would not convert LayoutParams properly even though both extend
      * MarginLayoutParams. For instance, converting LinearLayout.LayoutParams to
      * RelativeLayout.LayoutParams would lose margin information. This is fixed on N but target API
@@ -907,6 +926,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     protected static boolean sPreserveMarginParamsInLayoutParamConversion;
 
     /**
+     * 拖动的兼容,事件处理方式的改变
+     *
      * Prior to N, when drag enters into child of a view that has already received an
      * ACTION_DRAG_ENTERED event, the parent doesn't get a ACTION_DRAG_EXITED event.
      * ACTION_DRAG_LOCATION and ACTION_DROP were delivered to the parent of a view that returned
@@ -918,6 +939,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     static boolean sCascadedDragDrop;
 
     /**
+     * 聚焦和自动获得焦点的兼容,过去ListView中的部件无法获取,从Android O开始可以获得
+     *
      * Prior to O, auto-focusable didn't exist and widgets such as ListView use hasFocusable
      * to determine things like whether or not to permit item click events. We can't break
      * apps that do this just because more things (clickable things) are now auto-focusable
@@ -933,6 +956,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * the focusable state checks). In order to prevent apps from crashing, we will handle this
      * specific case and just not notify parents on new focusables resulting from marking views
      * clickable from outside the UI thread.
+     *
+     * 解决问题:以前小于Android O时,从非UI线程更改clickable属性将执行mParent.focusableViewAvailable(this)导致异常
+     * 从Android O,sAutoFocusableOffUIThreadWontNotifyParents==false,一定会执行canTakeFocus(),从而将不再通知父布局
      */
     private static boolean sAutoFocusableOffUIThreadWontNotifyParents;
 
@@ -942,6 +968,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * exception being thrown. If the app is targetting an earlier SDK version, then we will
      * silently clamp these values to avoid crashes elsewhere when the rendering code hits
      * these bogus values.
+     *
+     * 在P之前，setScaleX（）之类的东西允许传递虚假的float值，例如Float.NaN。
+     * 如果应用程序的目标是P或更高版本，则传递这些值将导致引发异常。
+     * 如果应用程序针对的是较早的SDK版本，那么我们将以静默方式钳制这些值，以免在渲染代码遇到这些虚假值时在其他地方崩溃。
      */
     private static boolean sThrowOnInvalidFloatProperties;
 
@@ -949,6 +979,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Prior to P, {@code #startDragAndDrop} accepts a builder which produces an empty drag shadow.
      * Currently zero size SurfaceControl cannot be created thus we create a dummy 1x1 surface
      * instead.
+     *
+     * 在P之前，startDragAndDrop接受一个生成器，该生成器会生成一个空的拖动阴影。
+     * 当前无法创建零尺寸的SurfaceControl，因此我们将创建一个虚拟1x1曲面。
      */
     private static boolean sAcceptZeroSizeDragShadow;
 
@@ -961,6 +994,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * <p>
      * In order to make window inset dispatching work properly, we dispatch window insets
      * in the view hierarchy in a proper hierarchical manner if this flag is set to {@code false}.
+     *
+     * 解决{@link #onApplyWindowInsets}导致 {@link #dispatchApplyWindowInsets}出现View层次结构混乱的问题
      */
     static boolean sBrokenInsetsDispatch;
 
@@ -974,6 +1009,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * the same as {@link com.android.internal.policy.DecorView#setWindowBackground(Drawable)}
      * which updates the window format.
      * @hide
+     *
+     * 解决{@link com.android.internal.policy.DecorView#setBackgroundDrawable(Drawable)}不更新窗口背景的问题
      */
     protected static boolean sBrokenWindowBackground;
 
@@ -981,6 +1018,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Prior to R, we were always forcing a layout of the entire hierarchy when insets changed from
      * the server. This is inefficient and not all apps use it. Instead, we want to rely on apps
      * calling {@link #requestLayout} when they need to relayout based on an insets change.
+     *
+     * 在R之前，当服务器插件更改界面时，我们总是强制整个层次结构执行layout。
+     * 这效率低下，并非所有应用程序都使用它
+     * 取而代之的是，我们让应用程序在服务器插件更改且需要重新layout时,调用requestLayout。
      */
     static boolean sForceLayoutWhenInsetsChanged;
 
@@ -2726,6 +2767,12 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * 水平布局方向,在Flag中需要移动的字节数
      * 左移2个字节
+     * 0:左到右布局
+     * 1:右到左布局
+     * 2:水平布局方向是从其父级继承的
+     * 3:水平布局方向是根据语言环境的默认语言脚本推导出的
+     *
+     * 总共占4位,取值范围(0-15)
      */
     static final int PFLAG2_LAYOUT_DIRECTION_MASK_SHIFT = 2;
 
@@ -2748,7 +2795,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
 
     /**
      * Indicates whether the view horizontal layout direction has been resolved.
-     * @hide
+     * @hideview
      *
      * 指示视图水平布局方向是否已解决
      */
@@ -2777,18 +2824,22 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
 
     /**
      * Default horizontal layout direction.
-     * 默认水平布局方向
+     * 默认水平布局方向来源(父布局/系统语言)
      */
     private static final int LAYOUT_DIRECTION_DEFAULT = LAYOUT_DIRECTION_INHERIT;
 
     /**
      * Default horizontal layout direction.
      * @hide
+     *
+     * 默认水平布局方向。
      */
     static final int LAYOUT_DIRECTION_RESOLVED_DEFAULT = LAYOUT_DIRECTION_LTR;
 
     /**
      * Text direction is inherited through {@link ViewGroup}
+     *
+     * 文字方向是通过继承而来
      */
     public static final int TEXT_DIRECTION_INHERIT = 0;
 
@@ -2796,6 +2847,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Text direction is using "first strong algorithm". The first strong directional character
      * determines the paragraph direction. If there is no strong directional character, the
      * paragraph direction is the view's resolved layout direction.
+     *
+     * 文字方向是使用“第一强算法”。第一个强方向字符确定段落方向。
+     * 如果没有强方向性字符，则段落方向是视图的已解析布局方向。
      */
     public static final int TEXT_DIRECTION_FIRST_STRONG = 1;
 
@@ -2803,21 +2857,33 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Text direction is using "any-RTL" algorithm. The paragraph direction is RTL if it contains
      * any strong RTL character, otherwise it is LTR if it contains any strong LTR characters.
      * If there are neither, the paragraph direction is the view's resolved layout direction.
+     *
+     * 文字方向使用“ any-RTL”算法。
+     * 如果包含任何强RTL字符，则段落方向为RTL；
+     * 如果包含任何强LTR字符，则段落方向为LTR。
+     * 如果两者都不存在，则段落方向是视图的已解析布局方向。
+     *
      */
     public static final int TEXT_DIRECTION_ANY_RTL = 2;
 
     /**
      * Text direction is forced to LTR.
+     *
+     * 文字方向被强制设为左到右。
      */
     public static final int TEXT_DIRECTION_LTR = 3;
 
     /**
      * Text direction is forced to RTL.
+     *
+     * 文字方向被强制设为右到左
      */
     public static final int TEXT_DIRECTION_RTL = 4;
 
     /**
      * Text direction is coming from the system Locale.
+     *
+     * 文本方向来自系统区域设置
      */
     public static final int TEXT_DIRECTION_LOCALE = 5;
 
@@ -2825,6 +2891,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Text direction is using "first strong algorithm". The first strong directional character
      * determines the paragraph direction. If there is no strong directional character, the
      * paragraph direction is LTR.
+     *
+     * 文字方向是使用“第一强算法”。第一个强方向字符确定段落方向。如果没有强烈的方向性字符，则段落方向为LTR。
+     *
      */
     public static final int TEXT_DIRECTION_FIRST_STRONG_LTR = 6;
 
@@ -2832,29 +2901,41 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Text direction is using "first strong algorithm". The first strong directional character
      * determines the paragraph direction. If there is no strong directional character, the
      * paragraph direction is RTL.
+     *
+     * 文字方向是使用“第一强算法”。第一个强方向字符确定段落方向。如果没有强方向性，则段落方向为RTL。
      */
     public static final int TEXT_DIRECTION_FIRST_STRONG_RTL = 7;
 
     /**
      * Default text direction is inherited
+     *
+     * 默认文本方向是继承的
      */
     private static final int TEXT_DIRECTION_DEFAULT = TEXT_DIRECTION_INHERIT;
 
     /**
      * Default resolved text direction
      * @hide
+     *
+     * 默认解析文本方向
      */
     static final int TEXT_DIRECTION_RESOLVED_DEFAULT = TEXT_DIRECTION_FIRST_STRONG;
 
     /**
      * Bit shift to get the horizontal layout direction. (bits after LAYOUT_DIRECTION_RESOLVED)
      * @hide
+     *
+     * 文字方向-位移位数
+     *
+     * 文字方向占3位,取值范围(0-7)
      */
     static final int PFLAG2_TEXT_DIRECTION_MASK_SHIFT = 6;
 
     /**
      * Mask for use with private flags indicating bits used for text direction.
      * @hide
+     *
+     * 文字方向-掩码
      */
     static final int PFLAG2_TEXT_DIRECTION_MASK = 0x00000007
             << PFLAG2_TEXT_DIRECTION_MASK_SHIFT;
@@ -2863,6 +2944,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Array of text direction flags for mapping attribute "textDirection" to correct
      * flag value.
      * @hide
+     *
+     * 所有文字方向的数组
+     * 用于将属性“ textDirection”映射到正确的标志值。
      */
     private static final int[] PFLAG2_TEXT_DIRECTION_FLAGS = {
             TEXT_DIRECTION_INHERIT << PFLAG2_TEXT_DIRECTION_MASK_SHIFT,
@@ -2918,6 +3002,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     /**
      * Default text alignment. The text alignment of this View is inherited from its parent.
      * Use with {@link #setTextAlignment(int)}
+     *
+     * 文本对齐方式是从其父级继承的
      */
     public static final int TEXT_ALIGNMENT_INHERIT = 0;
 
@@ -2926,6 +3012,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * ALIGN_CENTER, or ALIGN_OPPOSITE, which are relative to each paragraph's text direction.
      *
      * Use with {@link #setTextAlignment(int)}
+     *
+     * gravity属性声明文本对齐方式,有ALIGN_NORMAL,ALIGN_CENTER, or ALIGN_OPPOSITE,
      */
     public static final int TEXT_ALIGNMENT_GRAVITY = 1;
 
@@ -2933,6 +3021,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Align to the start of the paragraph, e.g. ALIGN_NORMAL.
      *
      * Use with {@link #setTextAlignment(int)}
+     *
+     * 文本对齐方式:ALIGN_NORMAL
      */
     public static final int TEXT_ALIGNMENT_TEXT_START = 2;
 
@@ -2940,6 +3030,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Align to the end of the paragraph, e.g. ALIGN_OPPOSITE.
      *
      * Use with {@link #setTextAlignment(int)}
+     *
+     * 文本对齐方式:ALIGN_OPPOSITE
      */
     public static final int TEXT_ALIGNMENT_TEXT_END = 3;
 
@@ -2947,6 +3039,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Center the paragraph, e.g. ALIGN_CENTER.
      *
      * Use with {@link #setTextAlignment(int)}
+     *
+     * 文本对齐方式:ALIGN_CENTER
      */
     public static final int TEXT_ALIGNMENT_CENTER = 4;
 
@@ -2955,6 +3049,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * layoutDirection is LTR, and ALIGN_RIGHT otherwise.
      *
      * Use with {@link #setTextAlignment(int)}
+     *
+     * 对齐到视图的开始，如果视图的解析的layoutDirection为LTR，则对齐为ALIGN_LEFT，否则为ALIGN_RIGHT。
      */
     public static final int TEXT_ALIGNMENT_VIEW_START = 5;
 
@@ -3596,6 +3692,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * @see #getOverScrollMode()
      * @see #setOverScrollMode(int)
+     *
+     * 过度滑动,滑动到底部(顶部)时,仍继续滑动
+     * 过度滑动时,会有光晕效果
      */
     public static final int OVER_SCROLL_ALWAYS = 0;
 
@@ -3603,8 +3702,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * Allow a user to over-scroll this view only if the content is large
      * enough to meaningfully scroll, provided it is a view that can scroll.
      *
+     *
      * @see #getOverScrollMode()
      * @see #setOverScrollMode(int)
+     *
+     * 仅当内容超过布局大小时,提供过度滑动效果
      */
     public static final int OVER_SCROLL_IF_CONTENT_SCROLLS = 1;
 
@@ -3613,6 +3715,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * @see #getOverScrollMode()
      * @see #setOverScrollMode(int)
+     *
+     * 不提供过度滑动效果
      */
     public static final int OVER_SCROLL_NEVER = 2;
 
@@ -4663,16 +4767,22 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     private boolean mDefaultFocusHighlightSizeChanged;
     /**
      * True if the default focus highlight is needed on the target device.
+     *
+     * 如果目标设备上需要默认焦点突出显示，则为True
      */
     private static boolean sUseDefaultFocusHighlight;
 
     /**
      * True if zero-sized views can be focused.
+     *
+     * 如果可以聚焦零尺寸的视图，则为true。
      */
     private static boolean sCanFocusZeroSized;
 
     /**
      * Always assign focus if a focusable View is available.
+     *
+     * 如果有可聚焦的视图，请始终分配焦点。
      */
     private static boolean sAlwaysAssignFocus;
 
@@ -5009,11 +5119,15 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
 
     /**
      * Cache the touch slop from the context that created the view.
+     *
+     * 滚动Dips超过该值,说明用户在滚动
      */
     private int mTouchSlop;
 
     /**
      * Cache the ambiguous gesture multiplier from the context that created the view.
+     *
+     * 获取用于"用于禁止默认手势的乘法因子。",用于取消长按手势
      */
     private float mAmbiguousGestureMultiplier;
 
@@ -5205,6 +5319,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * When non-null and valid, this is expected to contain an up-to-date copy
      * of the View content. Its DisplayList content is cleared on temporary detach and reset on
      * cleanup.
+     *
+     * 用于硬件加速,保存有View内容的最新副本
      */
     @UnsupportedAppUsage
     final RenderNode mRenderNode;
@@ -5255,6 +5371,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     GhostView mGhostView;
 
     /**
+     * sDebugViewAttributes时,保存数据
+     *
      * Holds pairs of adjacent attribute data: attribute name followed by its value.
      * @hide
      */
@@ -5301,15 +5419,27 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      */
     private boolean mContentCaptureSessionCached;
 
+    /**
+     * View所属布局的id
+     */
     @LayoutRes
     private int mSourceLayoutId = ID_NULL;
 
+    /**
+     * sDebugViewAttributes时,保存attrs数据
+     */
     @Nullable
     private SparseIntArray mAttributeSourceResId;
 
+    /**
+     * sDebugViewAttributes时,保存attrs数据
+     */
     @Nullable
     private SparseArray<int[]> mAttributeResolutionStacks;
 
+    /**
+     * sDebugViewAttributes时,保存attrs数据到mExplicitStyle
+     */
     @StyleRes
     private int mExplicitStyle;
 
@@ -5328,6 +5458,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *        access the current theme, resources, etc.
      */
     public View(Context context) {
+        // 用于访问资源文件/主题等
         mContext = context;
         mResources = context != null ? context.getResources() : null;
         // 启用点击声音效果/启用长按等触觉反馈/自动聚焦
@@ -5335,37 +5466,60 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         // Set some flags defaults
 
         mPrivateFlags2 =
-                //
+                // 初始化水平方布局,默认从其父级继承的
                 (LAYOUT_DIRECTION_DEFAULT << PFLAG2_LAYOUT_DIRECTION_MASK_SHIFT) |
+                // 初始化文字水平方向,默认从其父级继承的
                 (TEXT_DIRECTION_DEFAULT << PFLAG2_TEXT_DIRECTION_MASK_SHIFT) |
+                // 初始化文字水平方向解析方式,默认“第一强算法”。第一个强方向字符确定段落方向。
                 (PFLAG2_TEXT_DIRECTION_RESOLVED_DEFAULT) |
+                // 初始化文本对齐方式,默认为通过Gravity确认
                 (TEXT_ALIGNMENT_DEFAULT << PFLAG2_TEXT_ALIGNMENT_MASK_SHIFT) |
+                // 确认文本对齐方式是通过Gravity确认
                 (PFLAG2_TEXT_ALIGNMENT_RESOLVED_DEFAULT) |
+                // View是否accessibility
                 (IMPORTANT_FOR_ACCESSIBILITY_DEFAULT << PFLAG2_IMPORTANT_FOR_ACCESSIBILITY_SHIFT);
 
+        // 获取当前上下文对于View的配置信息
+        // 唯一相关的是Context定义的context.getResources().getDisplayMetrics()
+        // 相同的dpi获取的ViewConfiguration是一样的,全局通用的
         final ViewConfiguration configuration = ViewConfiguration.get(context);
+        // 滚动Dips超过该值,说明用户在滚动
         mTouchSlop = configuration.getScaledTouchSlop();
+        // 获取用于"用于禁止默认手势的乘法因子。",用于取消长按手势
         mAmbiguousGestureMultiplier = configuration.getScaledAmbiguousGestureMultiplier();
-
+        // 设置过度滑动的模式,默认为当内容超过布局大小时,提供过度滑动效果
         setOverScrollMode(OVER_SCROLL_IF_CONTENT_SCROLLS);
+        // 默认用户未设置Padding
         mUserPaddingStart = UNDEFINED_PADDING;
         mUserPaddingEnd = UNDEFINED_PADDING;
+        // 创建硬件加速的mRenderNode,通过保存View内容的副本实现
         mRenderNode = RenderNode.create(getClass().getName(), new ViewAnimationHostBridge(this));
 
+        // 处理兼容性问题
+        // 整个APP只执行一次
         if (!sCompatibilityDone && context != null) {
+            // 获取SDK编译目标版本
             final int targetSdkVersion = context.getApplicationInfo().targetSdkVersion;
 
+            // 如果编译版本<=4.2,需要使用旧的测量方式 building MeasureSpecs
+            // 不需要太过在意
             // Older apps may need this compatibility hack for measurement.
             sUseBrokenMakeMeasureSpec = targetSdkVersion <= VERSION_CODES.JELLY_BEAN_MR1;
 
+            // 如果编译版本<=4.4,则每次在layout()时都应调用该View的onMeasure(),不管该View是否有调用requested
             // Older apps expect onMeasure() to always be called on a layout pass, regardless
             // of whether a layout was requested on that View.
             sIgnoreMeasureCache = targetSdkVersion < VERSION_CODES.KITKAT;
 
+            // 初始化Canvas的静态属性
+            // 小于6.0且不支持硬件加速时,或者大于6.0时,不能Restore多次
             Canvas.sCompatibilityRestore = targetSdkVersion < VERSION_CODES.M;
+            // 小于8.0时,setBitmap会执行getMatrix()矩阵进行响应处理
             Canvas.sCompatibilitySetBitmap = targetSdkVersion < VERSION_CODES.O;
+            // 设置编译的版本号,当前的处理:如果版本号>=9.0,在save和clip时会做校验
             Canvas.setCompatibilityVersion(targetSdkVersion);
 
+            // 在M及更高版本中，我们的窗口小部件可以传递“ hint”值，以表示未处理的MeasureSpecs的大小
             // In M and newer, our widgets can pass a "hint" value in the size
             // for UNSPECIFIED MeasureSpecs. This lets child views of scrolling containers
             // know what the expected parent size is going to be, so e.g. list items can size
@@ -5373,52 +5527,76 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
             // specifically apps that use some popular open source libraries.
             sUseZeroUnspecifiedMeasureSpec = targetSdkVersion < VERSION_CODES.M;
 
+            // 平台的旧版本使用EXACTLY和non-EXACTLY模式会产生与LinearLayout测量过程不同的结果，因此我们始终需要运行其他EXACTLY过程。
             // Old versions of the platform would give different results from
             // LinearLayout measurement passes using EXACTLY and non-EXACTLY
             // modes, so we always need to run an additional EXACTLY pass.
             sAlwaysRemeasureExactly = targetSdkVersion <= VERSION_CODES.M;
 
+            // 在N之前，TextureView会静默忽略对setBackgroundsetForeground的调用。在N +上，我们抛出异常，但这破坏了与使用这些方法的应用程序的兼容性。
             // Prior to N, TextureView would silently ignore calls to setBackground/setForeground.
             // On N+, we throw, but that breaks compatibility with apps that use these methods.
             sTextureViewIgnoresDrawableSetters = targetSdkVersion <= VERSION_CODES.M;
 
+            // 在N之前，我们会降低LayoutParam转换中的边距。该修复程序会触发应用程序中的错误，因此我们有针对性地对其进行检查，以避免破坏现有的应用程序。
             // Prior to N, we would drop margins in LayoutParam conversions. The fix triggers bugs
             // in apps so we target check it to avoid breaking existing apps.
             sPreserveMarginParamsInLayoutParamConversion =
                     targetSdkVersion >= VERSION_CODES.N;
 
+            // 拖动的兼容,事件处理方式的改变
             sCascadedDragDrop = targetSdkVersion < VERSION_CODES.N;
 
+            // 聚焦和自动获得焦点的兼容,过去ListView中的部件无法获取,从Android O开始可以获得
             sHasFocusableExcludeAutoFocusable = targetSdkVersion < VERSION_CODES.O;
 
+            // 解决问题:以前小于Android O时,从非UI线程更改clickable属性将执行mParent.focusableViewAvailable(this)导致异常
+            // 从Android O,sAutoFocusableOffUIThreadWontNotifyParents==false,一定会执行canTakeFocus(),从而将不再通知父布局
             sAutoFocusableOffUIThreadWontNotifyParents = targetSdkVersion < VERSION_CODES.O;
 
+            // 如果目标设备上需要默认焦点突出显示，则为True
+            // res/values/config::config_useDefaultFocusHighlight默认为true
             sUseDefaultFocusHighlight = context.getResources().getBoolean(
                     com.android.internal.R.bool.config_useDefaultFocusHighlight);
 
+            // 在9.0以后,不允许在setScaleX（）之类的方法传递虚假的float值，例如Float.NaN
             sThrowOnInvalidFloatProperties = targetSdkVersion >= VERSION_CODES.P;
 
+            // 在9.0以后,不允许聚焦零尺寸的视图
             sCanFocusZeroSized = targetSdkVersion < VERSION_CODES.P;
 
+            // 在9.0以后,不自动分配焦点
             sAlwaysAssignFocus = targetSdkVersion < VERSION_CODES.P;
 
+            // 在9.0以后,startDragAndDrop()会生成一个1x1的Surface,而不是an empty drag shadow
             sAcceptZeroSizeDragShadow = targetSdkVersion < VERSION_CODES.P;
 
+            // Android 11以后,解决{@link #onApplyWindowInsets}导致 {@link #dispatchApplyWindowInsets}出现View层次结构混乱的问题
             sBrokenInsetsDispatch = ViewRootImpl.sNewInsetsMode != NEW_INSETS_MODE_FULL
                     || targetSdkVersion < VERSION_CODES.R;
 
+            // 解决{@link com.android.internal.policy.DecorView#setBackgroundDrawable(Drawable)}不更新窗口背景的问题
             sBrokenWindowBackground = targetSdkVersion < VERSION_CODES.Q;
 
+            // 在Android10以后,GradientDrawable在计算负角度时,将角度st.mAngle = ((angle % 360) + 360) % 360;转为正确的角度
+            // 过去是只有正角度才有方向
             GradientDrawable.sWrapNegativeAngleMeasurements =
                     targetSdkVersion >= VERSION_CODES.Q;
 
+            // 在Android 11以后,当服务端Insets Changed时,不再强迫APP进行layout,而是由APP来判断是否需要layout,如果需要,调用requestLayout
             sForceLayoutWhenInsetsChanged = targetSdkVersion < VERSION_CODES.R;
 
+            // 兼容处理完成
             sCompatibilityDone = true;
         }
     }
 
     /**
+     * XML中构建View使用该构造方法,该方法提供的默认属性为0,即没有默认属性.
+     * 所以使用的是主题或XML提供的属性,如果需要提供默认的属性,那么改写该方法
+     * 比如Toolbar为this(context, attrs, R.attr.toolbarStyle);
+     * 如果XML中没有声明的属性,使用 R.attr.toolbarStyle中的属性
+     *
      * Constructor that is called when inflating a view from XML. This is called
      * when a view is being constructed from an XML file, supplying attributes
      * that were specified in the XML file. This version uses a default style of
@@ -5491,19 +5669,25 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *        defStyleAttr is 0 or can not be found in the theme. Can be 0
      *        to not look for defaults.
      * @see #View(Context, AttributeSet, int)
+     *
+     * 默认的
      */
     public View(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         this(context);
 
+        // View所属布局的id
         mSourceLayoutId = Resources.getAttributeSetSourceResId(attrs);
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, com.android.internal.R.styleable.View, defStyleAttr, defStyleRes);
 
+        // sDebugViewAttributes时,保存attrs数据到mExplicitStyle
         retrieveExplicitStyle(context.getTheme(), attrs);
+        // sDebugViewAttributes时,保存数据
         saveAttributeDataForStyleable(context, com.android.internal.R.styleable.View, attrs, a,
                 defStyleAttr, defStyleRes);
 
+        // sDebugViewAttributes时,保存数据
         if (sDebugViewAttributes) {
             saveAttributeData(attrs, a);
         }
@@ -5517,15 +5701,19 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         int startPadding = UNDEFINED_PADDING;
         int endPadding = UNDEFINED_PADDING;
 
+        // 总的/横向/纵向的padding
         int padding = -1;
         int paddingHorizontal = -1;
         int paddingVertical = -1;
 
+        // 相关Flag
         int viewFlagValues = 0;
         int viewFlagMasks = 0;
 
+        // 该View不会滚动收缩,当打开输入法时,如果View是可收缩类型,会被调整高度以展示键盘
         boolean setScrollContainer = false;
 
+        // 位置信息
         int x = 0;
         int y = 0;
 
@@ -16110,6 +16298,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
                  */
                 if (mParent != null) {
                     ViewRootImpl viewRootImpl = getViewRootImpl();
+                    // 大于Android O
+                    // 或者小于Android O,当前在非UI线程,子View修改了焦点,需要通知父布局
+                    // 解决问题:以前小于Android O时,从非UI线程更改clickable属性将执行mParent.focusableViewAvailable(this)导致异常
+                    // 从Android O,sAutoFocusableOffUIThreadWontNotifyParents==false,一定会执行canTakeFocus(),从而将不再通知父布局
                     if (!sAutoFocusableOffUIThreadWontNotifyParents
                             || focusableChangedByAuto == 0
                             || viewRootImpl == null
@@ -26849,6 +27041,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     }
 
     /**
+     *  设置过度滑动的模式,默认为当内容超过布局大小时,提供过度滑动效果
+     *
      * Set the over-scroll mode for this view. Valid over-scroll modes are
      * {@link #OVER_SCROLL_ALWAYS}, {@link #OVER_SCROLL_IF_CONTENT_SCROLLS}
      * (allow over-scrolling only if the view content is larger than the container),
