@@ -50,7 +50,8 @@ val APP_MODEL = DI.Module("APP_MODULE") {
     bind<OkHttpClient>() with singleton {
         val builder = OkHttpClient.Builder().apply {
             //使用项目统一的线程池
-            dispatcher(Dispatcher(instance()))
+            // 注::如果要Retrofit使用suspend协程获取数据,那么不能指定线程池
+//            dispatcher(Dispatcher(instance()))
             // 添加监听,实现GlobalHttpHandler对请求进行预处理
             addInterceptor(instance(tag = "HttpHandlerInterceptor"))
             for (interceptor in instance<MutableList<Interceptor>>(tag = "Interceptors")) {

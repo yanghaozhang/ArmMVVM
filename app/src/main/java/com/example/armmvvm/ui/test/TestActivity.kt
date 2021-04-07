@@ -70,7 +70,7 @@ class TestActivity : BaseActivity() {
               calendar.add(Calendar.DATE, -1) //把日期往前减少一天，若想把日期向后推一天则将负数改为正数
               date = calendar.time
               val formatter = SimpleDateFormat("yyyy-MM-dd")
-              mTestViewModel.geWeatherByCoroutines(mapOf("city_id" to city.id, "weather_date" to formatter.format(date)))
+              mTestViewModel.geWeatherByCoroutines2(mapOf("city_id" to city.id, "weather_date" to formatter.format(date)))
         }
     }
 

@@ -27,4 +27,7 @@ interface HttpService {
     @POST("/historyWeather/weather")
     fun getCityWeather(@FieldMap bean: Map<String, String>): Call<ResponseBean<WeatherBean>>
 
+    @FormUrlEncoded
+    @POST("/historyWeather/weather")
+    suspend fun getCityWeather2(@FieldMap bean: Map<String, String>): ResponseBean<WeatherBean>
 }

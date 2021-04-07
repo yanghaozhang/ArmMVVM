@@ -12,6 +12,7 @@ import com.example.arm.util.RxLifecycleUtils
 import com.example.armmvvm.http.net.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay
 import org.kodein.di.instance
@@ -46,25 +47,26 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
 
     fun getProvinceByRxLife(life: Lifecycleable<*>) {
         model.request()
-                .subscribeOn(Schedulers.io())
-                .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycleUtils.bindToLifecycle(life))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
-                .subscribe(object : ResponseErrorObserver<ResponseListBean<ProvinceBean>?>(mErrorListener) {
-                    override fun onNext(t: ResponseListBean<ProvinceBean>) {
-                        _provinceLiveData.value = t
-                    }
-                })
+            .subscribeOn(Schedulers.io())
+            .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(RxLifecycleUtils.bindToLifecycle(life))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
+            .subscribe(object :
+                ResponseErrorObserver<ResponseListBean<ProvinceBean>?>(mErrorListener) {
+                override fun onNext(t: ResponseListBean<ProvinceBean>) {
+                    _provinceLiveData.value = t
+                }
+            })
     }
 
     fun getProvinceByCompositeDisposable() {
         model.request()
-                .subscribeOn(Schedulers.io())
-                .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(withDispose {
-                    _provinceLiveData.value = it
-                })
+            .subscribeOn(Schedulers.io())
+            .retryWhen(RetryWithDelay(3, 2)) //遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(withDispose {
+                _provinceLiveData.value = it
+            })
     }
 
     fun getProvinceByCoroutines() {
@@ -77,7 +79,7 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
                     mErrorListener?.handleResponseError(requestProvince.error)
                 }
                 is Results.Success -> {
-                    _provinceLiveData.value = requestProvince.data
+                    _provinceLiveData.value = requestProvince.data!!
                 }
             }
         }
@@ -93,7 +95,7 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
                     mErrorListener?.handleResponseError(responseCity.error)
                 }
                 is Results.Success -> {
-                    _cityLiveData.value = responseCity.data
+                    _cityLiveData.value = responseCity.data!!
                 }
             }
         }
@@ -109,10 +111,19 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
                     mErrorListener?.handleResponseError(response.error)
                 }
                 is Results.Success -> {
-                    _weatherLiveData.value = response.data
+                    _weatherLiveData.value = response.data!!
                 }
             }
         }
     }
 
+    fun geWeatherByCoroutines2(bean: Map<String, String>) {
+        viewModelScope.launch {
+            model.requestWeather2(bean)
+                .collect {
+                    // 将数据提供给 Activity 或者 Fragment
+                    _weatherLiveData.postValue(it)
+                }
+        }
+    }
 }
