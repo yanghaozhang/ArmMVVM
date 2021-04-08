@@ -1,8 +1,6 @@
 package com.example.armmvvm.ui.test
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.arm.http.ResponseErrorObserver
 import com.example.arm.http.Results
 import com.example.arm.integration.lifecycle.Lifecycleable
@@ -12,7 +10,7 @@ import com.example.arm.util.RxLifecycleUtils
 import com.example.armmvvm.http.net.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay
 import org.kodein.di.instance
@@ -44,6 +42,8 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
 
     private val _weatherLiveData = MutableLiveData<ResponseBean<WeatherBean>>()
     val weatherLiveData: LiveData<ResponseBean<WeatherBean>> = _weatherLiveData
+
+
 
     fun getProvinceByRxLife(life: Lifecycleable<*>) {
         model.request()
@@ -117,6 +117,9 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
         }
     }
 
+    /**
+     * Flow方法一
+     */
     fun geWeatherByCoroutines2(bean: Map<String, String>) {
         viewModelScope.launch {
             model.requestWeather2(bean)
@@ -125,5 +128,73 @@ class TestViewModel(val model: TestModel) : BaseViewModel() {
                     _weatherLiveData.postValue(it)
                 }
         }
+    }
+
+    /**
+     * 注:
+     * 一旦weatherLiveData2.observe()执行,就会立马获取数据-->CoroutineLiveData进行collect{}
+     * 如果growZone.setValue()与旧值相同,那么将不会执行请求-->MutableStateFlow对新旧两值相同时不处理
+     * 每次Observe都会生成新的监听:因为this::onNewWeather每次都是不同的一个对象,都相当于new Observer(){onNewWeather(value)}
+     *
+     * 另,如果通过function来获取LiveData并监听,好处在于能够解决上述问题,出现的问题为每次调用都会生成LiveData,会生成很多个LiveData
+     *
+     */
+    private val growZone: MutableStateFlow<Map<String, String>> = MutableStateFlow(mutableMapOf())
+
+    val weatherLiveData2 = growZone.flatMapLatest {
+        Timber.tag("TAG----------").d("null() called $it")
+        return@flatMapLatest model.requestWeather2(it)
+    }
+        .catch {
+            Timber.e("kkkk")
+        }
+        .asLiveData()
+
+    /**
+     * Flow方法二
+     *
+     * 如果使用Flow方法2,且不能在geWeatherByCoroutines3(beanList)前observe(),否则请求数据的参数为空
+     * 且不能多次observe()
+     * 如果growZone.setValue()新值与旧值相同,那么将不会执行请求-->MutableStateFlow对新旧两值相同时不处理
+     */
+    fun geWeatherByCoroutines3(bean: Map<String, String>) {
+        growZone.value = bean
+    }
+
+    /**
+     * Flow方法三
+     * 每次调用都会生成LiveData,导致Activity管理多个LiveData
+     */
+    fun geWeatherByCoroutines4(bean: Map<String, String>) = liveData {
+        model.requestWeather2(bean)
+            .collect {
+                emit(it)
+            }
+    }
+
+    private lateinit var growZone3 : MutableStateFlow<Map<String, String>>
+
+    lateinit var weatherLiveData3 :LiveData<ResponseBean<WeatherBean>>
+
+    /**
+     * Flow方法四
+     * 怪异
+     * 如果growZone.setValue()新值与旧值相同,那么将不会执行请求-->MutableStateFlow对新旧两值相同时不处理
+     */
+    fun geWeatherByCoroutines5(bean: Map<String, String>): LiveData<ResponseBean<WeatherBean>>? {
+        if (!this::growZone3.isInitialized) {
+            growZone3 = MutableStateFlow(bean)
+            weatherLiveData3 = growZone3.flatMapLatest {
+                Timber.tag("TAG----------").d("null() called $it")
+                return@flatMapLatest model.requestWeather2(it)
+            }
+                .catch {
+                    Timber.e("kkkk")
+                }
+                .asLiveData()
+            return weatherLiveData3
+        }
+        growZone3.value = bean
+        return null
     }
 }

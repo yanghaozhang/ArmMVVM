@@ -3,7 +3,6 @@ package com.example.armmvvm.ui.test
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.arm.base.BaseActivity
 import com.example.arm.di.GlobalConfigModule
@@ -65,18 +64,34 @@ class TestActivity : BaseActivity() {
         recyclerview_city.adapter = cityAdapter
         cityAdapter.mOnClickListener = { _, city: CityBean ->
             var date = Date() //取时间
-              val calendar: Calendar = GregorianCalendar()
-              calendar.time = date
-              calendar.add(Calendar.DATE, -1) //把日期往前减少一天，若想把日期向后推一天则将负数改为正数
-              date = calendar.time
-              val formatter = SimpleDateFormat("yyyy-MM-dd")
-              mTestViewModel.geWeatherByCoroutines2(mapOf("city_id" to city.id, "weather_date" to formatter.format(date)))
+            val calendar: Calendar = GregorianCalendar()
+            calendar.time = date
+            calendar.add(Calendar.DATE, -1) //把日期往前减少一天，若想把日期向后推一天则将负数改为正数
+            date = calendar.time
+            val formatter = SimpleDateFormat("yyyy-MM-dd")
+            val beanList = mapOf(
+                "city_id" to city.id,
+                "weather_date" to formatter.format(date)
+            )
+            // 如果使用Flow方法2,且不能在geWeatherByCoroutines3(beanList)前observe(),否则请求数据的参数为空
+            // 且不能多次observe()
+            /*mTestViewModel.geWeatherByCoroutines3(beanList)
+            if (k) {
+            //this::onNewWeather每次都是不同的一个对象,都相当于new Observer(){onNewWeather(value)}
+                mTestViewModel.weatherLiveData2.observe(this, this::onNewWeather)
+                k = false
+            }*/
+//            mTestViewModel.geWeatherByCoroutines4(beanList).observe(this, this::onNewWeather)
+            mTestViewModel.geWeatherByCoroutines5(beanList)?.observe(this, this::onNewWeather)
         }
     }
 
+    var k = true
+
     private fun onNewWeather(responseBean: ResponseBean<WeatherBean>) {
         val result = responseBean.result
-        val weather = "${result.city_name}--${result.day_weather} --${result.day_temp} --${result.night_weather} --${result.night_temp} "
+        val weather =
+            "${result.city_name}--${result.day_weather} --${result.day_temp} --${result.night_weather} --${result.night_temp} "
         tv_detail.text = weather
         showMessage(weather)
     }
