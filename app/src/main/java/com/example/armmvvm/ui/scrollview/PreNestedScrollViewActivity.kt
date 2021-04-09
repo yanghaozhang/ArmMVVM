@@ -3,8 +3,7 @@ package com.example.armmvvm.ui.scrollview
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.arm.base.BaseActivity
-import com.example.armmvvm.R
-import kotlinx.android.synthetic.main.activity_pre_nested_scroll_view.*
+import com.example.armmvvm.databinding.ActivityPreNestedScrollViewBinding
 
 /**
  * @author 创建人 ：yanghaozhang
@@ -15,9 +14,8 @@ import kotlinx.android.synthetic.main.activity_pre_nested_scroll_view.*
  * @modifyTime 修改时间 ：
  * @modifyMemo 修改备注：
  */
-class PreNestedScrollViewActivity : BaseActivity() {
-    override fun initView(savedInstanceState: Bundle?): Int =
-        R.layout.activity_pre_nested_scroll_view
+class PreNestedScrollViewActivity : BaseActivity<ActivityPreNestedScrollViewBinding>() {
+    override fun initView(savedInstanceState: Bundle?) = ActivityPreNestedScrollViewBinding.inflate(layoutInflater)
 
     override fun initData(savedInstanceState: Bundle?) {
         val list = mutableListOf("ss","kk","jj","ss","kk","jj","ss","kk","jj","ss","kk","jj","ss","kk","jj")
@@ -25,10 +23,10 @@ class PreNestedScrollViewActivity : BaseActivity() {
         list.addAll(list)
         list.addAll(list)
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
         val preNestedScrollAdapter = PreNestedScrollAdapter()
         preNestedScrollAdapter.textList = list
-        recyclerView.adapter = preNestedScrollAdapter
+        binding.recyclerView.adapter = preNestedScrollAdapter
     }
 
 }

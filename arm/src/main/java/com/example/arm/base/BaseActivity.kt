@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.InflateException
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewbinding.ViewBinding
 import com.example.arm.ext.toast
 import com.example.arm.integration.EventBusManager
 import com.example.arm.integration.cache.Cache
@@ -22,18 +23,18 @@ import timber.log.Timber
  *  date : 2020/9/10 13:48
  *  description :
  */
-abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityLifecycleable, IView {
+abstract class BaseActivity<B : ViewBinding> : AppCompatActivity(), IActivity<B>, DIAware, ActivityLifecycleable,
+    IView {
 
     override val di: DI by di()
-
-    override val diContext: DIContext<*>
-        get() = diContext(this)
 
     private val mActivityDelegate: ((Activity) -> Unit) by instance()
 
     private val mSubject: BehaviorSubject<ActivityEvent> = BehaviorSubject.create()
 
     override val mCache: Cache<String, Any> by instance(arg = CacheType.ACTIVITY_CACHE)
+
+    lateinit var binding: B
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag("BaseActivity").d("onCreate() called with: savedInstanceState = $savedInstanceState   %s ", "before")
@@ -45,9 +46,8 @@ abstract class BaseActivity : AppCompatActivity(), IActivity, DIAware, ActivityL
             EventBusManager.instance.register(this)
         }
         try {
-            val layoutResID = initView(savedInstanceState)
-            if (layoutResID != 0) {
-                setContentView(layoutResID)
+            binding = initView(savedInstanceState).apply {
+                setContentView(root)
             }
         } catch (e: Exception) {
             if (e is InflateException) {

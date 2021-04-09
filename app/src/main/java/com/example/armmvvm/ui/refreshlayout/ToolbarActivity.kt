@@ -3,38 +3,40 @@ package com.example.armmvvm.ui.refreshlayout
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.example.arm.base.BaseActivity
 import com.example.armmvvm.R
+import com.example.armmvvm.databinding.ActivityToolbar2Binding
 import com.example.armmvvm.ui.test.AnchorSheetBehavior
 import com.example.armmvvm.ui.test.IBottomSheetBehavior
 import com.example.armmvvm.ui.viewpager.SimpleBackgroundFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.activity_toolbar2.*
 import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
 
-class ToolbarActivity : AppCompatActivity() {
+class ToolbarActivity : BaseActivity<ActivityToolbar2Binding>() {
     var mTopHeight: Int = 0
     var mHeaderHeight: Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun initView(savedInstanceState: Bundle?): ActivityToolbar2Binding {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        setContentView(R.layout.activity_toolbar2)
-        tool_bar.title = ""
+        return ActivityToolbar2Binding.inflate(layoutInflater)
+    }
+
+    override fun initData(savedInstanceState: Bundle?) {
+        binding.toolBar.title = ""
         /**
          * 该方法会初始化ActionBar
          * 1,setNavigationOnClickListener,该方法必须放置setSupportActionBar之后,否则无效
          * 2,如果Toolbar在xml中设置了menu,在该方法中AppCompatDelegateImpl.invalidateOptionsMenu();会使设置的menu无效
          */
 //        setSupportActionBar(tool_bar)
-        tool_bar.setNavigationOnClickListener {
+        binding.toolBar.setNavigationOnClickListener {
             finish()
         }
 
@@ -44,13 +46,13 @@ class ToolbarActivity : AppCompatActivity() {
             SimpleBackgroundFragment("cc"),
             SimpleBackgroundFragment("dd"),
         )
-        view_pager_up.offscreenPageLimit = fragmentList.size
-        view_pager_up.adapter = ToolReuseAdapter(fragmentList, supportFragmentManager)
-        tab_layout.setupWithViewPager(view_pager_up)
+        binding.viewPagerUp.offscreenPageLimit = fragmentList.size
+        binding.viewPagerUp.adapter = ToolReuseAdapter(fragmentList, supportFragmentManager)
+        binding.tabLayout.setupWithViewPager(binding.viewPagerUp)
 
         var behaviorTemp: CoordinatorLayout.Behavior<*>? = null
         try {
-            val behavior = AnchorSheetBehavior.from(bottom_scroll_view)
+            val behavior = AnchorSheetBehavior.from(binding.bottomScrollView)
             useAnchorSheetBehavior(behavior)
             behaviorTemp = behavior
         } catch (exception: IllegalArgumentException) {
@@ -58,7 +60,7 @@ class ToolbarActivity : AppCompatActivity() {
         }
 
         try {
-            val behavior = BottomSheetBehavior.from(bottom_scroll_view)
+            val behavior = BottomSheetBehavior.from(binding.bottomScrollView)
             ustBottomSheetBehavior(behavior)
             behaviorTemp = behavior
         } catch (exception: IllegalArgumentException) {
@@ -66,27 +68,27 @@ class ToolbarActivity : AppCompatActivity() {
         }
 
         // 处理bottom_scroll_view的高度问题
-        bottom_scroll_view.post() {
-            mTopHeight = ll_top.measuredHeight
-            mHeaderHeight = header.height
+        binding.bottomScrollView.post() {
+            mTopHeight = binding.llTop.measuredHeight
+            mHeaderHeight = binding.header.llHeader.height
 
             val expandedOffset = when (behaviorTemp) {
                 is AnchorSheetBehavior -> {
-                    behaviorTemp.peekHeight = mHeaderHeight + iv_arrow.height
+                    behaviorTemp.peekHeight = mHeaderHeight + binding.ivArrow.height
                     behaviorTemp.mMinOffset
                 }
                 is BottomSheetBehavior -> {
-                    behaviorTemp.peekHeight = mHeaderHeight + iv_arrow.height
+                    behaviorTemp.peekHeight = mHeaderHeight + binding.ivArrow.height
                     behaviorTemp.expandedOffset
                 }
                 else -> 0
             }
-            val layoutParams = bottom_scroll_view.layoutParams
+            val layoutParams = binding.bottomScrollView.layoutParams
             //如果控件本身的Height值就小于展开高度，就不用做处理
-            if (bottom_scroll_view.height > parent_coordinator.height - expandedOffset) {
+            if (binding.bottomScrollView.height > binding.parentCoordinator.height - expandedOffset) {
                 //屏幕高度减去STATE_EXPANDED状态时顶部的高度
-                layoutParams.height = parent_coordinator.height - expandedOffset
-                bottom_scroll_view.layoutParams = layoutParams
+                layoutParams.height = binding.parentCoordinator.height - expandedOffset
+                binding.bottomScrollView.layoutParams = layoutParams
             }
         }
     }
@@ -96,7 +98,7 @@ class ToolbarActivity : AppCompatActivity() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 val resId =
                     if (newState == BottomSheetBehavior.STATE_COLLAPSED) R.mipmap.icon_arrow_up_gray else R.mipmap.icon_arrow_down_gray
-                iv_arrow.setImageResource(resId)
+                binding.ivArrow.setImageResource(resId)
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -106,15 +108,15 @@ class ToolbarActivity : AppCompatActivity() {
                 val heightSet = (mHeaderHeight - (mHeaderHeight - mTopHeight) * percent).toInt()
                 Timber.d("onSlide: %s", heightSet)
 
-                header.updateLayoutParams {
+                binding.header.llHeader.updateLayoutParams {
                     height = heightSet
                 }
-                header.alpha = 1 - percent
+                binding.header.llHeader.alpha = 1 - percent
 
-                ll_top.updateLayoutParams {
+                binding.llTop.updateLayoutParams {
                     height = heightSet
                 }
-                ll_top.alpha = max((percent - SHOW_PERCENT) / (1 - SHOW_PERCENT), 0.0).toFloat()
+                binding.llTop.alpha = max((percent - SHOW_PERCENT) / (1 - SHOW_PERCENT), 0.0).toFloat()
             }
         })
     }
@@ -126,7 +128,7 @@ class ToolbarActivity : AppCompatActivity() {
             override fun onStateChanged(bottomSheet: View, oldState: Int, newState: Int) {
                 val resId =
                     if (newState == BottomSheetBehavior.STATE_COLLAPSED) R.mipmap.icon_arrow_up_gray else R.mipmap.icon_arrow_down_gray
-                iv_arrow.setImageResource(resId)
+                binding.ivArrow.setImageResource(resId)
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -138,15 +140,15 @@ class ToolbarActivity : AppCompatActivity() {
                 val heightSet = (mHeaderHeight - (mHeaderHeight - mTopHeight) * percent).toInt()
                 Timber.d("onSlide: %s", heightSet)
 
-                header.updateLayoutParams {
+                binding.header.llHeader.updateLayoutParams {
                     height = heightSet
                 }
-                header.alpha = 1 - percent
+                binding.header.llHeader.alpha = 1 - percent
 
-                ll_top.updateLayoutParams {
+                binding.llTop.updateLayoutParams {
                     height = heightSet
                 }
-                ll_top.alpha = max((percent - SHOW_PERCENT) / (1 - SHOW_PERCENT), 0.0).toFloat()
+                binding.llTop.alpha = max((percent - SHOW_PERCENT) / (1 - SHOW_PERCENT), 0.0).toFloat()
             }
         })
     }
@@ -158,8 +160,8 @@ class ToolbarActivity : AppCompatActivity() {
             SimpleBackgroundFragment("gg"),
             SimpleBackgroundFragment("hh"),
         )
-        view_pager_up.offscreenPageLimit = fragmentList.size
-        view_pager_up.adapter = ToolReuseAdapter(fragmentList, supportFragmentManager)
+        binding.viewPagerUp.offscreenPageLimit = fragmentList.size
+        binding.viewPagerUp.adapter = ToolReuseAdapter(fragmentList, supportFragmentManager)
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {

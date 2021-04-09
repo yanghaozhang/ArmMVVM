@@ -1,6 +1,7 @@
 package com.example.arm.base
 
 import android.os.Bundle
+import androidx.viewbinding.ViewBinding
 import com.example.arm.integration.cache.Cache
 
 /**
@@ -8,7 +9,7 @@ import com.example.arm.integration.cache.Cache
  *  date : 2020/9/10 11:30
  *  description :
  */
-interface IActivity {
+interface IActivity<B : ViewBinding> {
 
     /**
      * 提供在 [Activity] 生命周期内的缓存容器, 可向此 [Activity] 存取一些必要的数据
@@ -36,7 +37,7 @@ interface IActivity {
      * @param savedInstanceState
      * @return
      */
-    fun initView(savedInstanceState: Bundle?): Int
+    fun initView(savedInstanceState: Bundle?): B
 
     /**
      * 初始化数据

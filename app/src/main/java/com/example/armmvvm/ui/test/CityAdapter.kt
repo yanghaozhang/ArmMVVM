@@ -1,9 +1,10 @@
 package com.example.armmvvm.ui.test
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.armmvvm.databinding.LayoutTestViewBindingBinding
 import com.example.armmvvm.http.net.CityBean
 
 /**
@@ -22,16 +23,26 @@ class CityAdapter : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
-        (holder.itemView as TextView).setText(mCityList[position].city_name)
-        holder.itemView.setOnClickListener {
-            mOnClickListener?.invoke(holder.itemView, mCityList[position])
+//        (holder.itemView as TextView).text = mCityList[position].city_name
+//        holder.itemView.setOnClickListener {
+//            mOnClickListener?.invoke(holder.itemView, mCityList[position])
+//        }
+
+        val bind = LayoutTestViewBindingBinding.bind(holder.itemView)
+        bind.tvTest.run {
+            text = mCityList[position].city_name
+            setOnClickListener {
+                mOnClickListener?.invoke(holder.itemView, mCityList[position])
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
-        val textView = TextView(parent.context)
-        textView.setPadding(0, 10, 0, 10)
-        return CityViewHolder(textView)
+//        val textView = TextView(parent.context)
+//        textView.setPadding(0, 10, 0, 10)
+
+        val inflate = LayoutTestViewBindingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CityViewHolder(inflate.root)
     }
 
     class CityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

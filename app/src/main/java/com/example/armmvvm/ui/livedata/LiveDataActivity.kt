@@ -5,9 +5,9 @@ import android.view.View
 import com.example.arm.base.BaseActivity
 import com.example.arm.ext.viewModelKt
 import com.example.armmvvm.R
+import com.example.armmvvm.databinding.ActivityLiveDataBinding
 import com.example.armmvvm.ui.livedata.fragment.MutableFragment
 import com.example.armmvvm.ui.livedata.fragment.UnPeekFragment
-import kotlinx.android.synthetic.main.activity_live_data.*
 import timber.log.Timber
 
 /**
@@ -15,7 +15,7 @@ import timber.log.Timber
  *  date : 2020/10/28
  *  description :
  */
-class LiveDataActivity : BaseActivity() {
+class LiveDataActivity : BaseActivity<ActivityLiveDataBinding>() {
 
 /*    override val di: DI by retainedSubDI(di()) {
         bind<LiveDataViewModel>() with singleton {
@@ -35,9 +35,7 @@ class LiveDataActivity : BaseActivity() {
     val mChangeFragment = MutableFragment("MutableLiveData-MM")
     val mChangeFragment2 = MutableFragment("MutableLiveData-TT")
 
-    override fun initView(savedInstanceState: Bundle?): Int {
-        return R.layout.activity_live_data
-    }
+    override fun initView(savedInstanceState: Bundle?) = ActivityLiveDataBinding.inflate(layoutInflater)
 
     override fun initData(savedInstanceState: Bundle?) {
         mLiveDataViewModel.unPeekLiveData.observe(this) {
@@ -46,8 +44,8 @@ class LiveDataActivity : BaseActivity() {
         mLiveDataViewModel.mutableLiveData.observe(this) {
             onStateChange2(it)
         }
-        changeFragmentClickUnPeek(frame_content)
-        changeFragmentClickMutable(frame_content2)
+        changeFragmentClickUnPeek(binding.frameContent)
+        changeFragmentClickMutable(binding.frameContent2)
     }
 
     private fun onStateChange(msg: String) {

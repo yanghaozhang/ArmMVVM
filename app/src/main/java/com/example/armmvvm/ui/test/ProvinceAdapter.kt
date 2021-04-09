@@ -22,7 +22,7 @@ class ProvinceAdapter : RecyclerView.Adapter<ProvinceAdapter.ProvinceViewHolder>
     }
 
     override fun onBindViewHolder(holder: ProvinceViewHolder, position: Int) {
-        (holder.itemView as TextView).setText(mProvinceList[position].province)
+        (holder.itemView as TextView).text = mProvinceList[position].province
         holder.itemView.setOnClickListener {
             mOnClickListener?.invoke(holder.itemView, mProvinceList[position])
         }

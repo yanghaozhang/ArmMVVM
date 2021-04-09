@@ -11,10 +11,9 @@ import com.example.arm.http.ErrorListener
 import com.example.arm.http.imageloader.ImageLoader
 import com.example.arm.integration.IRepositoryManager
 import com.example.arm.util.TestUtil
-import com.example.armmvvm.R
+import com.example.armmvvm.databinding.ActivityTestBinding
 import com.example.armmvvm.http.imageloader.ImageConfigImpl
 import com.example.armmvvm.http.net.*
-import kotlinx.android.synthetic.main.activity_test.*
 import org.kodein.di.*
 import org.kodein.di.android.di
 import org.kodein.di.android.retainedSubDI
@@ -22,7 +21,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TestActivity : BaseActivity() {
+class TestActivity : BaseActivity<ActivityTestBinding>() {
 
     override val di: DI by retainedSubDI(di()) {
         bind<TestViewModel>() with singleton {
@@ -47,21 +46,21 @@ class TestActivity : BaseActivity() {
         DIViewModelFactory(di)
     }
 
-    override fun initView(savedInstanceState: Bundle?) = R.layout.activity_test
+    override fun initView(savedInstanceState: Bundle?) = ActivityTestBinding.inflate(layoutInflater)
 
     override fun initData(savedInstanceState: Bundle?) {
         printTest(savedInstanceState)
         mTestViewModel.provinceLiveData.observe(this, this::onNewProvince)
         mTestViewModel.cityLiveData.observe(this, this::onNewCity)
         mTestViewModel.weatherLiveData.observe(this, this::onNewWeather)
-        recyclerview.layoutManager = GridLayoutManager(this, 4)
-        recyclerview.adapter = provinceAdapter
+        binding.recyclerview.layoutManager = GridLayoutManager(this, 4)
+        binding.recyclerview.adapter = provinceAdapter
         provinceAdapter.mOnClickListener = { _, province: ProvinceBean ->
             mTestViewModel.geCityByCoroutines(mapOf("province_id" to province.id))
         }
 
-        recyclerview_city.layoutManager = GridLayoutManager(this, 4)
-        recyclerview_city.adapter = cityAdapter
+        binding.recyclerviewCity.layoutManager = GridLayoutManager(this, 4)
+        binding.recyclerviewCity.adapter = cityAdapter
         cityAdapter.mOnClickListener = { _, city: CityBean ->
             var date = Date() //取时间
             val calendar: Calendar = GregorianCalendar()
@@ -92,15 +91,18 @@ class TestActivity : BaseActivity() {
         val result = responseBean.result
         val weather =
             "${result.city_name}--${result.day_weather} --${result.day_temp} --${result.night_weather} --${result.night_temp} "
-        tv_detail.text = weather
+        binding.tvDetail.text = weather
         showMessage(weather)
     }
 
     private fun printTest(savedInstanceState: Bundle?) {
         Timber.tag("TestActivity").d(mErrorListener?.javaClass?.simpleName ?: "not exist")
-        Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mCache")
-        Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mTestUtil")
-        Timber.tag("TestActivity").d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mImageLoader")
+        Timber.tag("TestActivity")
+            .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mCache")
+        Timber.tag("TestActivity")
+            .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mTestUtil")
+        Timber.tag("TestActivity")
+            .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mImageLoader")
         Timber.tag("TestActivity")
             .d("initData() called with: savedInstanceState = $savedInstanceState   %s ", "$mRepositoryManager")
     }

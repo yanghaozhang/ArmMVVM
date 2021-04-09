@@ -2,11 +2,11 @@ package com.example.arm.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import com.example.arm.integration.cache.Cache
 
-interface IFragment {
+interface IFragment<B : ViewBinding> {
     /**
      * 提供在 [Fragment] 生命周期内的缓存容器, 可向此 [Fragment] 存取一些必要的数据
      * 此缓存容器和 [Fragment] 的生命周期绑定, 如果 [Fragment] 在屏幕旋转或者配置更改的情况下
@@ -35,7 +35,7 @@ interface IFragment {
      * @param savedInstanceState
      * @return
      */
-    fun initView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    fun initView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): B
 
     /**
      * 初始化数据
