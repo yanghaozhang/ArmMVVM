@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
-    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+    compileSdkVersion BuildConfig.compileSdkVersion
+    buildToolsVersion BuildConfig.buildToolsVersion
 
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
@@ -17,12 +17,12 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion rootProject.ext.android["minSdkVersion"]
-        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
-        versionCode rootProject.ext.android["versionCode"]
-        versionName rootProject.ext.android["versionName"]
+        minSdkVersion BuildConfig.minSdkVersion
+        targetSdkVersion BuildConfig.targetSdkVersion
+        versionCode BuildConfig.versionCode
+        versionName BuildConfig.versionName
 
-        testInstrumentationRunner rootProject.ext.defs["androidJUnitRunner"]
+        testInstrumentationRunner Depend.androidJUnitRunner
     }
 
     buildTypes {
@@ -37,27 +37,27 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(path: ':arm')
 
-    implementation rootProject.ext.defs["constraintlayout"]
-    implementation rootProject.ext.defs["appcompat"]
-    implementation rootProject.ext.defs["design"]
+    implementation Depend.constraintlayout
+    implementation Depend.appcompat
+    implementation Depend.design
 
     // SmartRefreshLayout
-    implementation rootProject.ext.defs["refresh-kernel"]
-    implementation rootProject.ext.defs["refresh-classics"]
+    implementation Depend.refreshKernel
+    implementation Depend.refreshClassics
 
-    kapt(rootProject.ext.defs["butterknife-compiler"]) {
+    kapt(Depend.butterknifeCompiler) {
         exclude module: 'annotation'
     }
 
-    kapt rootProject.ext.defs["dagger2-compiler"]
+    kapt Depend.dagger2Compiler
 
-    api(rootProject.ext.defs["glide"]) {
+    api(Depend.glide) {
         exclude module: 'annotation'
         exclude module: 'fragment'
         exclude module: 'vectordrawable-animated'
     }
 
-    testImplementation rootProject.ext.defs["junit"]
-    androidTestImplementation rootProject.ext.defs["androidx-unit"]
-    androidTestImplementation rootProject.ext.defs["espresso-core"]
+    testImplementation Depend.junit
+    androidTestImplementation Depend.androidxUnit
+    androidTestImplementation Depend.espressoCore
 }

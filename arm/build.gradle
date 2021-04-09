@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
-    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+    compileSdkVersion BuildConfig.compileSdkVersion
+    buildToolsVersion BuildConfig.buildToolsVersion
 
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
@@ -17,12 +17,12 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion rootProject.ext.android["minSdkVersion"]
-        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
-        versionCode rootProject.ext.android["versionCode"]
-        versionName rootProject.ext.android["versionName"]
+        minSdkVersion BuildConfig.minSdkVersion
+        targetSdkVersion BuildConfig.targetSdkVersion
+        versionCode BuildConfig.versionCode
+        versionName BuildConfig.versionName
 
-        testInstrumentationRunner rootProject.ext.defs["androidJUnitRunner"]
+        testInstrumentationRunner Depend.androidJUnitRunner
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -38,98 +38,97 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     // kotlin
-    api "org.jetbrains.kotlin:kotlin-stdlib:1.4.31"
-    api "androidx.core:core-ktx:1.3.2"
-    api rootProject.ext.defs["kodein-core"]
-    api rootProject.ext.defs["kodein-x"]
-    api 'androidx.activity:activity-ktx:1.2.2'
-    api "androidx.fragment:fragment-ktx:1.3.2"
-    api "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    api Depend.coreKtx
+    api Depend.kodeinCore
+    api Depend.kodeinX
+    api Depend.activityKtx
+    api Depend.fragmentKtx
+    api Depend.liveDataKtx
 
     //androidx
-    api(rootProject.ext.defs["legacy-support-v4"]) {
+    api(Depend.legacySupportV4) {
         exclude module: 'annotation'
         exclude module: 'coordinatorlayout'
     }
-    api(rootProject.ext.defs["appcompat"]) {
+    api(Depend.appcompat) {
         exclude module: 'annotation'
     }
-    compileOnly rootProject.ext.defs["design"]
-    api(rootProject.ext.defs["recyclerview"]) {
+    compileOnly Depend.design
+    api(Depend.recyclerview) {
         exclude module: 'annotation'
     }
-    api rootProject.ext.defs["annotations"]
+    api Depend.annotations
 
     //view
-    compileOnly rootProject.ext.defs["autolayout"]
-    api(rootProject.ext.defs["butterknife"]) {
+    compileOnly Depend.autolayout
+    api(Depend.butterknife) {
         exclude module: 'annotation'
         exclude module: 'core'
     }
 
     //rx
-    api rootProject.ext.defs["rxjava2"]
-    api(rootProject.ext.defs["rxandroid2"]) {
+    api Depend.rxjava2
+    api(Depend.rxandroid2) {
         exclude module: 'rxjava'
     }
-    api(rootProject.ext.defs["rxcache2"]) {
+    api(Depend.rxcache2) {
         exclude module: 'rxjava'
         exclude module: 'dagger'
         exclude module: 'api'
     }
-    implementation(rootProject.ext.defs["rxcache-jolyglot-gson"]) {
+    implementation(Depend.rxcacheJolyglotGson) {
         exclude module: 'gson'
     }
-    api(rootProject.ext.defs["rxlifecycle2"]) {
+    api(Depend.rxlifecycle2) {
         exclude module: 'rxjava'
         exclude module: 'jsr305'
     }
-    api(rootProject.ext.defs["rxlifecycle2-android"]) {
+    api(Depend.rxlife2Android) {
         exclude module: 'annotation'
         exclude module: 'rxjava'
         exclude module: 'rxandroid'
         exclude module: 'rxlifecycle'
     }
-    api(rootProject.ext.defs["rxpermissions2"]) {
+    api(Depend.rxpermissions2) {
         exclude module: 'rxjava'
         exclude module: 'annotation'
     }
-    api rootProject.ext.defs['rxerrorhandler2']
+    api Depend.rxerrorhandler2
 
     //network
-    api(rootProject.ext.defs["retrofit"]) {
+    api(Depend.retrofit) {
         exclude module: 'okhttp'
         exclude module: 'okio'
     }
-    implementation(rootProject.ext.defs["retrofit-converter-gson"]) {
+    implementation(Depend.retrofitConverterGson) {
         exclude module: 'gson'
         exclude module: 'okhttp'
         exclude module: 'okio'
         exclude module: 'retrofit'
     }
-    implementation(rootProject.ext.defs["retrofit-adapter-rxjava2"]) {
+    implementation(Depend.retrofitAdapterRxjava2) {
         exclude module: 'rxjava'
         exclude module: 'okhttp'
         exclude module: 'retrofit'
         exclude module: 'okio'
     }
-    api rootProject.ext.defs["okhttp3"]
-    compileOnly rootProject.ext.defs["glide"]
-    kapt(rootProject.ext.defs["glide-compiler"]) {
+    api Depend.okhttp3
+    compileOnly Depend.glide
+    kapt(Depend.glideCompiler) {
         exclude module: 'jsr305'
     }
 
     //tools
-    compileOnly rootProject.ext.defs["javax.annotation"]
-    api rootProject.ext.defs["dagger2"]
-    kapt rootProject.ext.defs["dagger2-compiler"]
-    compileOnly rootProject.ext.defs["androideventbus"]
-    compileOnly rootProject.ext.defs["eventbus"]
-    api rootProject.ext.defs["gson"]
+    compileOnly Depend.javaxAnnotation
+    api Depend.dagger2
+    kapt Depend.dagger2Compiler
+    compileOnly Depend.androideventbus
+    compileOnly Depend.eventbus
+    api Depend.gson
 
     //test
-    api rootProject.ext.defs["timber"]
-    testImplementation rootProject.ext.defs["junit"]
-    androidTestImplementation rootProject.ext.defs["androidx-unit"]
-    androidTestImplementation rootProject.ext.defs["espresso-core"]
+    api Depend.timber
+    testImplementation Depend.junit
+    androidTestImplementation Depend.androidxUnit
+    androidTestImplementation Depend.espressoCore
 }
